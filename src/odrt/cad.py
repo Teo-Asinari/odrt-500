@@ -39,6 +39,11 @@ class Part:
     moving: bool
 
 
+def driven_sides(opt) -> tuple:
+    """One motor drives from the left end of the shaft; two motors drive both ends."""
+    return (-1,) if opt.count == 1 else (-1, 1)
+
+
 def standard_shaft_mm(min_d_mm: float) -> int:
     for d in STANDARD_SHAFTS_MM:
         if d >= min_d_mm:
@@ -118,6 +123,8 @@ def build(st, opt, common, sizes: dict):
         bearing = cyl_x(bearing_od / 2, bearing_w, x0=x_plate, z0=axis_z).cut(
             cyl_x(shaft_d / 2, bearing_w + 2, x0=x_plate, z0=axis_z))
         parts.append(Part(f"bearing {label}", bearing, "shaft", False))
+        if side not in driven_sides(opt):
+            continue
         wheel = cyl_x(wheel_d / 2, wheel_w, x0=side * x_wheel, z0=axis_z).cut(
             cyl_x(shaft_d / 2, wheel_w + 2, x0=side * x_wheel, z0=axis_z))
         parts.append(Part(f"belt wheel {label} ({st.wheel_teeth}T)", wheel, "plate", True))

@@ -8,7 +8,7 @@ from odrt.project import load_inputs
 
 def test_shipped_inputs_load():
     inputs = load_inputs(REPO)
-    assert list(inputs.requirements) == [f"R-{i:02d}" for i in range(1, 14)]
+    assert list(inputs.requirements) == [f"R-{i:02d}" for i in range(1, 15)]
     assert inputs.envelope.peak_tension_lbf == 500
     assert {"reference", "limit"} == {s.kind for s in inputs.scenarios.values()}
     for s in inputs.scenarios.values():

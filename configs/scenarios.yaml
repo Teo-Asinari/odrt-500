@@ -83,17 +83,17 @@ scenarios:
     retraction_tension_lbf: 400
 
   peak_tension_hold_limit:
-    description: Short pull then a 10 s hold at the full 500 lbf target. Sizes stall torque and stall heating.
+    description: Heavy reps with 3 s pauses at the full 500 lbf target (ADR-001 seconds-per-rep). Sizes stall torque and short-term heating.
     kind: limit
     requirements: [R-01, R-02, R-07]
     assumptions: [A-001, A-002, A-003]
     start_offset_m: 0.2
     stroke_m: 0.1
     extend_s: 1.0
-    top_hold_s: 10.0
+    top_hold_s: 3.0
     retract_s: 1.0
     bottom_hold_s: 1.0
-    reps: 3
+    reps: 5
     sets: 1
     rest_s: 0
     extension_tension_lbf: 500

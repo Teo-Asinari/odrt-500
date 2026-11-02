@@ -1,6 +1,6 @@
 # WP4 concept layout and first-pass structural sizing. Placeholders throughout
 # (A-018); every result needs independent mechanical review (R-08, Gate D).
-design: "2x cubemars_ro100_kv55@6:1"
+design: "cubemars_ro100_kv55@6:1"   # iteration 2 lead (ADR-001)
 
 loads:
   stall_is_design_case: true        # size for full motor stall torque, not just 500 lbf

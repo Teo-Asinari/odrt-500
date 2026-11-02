@@ -1,10 +1,10 @@
 item,qty,unit_price,currency,price_basis,source_url,accessed,notes
-CubeMars RO100 KV55 motor,2,171.90,USD,single unit retail,https://www.cubemars.com/goods-1159-RO100.html,2026-11-02,Lead design motor (data/components.csv)
-ODrive S1 motor driver,2,149.00,USD,single unit list; 143.00 at 100 units,https://shop.odriverobotics.com/products/odrive-s1,2026-11-02,Shown sold out when crawled
+CubeMars RO100 KV55 motor,1,171.90,USD,single unit retail,https://www.cubemars.com/goods-1159-RO100.html,2026-11-02,Lead design motor (data/components.csv)
+ODrive S1 motor driver,1,149.00,USD,single unit list; 143.00 at 100 units,https://shop.odriverobotics.com/products/odrive-s1,2026-11-02,Shown sold out when crawled
 Mean Well RSP-1000-48 power supply (48 V 1 kW),1,267.90,USD,single unit distributor,https://www.bravoelectro.com/rsp-1000-48.html,2026-11-02,Jameco lists the same price
-HTD-5M 90T 15 mm pulley (taper-lock),2,32.47,GBP,single unit incl. VAT,https://beltingonline.com/taper-lock-c-272_285_482_494/90-tooth-htd5-tl-pulley-905m15-p-8280.html,2026-11-02,Taper-lock bush not included
-HTD-5M 15T pinion,2,,,,,,Not yet sourced
-HTD-5M 15 mm belt,2,,,,,,Not yet sourced; length from CAD centre distance
+HTD-5M 90T 15 mm pulley (taper-lock),1,32.47,GBP,single unit incl. VAT,https://beltingonline.com/taper-lock-c-272_285_482_494/90-tooth-htd5-tl-pulley-905m15-p-8280.html,2026-11-02,Taper-lock bush not included
+HTD-5M 15T pinion,1,,,,,,Not yet sourced
+HTD-5M 15 mm belt,1,,,,,,Not yet sourced; length from CAD centre distance
 Bearing 25 mm bore (62xx class),2,,,,,,Not yet sourced
 Shaft 25 mm steel (machined),1,,,,,,Not yet sourced
 Drum (machined aluminium),1,,,,,,Not yet sourced

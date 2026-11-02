@@ -133,19 +133,20 @@ def sizing(st: Structure, opt, common, peak_tension_lbf: float) -> dict:
     span = width + 2 * st.flange_thickness_mm / 1e3 + st.span_extra_mm / 1e3
     overhang = st.wheel_overhang_mm / 1e3
     wheel_r = pitch_diameter_mm(st.wheel_teeth, st.belt_pitch_mm) / 2e3
-    # Each wheel carries half the drum torque. Belt pull ~ torque / radius, doubled for slack-side
-    # pre-tension (rule of thumb, A-018), acting in the cable's direction (worst case: same direction).
-    belt_pull_each = 2 * (design_torque / 2) / wheel_r
+    # Each driven wheel carries its share of the drum torque (one wheel per motor). Belt pull ~ torque /
+    # radius, doubled for slack-side pre-tension (rule of thumb, A-018), acting in the cable's direction.
+    wheels = opt.count
+    belt_pull_each = 2 * (design_torque / wheels) / wheel_r
     # Simply supported shaft, cable load at mid-span, belt loads on overhangs at both ends.
     m_mid = design_tension * span / 4
     m_bearing = belt_pull_each * overhang
     m_max = max(m_mid, m_bearing)
-    t_max = design_torque / 2  # torque in the shaft between a wheel and the drum
+    t_max = design_torque / wheels  # torque in the shaft between a wheel and the drum
     allow = st.shaft.yield_mpa * 1e6 / st.yield_sf
     # von Mises for a solid round shaft: sigma = 32/(pi d^3) * sqrt(M^2 + 0.75 T^2)
     d_shaft = (32 * math.sqrt(m_max**2 + 0.75 * t_max**2) / (math.pi * allow)) ** (1 / 3)
     bearing_load = design_tension / 2 + belt_pull_each * (1 + overhang / span)
-    total_reaction = design_tension + 2 * belt_pull_each  # into the frame, worst-case same direction
+    total_reaction = design_tension + wheels * belt_pull_each  # into the frame, worst-case same direction
     sx, sy = (v / 1e3 for v in st.bolt_spacing_mm)
     # Cable pulls horizontally at drum height h above the base: tension + overturning moment on the bolts.
     h = 0.12

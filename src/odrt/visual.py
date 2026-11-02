@@ -121,7 +121,7 @@ def build(st, opt, common, sizes):
                  "x0": -width / 2 + d_cable / 2 + 0.5}
     shaft_len = 2 * (x_wheel + wheel_w / 2 + 1)
     parts.append(VPart("shaft", cyl(shaft_d / 2, shaft_len).faces("<X or >X").chamfer(1.0), "steel", "drum"))
-    for s, label in ((-1, "left"), (1, "right")):
+    for s, label in [(-1, "left"), (1, "right")][:len(cad.driven_sides(opt))]:
         wheel, r_out = _toothed(cq, st.wheel_teeth, st.belt_pitch_mm, wheel_w)
         wheel = wheel.translate((s * x_wheel, 0, axis_z))
         holes = (cq.Workplane("YZ").workplane(offset=s * x_wheel - wheel_w)
@@ -133,7 +133,7 @@ def build(st, opt, common, sizes):
         parts.append(VPart(f"wheel hub {label}", cyl(shaft_d / 2 + 9, wheel_w + 10, x0=s * x_wheel), "dark_steel", "drum"))
 
     # --- motors (outrunner can + pinion rotate; stator flange static)
-    for s, label in ((-1, "left"), (1, "right")):
+    for s, label in [(-1, "left"), (1, "right")][:len(cad.driven_sides(opt))]:
         group = f"motor_{label}"
         pin, pin_r = _toothed(cq, st.pinion_teeth, st.belt_pitch_mm, wheel_w)
         pin = pin.translate((s * x_wheel, y_motor, axis_z))

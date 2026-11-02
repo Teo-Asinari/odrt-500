@@ -20,7 +20,7 @@ def test_stall_tension_hand_calc(inputs):
     opt = inputs.options[st.design]
     z = sizing(st, opt, inputs.common, 500)
     r0 = opt.architecture.drum_core_radius_m + inputs.common.cable_diameter_m / 2
-    stall = 2 * 12 * 6 * 0.95 / r0
+    stall = opt.count * 12 * 6 * 0.95 / r0
     assert lbf_to_n(z["stall_tension_lbf"]) == pytest.approx(stall)
     assert z["design_tension_lbf"] == pytest.approx(z["stall_tension_lbf"])
     assert z["required_rope_breaking_kn"] == pytest.approx(5 * stall / 1e3)

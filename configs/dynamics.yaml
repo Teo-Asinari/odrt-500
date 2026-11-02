@@ -1,7 +1,7 @@
 # Time-domain cable/drum/controller/bus model with fault injection (R-04, R-06, R-09).
 # Every number here is a placeholder (A-016). Safety values are PROPOSALS to be
 # reviewed (A-017): the brief forbids inventing validated safety thresholds.
-designs: ["2x cubemars_ro100_kv55@6:1", "2x cubemars_ro100_kv55@8:1"]
+designs: ["cubemars_ro100_kv55@6:1", "2x cubemars_ro100_kv55@6:1"]  # iteration 2 lead first (ADR-001)
 dt_s: 0.0002
 cable:
   axial_stiffness_ea_n: 500000   # EA of a ~4 mm synthetic rope, placeholder
