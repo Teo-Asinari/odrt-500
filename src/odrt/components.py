@@ -17,7 +17,7 @@ from odrt.config import ConfigError, check_keys, integer, load_yaml, number, str
 from odrt.drivetrain import Architecture
 
 KINDS = ("motor", "actuator")
-RESISTANCE_BASES = ("phase_neutral", "phase_phase")
+RESISTANCE_BASES = ("phase_neutral", "phase_phase", "phase_rms")
 _REQUIRED_TEXT = ("id", "kind", "vendor", "model", "source_url", "accessed")
 _NUMERIC = ("built_in_ratio", "kt_nm_per_a", "resistance_ohm", "continuous_torque_nm", "peak_torque_nm",
             "max_speed_rpm", "rotor_inertia_kg_m2", "mass_kg", "price_usd")
@@ -57,7 +57,8 @@ class Component:
         """Motor constant N*m/sqrt(W) under the stated convention (A-014), or None."""
         if self.kind != "motor" or self.kt_nm_per_a is None or self.resistance_ohm is None:
             return None
-        factor = 1.5 if self.resistance_basis == "phase_neutral" else 1.0
+        # amplitude-convention Kt with phase-neutral R: P = 1.5 I^2 R; rms Kt with per-phase R: P = 3 I^2 R
+        factor = {"phase_neutral": 1.5, "phase_phase": 1.0, "phase_rms": 3.0}[self.resistance_basis]
         return self.kt_nm_per_a / math.sqrt(factor * self.resistance_ohm)
 
 
