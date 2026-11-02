@@ -143,10 +143,56 @@ def cmd_report(args) -> int:
                       if s not in payload.get("components", {}).get(o, {}))
     if missing:
         raise ConfigError(f"simulation results missing {missing}: rerun `odrt simulate`")
-    written = write_reports(inputs, payload, sim, Path(args.out))
+    written = write_reports(inputs, payload, sim, Path(args.out), structural_summary(inputs, payload))
     for path in written:
         print(f"wrote {path}")
     return 0
+
+
+def structural_summary(inputs, payload) -> dict:
+    from odrt.structural import sizing
+    st = inputs.structure
+    sizes = sizing(st, inputs.options[st.design], inputs.common, inputs.envelope.peak_tension_lbf)
+    dyn = payload.get("dynamics", {}).get(st.design)
+    if dyn:
+        on = [c.name for c in inputs.dynamics.cases if c.safety]
+        sizes["observed_fault_peak_lbf"] = max(dyn[c]["peak_tension_lbf"] for c in on)
+        sizes["observed_unprotected_peak_lbf"] = max(m["peak_tension_lbf"] for m in dyn.values())
+    return sizes
+
+
+def cmd_cad(args) -> int:
+    from odrt import cad
+    inputs = load_inputs(args.root)
+    st = inputs.structure
+    opt = inputs.options[st.design]
+    sizes = structural_summary(inputs, {})
+    try:
+        parts, geo = cad.build(st, opt, inputs.common, sizes)
+    except cad.CadUnavailable as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 3
+    import cadquery as cq
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    assy = cad.assemble(parts)
+    step = out / "odrt500_concept.step"
+    assy.save(str(step))
+    clashes = cad.interferences(parts)
+    masses = cad.mass_kg(parts, st, opt.component.mass_kg or 0.0)
+    env = cad.envelope_mm(parts)
+    figs = Path(args.reports) / "figures"
+    figs.mkdir(parents=True, exist_ok=True)
+    compound = assy.toCompound().mirror("XY")  # the SVG exporter draws +Z downward
+    views = {"iso": (1, 1.2, -0.8), "plan": (0, 0, -1)}
+    for view, direction in views.items():
+        cq.exporters.export(cq.Workplane().add(compound), str(figs / f"cad_{view}.svg"), exportType="SVG",
+                            opt={"projectionDir": direction, "showAxes": False, "width": 520, "height": 400,
+                                 "marginLeft": 10, "marginTop": 10, "strokeWidth": 0.4, "showHidden": False})
+    from odrt.reporting import write_cad_report
+    report = write_cad_report(inputs, sizes, geo, env, masses, clashes, step, Path(args.reports))
+    print(f"wrote {step}, {report} and {len(views)} views; {len(clashes)} interferences")
+    return 1 if clashes else 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -157,6 +203,9 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("simulate", help="generate scenario trajectories and duty-cycle metrics")
     p.add_argument("--out", default="build/sim")
     p.add_argument("--only", nargs="+", metavar="SCENARIO")
+    p = sub.add_parser("cad", help="build the parametric concept CAD (needs the [cad] extra)")
+    p.add_argument("--out", default="build/cad")
+    p.add_argument("--reports", default="reports")
     p = sub.add_parser("report", help="render reports from simulation results")
     p.add_argument("--sim", default="build/sim")
     p.add_argument("--out", default="reports")
@@ -165,7 +214,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
-    handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report}[args.command]
+    handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report, "cad": cmd_cad}[args.command]
     try:
         return handler(args)
     except ConfigError as exc:

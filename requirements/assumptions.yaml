@@ -103,3 +103,9 @@ assumptions:
     confidence: low
     status: open
     affects: [R-04, R-06, R-09]
+  - id: A-018
+    statement: The concept layout (two-sided HTD-5M 15T/90T belt reduction, steel shaft, 6061 plates, generic bearing proportions) and structural sizing are hand-calculation placeholders. Belt pull is taken as twice the effective pull, every load is assumed to act in the same direction, and nothing has been checked against vendor belt or bearing ratings.
+    basis: First-pass space claim and load path for WP4. Needs FEA, vendor data and independent mechanical review (R-08, Gate D).
+    confidence: low
+    status: open
+    affects: [R-05, R-08, R-10, R-11]

@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.3,<9"]
+cad = ["cadquery==2.4.0"]
 
 [project.scripts]
 odrt = "odrt.cli:main"

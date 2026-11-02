@@ -1,0 +1,25 @@
+# WP4 concept layout and first-pass structural sizing. Placeholders throughout
+# (A-018); every result needs independent mechanical review (R-08, Gate D).
+design: "2x cubemars_ro100_kv55@6:1"
+
+loads:
+  stall_is_design_case: true        # size for full motor stall torque, not just 500 lbf
+  yield_safety_factor: 2.0
+  cable_design_factor: 5.0          # required rope breaking strength / design tension
+
+materials:
+  shaft: {name: "steel, generic medium carbon", yield_mpa: 350, density_kg_m3: 7850}
+  plate: {name: "aluminium 6061-T6", yield_mpa: 240, density_kg_m3: 2700}
+
+layout:
+  belt_reduction: {pinion_teeth: 15, wheel_teeth: 90, pitch_mm: 5}   # HTD-5M; ratio must equal the design's 6:1
+  drum_flange_extra_mm: 15          # flange radius beyond the outer cable layer
+  drum_flange_thickness_mm: 5
+  bearing_span_extra_mm: 40         # bearing-to-bearing span beyond drum width + flanges
+  wheel_overhang_mm: 25             # wheel centre outboard of each bearing
+  side_plate_thickness_mm: 10
+  base_plate_thickness_mm: 10
+  motor_offset_mm: 5                # radial gap between motor can and wheel teeth
+  clearance_mm: 10                  # around moving parts inside the enclosure
+  anchor_bolts: 4
+  anchor_bolt_spacing_mm: [240, 220]   # must sit inside the base plate with edge margin

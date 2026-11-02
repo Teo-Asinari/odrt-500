@@ -33,7 +33,7 @@ ARCH_COLORS = ["#4c6a92", "#a0524d", "#6a8f6b"]
 COLORS = {"x": "#4c6a92", "v": "#6a8f6b", "f": "#a0524d", "p": "#8a6a9f"}
 
 
-def write_reports(inputs, payload: dict, sim_dir: Path, out: Path):
+def write_reports(inputs, payload: dict, sim_dir: Path, out: Path, structure: dict = None):
     out = Path(out)
     (out / "figures").mkdir(parents=True, exist_ok=True)
     written = []
@@ -54,6 +54,8 @@ def write_reports(inputs, payload: dict, sim_dir: Path, out: Path):
         path = out / "figures" / f"dyn_{case}.png"
         _plot_dynamics(design, case, np.load(sim_dir / f"dyn__{_slug(design)}__{case}.npz"), path)
         written.append(path)
+    if structure is not None:
+        written.append(_write_text(out / "structure.md", _structure_md(inputs, structure)))
     written.append(_write_text(out / "traceability.md", _traceability_md(inputs)))
     written.append(_write_text(out / "assumptions.md", _assumptions_md(inputs)))
     return written
@@ -418,3 +420,62 @@ def _plot_dynamics(design, case, d, path: Path) -> None:
             ax.spines[side].set_visible(False)
     fig.savefig(path, dpi=110, metadata={"Software": None})
     plt.close(fig)
+
+
+def _structure_md(inputs, z) -> str:
+    st = inputs.structure
+    lines = _header("WP4 first-pass structural sizing", inputs)
+    case = "motor stall at peak torque" if st.stall_is_design_case else "500 lbf nominal"
+    lines += [f"Design: `{st.design}`. Design load case: **{case}**, with yield safety factor {st.yield_sf:g}. "
+              "Hand calculations only (A-018): simply supported shaft, belt pull taken as twice the effective "
+              "pull, and every load assumed to act in the same direction. **Needs FEA and independent review "
+              "(R-08).**", "",
+              "| Quantity | Value |", "|---|---:|",
+              f"| Nominal peak tension | {z['nominal_tension_lbf']:.0f} lbf |",
+              f"| Static stall tension (motors at peak torque) | {z['stall_tension_lbf']:.0f} lbf |",
+              f"| Design tension | {z['design_tension_lbf']:.0f} lbf |",
+              f"| Required rope breaking strength (factor {st.cable_design_factor:g}) | {z['required_rope_breaking_kn']:.1f} kN |",
+              f"| Drum torque at design tension | {z['design_drum_torque_nm']:.0f} N·m |",
+              f"| Belt pull per side | {z['belt_pull_each_n']:.0f} N |",
+              f"| Shaft bending moment / torque | {z['shaft_moment_nm']:.0f} / {z['shaft_torque_nm']:.0f} N·m |",
+              f"| Minimum shaft diameter ({st.shaft.name}) | {z['min_shaft_diameter_mm']:.1f} mm |",
+              f"| Radial load per bearing | {z['bearing_radial_load_n']:.0f} N |",
+              f"| Total reaction into the frame | {z['frame_reaction_n']:.0f} N |",
+              f"| Tension per anchor bolt ({st.anchor_bolts} bolts) | {z['anchor_bolt_tension_n']:.0f} N |"]
+    if z.get("observed_fault_peak_lbf") is not None:
+        lines += [f"| Peak tension, dynamic fault cases with safety layer on | {z['observed_fault_peak_lbf']:.0f} lbf |",
+                  f"| Peak tension, any dynamic case incl. unprotected | {z['observed_unprotected_peak_lbf']:.0f} lbf |"]
+        lines += ["", "When a dynamic peak exceeds the static stall tension, the snap loads come from the "
+                  "cable's stored energy and the drum's momentum, not from motor torque. Static stall sizing "
+                  "does not cover them, so they need a mechanical end stop or damper and their own load case."]
+    lines.append("")
+    return "\n".join(lines)
+
+
+def write_cad_report(inputs, sizes, geo, env, masses, clashes, step_path, out: Path) -> Path:
+    st = inputs.structure
+    lines = _header("WP4 concept CAD", inputs)
+    lines += [f"Parametric CadQuery model of `{st.design}`, generated from the same configs as the models. It "
+              "is a space claim and load-path layout, not a manufacturing design (A-018). The STEP file is "
+              f"written to `{step_path.as_posix()}` (not committed; run `make cad`).", "",
+              "| Quantity | Value |", "|---|---:|",
+              f"| Envelope (X × Y × Z) | {env[0]:.0f} × {env[1]:.0f} × {env[2]:.0f} mm |",
+              f"| Shaft diameter (standard size ≥ {sizes['min_shaft_diameter_mm']:.1f} mm) | {geo['shaft_diameter_mm']} mm |",
+              f"| Drum core / flange radius, width | {geo['drum_core_radius_mm']:.0f} / {geo['drum_flange_radius_mm']:.0f} mm, "
+              f"{geo['drum_width_mm']:.0f} mm |",
+              f"| Belt centre distance | {geo['belt_centre_distance_mm']:.0f} mm |",
+              f"| Shaft axis height / cable exit height | {geo['axis_height_mm']:.0f} / {geo['cable_exit_height_mm']:.0f} mm |",
+              f"| Estimated mass (plates, shaft, motors; no electronics or enclosure) | {sum(masses.values()):.1f} kg |",
+              f"| Interferences | {len(clashes)} |", ""]
+    if clashes:
+        lines += ["| Part A | Part B | Overlap mm³ |", "|---|---|---:|"]
+        lines += [f"| {a} | {b} | {v:.0f} |" for a, b, v in clashes] + [""]
+    lines += ["## Parts", "", "| Part | Mass kg |", "|---|---:|"]
+    lines += [f"| {k} | {v:.2f} |" for k, v in masses.items()]
+    lines += ["", "Not modelled yet: enclosure, electronics, cable guard, handle, wall or floor bracket, belt "
+              "tensioner, encoder and load cell mounts, end-stop damper.", "",
+              "Isometric view, then plan view (cable exits at the top of the plan, motors at the bottom):", "",
+              "![iso](figures/cad_iso.svg)", "", "![plan](figures/cad_plan.svg)", ""]
+    path = out / "cad.md"
+    path.write_text("\n".join(lines))
+    return path
