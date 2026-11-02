@@ -8,8 +8,12 @@ loads:
   cable_design_factor: 5.0          # required rope breaking strength / design tension
 
 materials:
-  shaft: {name: "steel, generic medium carbon", yield_mpa: 350, density_kg_m3: 7850}
-  plate: {name: "aluminium 6061-T6", yield_mpa: 240, density_kg_m3: 2700}
+  shaft: {name: "steel, generic medium carbon", yield_mpa: 350, density_kg_m3: 7850, youngs_gpa: 200, poisson: 0.29}
+  plate: {name: "aluminium 6061-T6", yield_mpa: 240, density_kg_m3: 2700, youngs_gpa: 68.9, poisson: 0.33}
+
+fea:
+  mesh_sizes_mm: [10, 6, 4]           # convergence study, coarse to fine
+  converged_change_pct: 5.0           # finest two meshes must agree within this
 
 layout:
   belt_reduction: {pinion_teeth: 15, wheel_teeth: 90, pitch_mm: 5}   # HTD-5M; ratio must equal the design's 6:1

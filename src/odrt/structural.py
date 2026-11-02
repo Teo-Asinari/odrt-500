@@ -20,6 +20,8 @@ class Material:
     name: str
     yield_mpa: float
     density_kg_m3: float
+    youngs_gpa: float
+    poisson: float
 
 
 @dataclass(frozen=True)
@@ -43,19 +45,28 @@ class Structure:
     clearance_mm: float
     anchor_bolts: int
     bolt_spacing_mm: tuple
+    fea_mesh_sizes_mm: tuple
+    fea_converged_pct: float
 
 
 def _material(raw, where):
-    check_keys(raw, where, ["name", "yield_mpa", "density_kg_m3"])
+    check_keys(raw, where, ["name", "yield_mpa", "density_kg_m3", "youngs_gpa", "poisson"])
     return Material(string(raw["name"], f"{where}.name"),
                     number(raw["yield_mpa"], f"{where}.yield_mpa", minimum=0, exclusive_minimum=True),
-                    number(raw["density_kg_m3"], f"{where}.density_kg_m3", minimum=0, exclusive_minimum=True))
+                    number(raw["density_kg_m3"], f"{where}.density_kg_m3", minimum=0, exclusive_minimum=True),
+                    number(raw["youngs_gpa"], f"{where}.youngs_gpa", minimum=0, exclusive_minimum=True),
+                    number(raw["poisson"], f"{where}.poisson", minimum=0, maximum=0.49))
 
 
 def load_structure(path: Path, options: dict) -> Structure:
     d = load_yaml(path)
     w = str(path)
-    check_keys(d, w, ["design", "loads", "materials", "layout"])
+    check_keys(d, w, ["design", "loads", "materials", "layout", "fea"])
+    fe = d["fea"]
+    check_keys(fe, f"{w}.fea", ["mesh_sizes_mm", "converged_change_pct"])
+    sizes = fe["mesh_sizes_mm"]
+    if not isinstance(sizes, list) or len(sizes) < 2 or sorted(sizes, reverse=True) != sizes:
+        raise ConfigError(f"{w}.fea.mesh_sizes_mm: need at least two sizes, coarse to fine")
     if d["design"] not in options:
         raise ConfigError(f"{w}.design: unknown option {d['design']!r}")
     opt = options[d["design"]]
@@ -95,6 +106,8 @@ def load_structure(path: Path, options: dict) -> Structure:
         clearance_mm=number(la["clearance_mm"], f"{w}.layout.clearance_mm", minimum=0),
         anchor_bolts=integer(la["anchor_bolts"], f"{w}.layout.anchor_bolts", minimum=2),
         bolt_spacing_mm=tuple(number(v, f"{w}.layout.anchor_bolt_spacing_mm", **pos) for v in spacing),
+        fea_mesh_sizes_mm=tuple(number(v, f"{w}.fea.mesh_sizes_mm", **pos) for v in sizes),
+        fea_converged_pct=number(fe["converged_change_pct"], f"{w}.fea.converged_change_pct", **pos),
     )
 
 

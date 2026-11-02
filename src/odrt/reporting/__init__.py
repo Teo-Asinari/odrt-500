@@ -479,3 +479,37 @@ def write_cad_report(inputs, sizes, geo, env, masses, clashes, step_path, out: P
     path = out / "cad.md"
     path.write_text("\n".join(lines))
     return path
+
+
+def write_fea_report(inputs, dims, force, runs, change, force_err, ok, out: Path) -> Path:
+    st = inputs.structure
+    allow = st.plate.yield_mpa / st.yield_sf
+    peak = runs[-1]["max_von_mises_mpa"]
+    lines = _header("WP4 FEA: side plate under bearing load", inputs)
+    lines += [f"One {dims['plate_t']:.0f} mm {st.plate.name} side plate ({dims['plate_depth']:.0f} mm deep, "
+              f"{dims['plate_h'] - dims['base_t']:.0f} mm tall, {dims['bearing_od']:.0f} mm bearing bore). The "
+              f"bottom edge is fixed. The bore carries the design-case bearing load ({force:.0f} N, from motor "
+              "stall; see structure.md) as a cosine pressure over the half facing the cable. Linear elastic, "
+              "quadratic tetrahedra, gmsh + scikit-fem. These replace the brief's CalculiX, which is not "
+              "pip-installable; the physics is the same.", "",
+              "| Mesh size mm | Elements | DOFs | Applied load N | Max displacement mm | Peak von Mises MPa "
+              "| Peak away from fixed edge MPa |", "|---:|---:|---:|---:|---:|---:|---:|"]
+    for r in runs:
+        lines.append(f"| {r['mesh_size_mm']:g} | {r['elements']} | {r['dofs']} | {r['applied_force_n']:.0f} "
+                     f"| {r['max_displacement_mm']:.3f} | {r['max_von_mises_mpa']:.1f} "
+                     f"| {r['max_von_mises_away_from_support_mpa']:.1f} |")
+    lines += ["", f"- **Convergence:** the finest two meshes differ by {change:.1f}% "
+              f"(limit {st.fea_converged_pct:g}%). Applied load error is {force_err:.2f}%. "
+              f"{'Passed.' if ok else '**FAILED.**'}",
+              f"- **Against the hand calculation:** treating the plate as a cantilever bent at its base gives "
+              f"{runs[-1]['hand_calc_base_bending_mpa']:.1f} MPa. The FEA peak is at the bore, from contact "
+              "stress concentration, which the beam formula cannot see.",
+              f"- **Against the allowable:** {peak:.1f} MPa vs {allow:.0f} MPa ({st.plate.yield_mpa:g} MPa yield "
+              f"/ {st.yield_sf:g}), a static margin of {allow / peak:.1f}x. Fatigue, bolt and weld joints, "
+              "and buckling are not checked.",
+              "- **What this run caught:** the first layout put the bearing bore through the top edge of the "
+              "plate. The applied load came out 8% short at every mesh size, which exposed it. The layout "
+              "now keeps 15 mm of material above the bore.", ""]
+    path = out / "fea.md"
+    path.write_text("\n".join(lines))
+    return path

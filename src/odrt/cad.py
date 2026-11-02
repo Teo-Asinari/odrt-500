@@ -15,6 +15,7 @@ from dataclasses import dataclass
 # Cited envelope for the CubeMars RO100 Standard: 113.5 mm x 36.2 mm (cubemars.com, 2026-11-02).
 MOTOR_ENVELOPES_MM = {"cubemars_ro100_kv55": (113.5, 36.2)}
 STANDARD_SHAFTS_MM = (12, 15, 17, 20, 25, 30, 35, 40, 45, 50)
+PLATE_MARGIN_ABOVE_BORE_MM = 15.0
 
 
 class CadUnavailable(RuntimeError):
@@ -43,6 +44,24 @@ def standard_shaft_mm(min_d_mm: float) -> int:
         if d >= min_d_mm:
             return d
     raise ValueError(f"shaft {min_d_mm:.1f} mm exceeds the standard size table")
+
+
+def layout(st, opt, common, sizes: dict) -> dict:
+    """Key layout dimensions (mm) shared by the CAD and FEA; needs no CadQuery."""
+    from odrt.drivetrain import Drum
+    drum = Drum(opt.architecture, common)
+    motor_d, _ = MOTOR_ENVELOPES_MM.get(opt.component.id, (0.0, 0.0))
+    outer_r = (drum.radii[-1] + common.cable_diameter_m / 2) * 1e3
+    flange_r = outer_r + st.flange_extra_mm
+    shaft_d = standard_shaft_mm(sizes["min_shaft_diameter_mm"])
+    wheel_d = sizes["wheel_pitch_diameter_mm"]
+    axis_z = st.base_plate_mm + max(flange_r, wheel_d / 2, motor_d / 2) + st.clearance_mm
+    return {"flange_r": flange_r, "shaft_d": shaft_d, "axis_z": axis_z,
+            "bearing_od": 2.0 * shaft_d + 10,
+            # plate must surround the bearing bore with material above it (FEA caught a breakout)
+            "plate_h": axis_z + (2.0 * shaft_d + 10) / 2 + PLATE_MARGIN_ABOVE_BORE_MM,
+            "plate_depth": 2 * flange_r + 2 * st.clearance_mm, "plate_t": st.side_plate_mm,
+            "base_t": st.base_plate_mm}
 
 
 def build(st, opt, common, sizes: dict):
@@ -88,8 +107,8 @@ def build(st, opt, common, sizes: dict):
                       .cut(cyl_x(core_r, width, z0=axis_z)), "none", True))
     parts.append(Part("shaft", cyl_x(shaft_d / 2, shaft_len, z0=axis_z), "shaft", True))
 
-    plate_h = axis_z + flange_r * 0.5
-    plate_depth = 2 * flange_r + 2 * st.clearance_mm
+    lay = layout(st, opt, common, sizes)
+    plate_h, plate_depth = lay["plate_h"], lay["plate_depth"]
     for side, label in ((-1, "left"), (1, "right")):
         x_plate = side * x_bearing
         plate = (cq.Workplane("XY").box(st.side_plate_mm, plate_depth, plate_h - st.base_plate_mm, centered=(True, True, False))
@@ -207,3 +226,27 @@ def envelope_mm(parts):
 
 def round_up(x: float) -> float:
     return math.ceil(x)
+
+
+def gltf_to_metres_y_up(path) -> None:
+    """Wrap a GLB scene in a root node that scales mm -> m and rotates Z-up -> Y-up (glTF convention).
+
+    The binary chunk is untouched; only the JSON chunk gains one node.
+    """
+    import json
+    import struct
+    data = open(path, "rb").read()
+    json_len = struct.unpack("<I", data[12:16])[0]
+    gltf = json.loads(data[20:20 + json_len])
+    rest = data[20 + json_len:]
+    scene = gltf["scenes"][gltf.get("scene", 0)]
+    gltf["nodes"].append({"name": "odrt500_root_mm_to_m_zup_to_yup",
+                          "scale": [0.001, 0.001, 0.001],
+                          "rotation": [-math.sqrt(0.5), 0.0, 0.0, math.sqrt(0.5)],  # -90 deg about X
+                          "children": scene["nodes"]})
+    scene["nodes"] = [len(gltf["nodes"]) - 1]
+    blob = json.dumps(gltf, separators=(",", ":")).encode()
+    blob += b" " * (-len(blob) % 4)
+    out = (data[:12] + struct.pack("<I", len(blob)) + data[16:20] + blob + rest)
+    out = out[:8] + struct.pack("<I", len(out)) + out[12:]
+    open(path, "wb").write(out)

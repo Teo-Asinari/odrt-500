@@ -178,6 +178,9 @@ def cmd_cad(args) -> int:
     assy = cad.assemble(parts)
     step = out / "odrt500_concept.step"
     assy.save(str(step))
+    glb = out / "odrt500_concept.glb"  # for viewers without STEP import (e.g. Golemics)
+    assy.save(str(glb), exportType="GLTF")
+    cad.gltf_to_metres_y_up(glb)
     clashes = cad.interferences(parts)
     masses = cad.mass_kg(parts, st, opt.component.mass_kg or 0.0)
     env = cad.envelope_mm(parts)
@@ -191,8 +194,34 @@ def cmd_cad(args) -> int:
                                  "marginLeft": 10, "marginTop": 10, "strokeWidth": 0.4, "showHidden": False})
     from odrt.reporting import write_cad_report
     report = write_cad_report(inputs, sizes, geo, env, masses, clashes, step, Path(args.reports))
-    print(f"wrote {step}, {report} and {len(views)} views; {len(clashes)} interferences")
+    print(f"wrote {step}, {glb}, {report} and {len(views)} views; {len(clashes)} interferences")
     return 1 if clashes else 0
+
+
+def cmd_fea(args) -> int:
+    try:
+        import gmsh  # noqa: F401
+        import skfem  # noqa: F401
+    except ImportError:
+        print("error: FEA needs gmsh and scikit-fem: run `.venv/bin/pip install -c constraints.txt -e '.[fea]'`",
+              file=sys.stderr)
+        return 3
+    from odrt import cad, fea
+    from odrt.reporting import write_fea_report
+    inputs = load_inputs(args.root)
+    st = inputs.structure
+    sizes = structural_summary(inputs, {})
+    dims = cad.layout(st, inputs.options[st.design], inputs.common, sizes)
+    force = sizes["bearing_radial_load_n"]
+    runs = [fea.side_plate(dims, force, st.plate.youngs_gpa * 1e9, st.plate.poisson, h) for h in st.fea_mesh_sizes_mm]
+    a, b = runs[-2]["max_von_mises_mpa"], runs[-1]["max_von_mises_mpa"]
+    change = abs(b - a) / b * 100
+    force_err = abs(runs[-1]["applied_force_n"] - force) / force * 100
+    ok = change <= st.fea_converged_pct and force_err <= 1.0
+    path = write_fea_report(inputs, dims, force, runs, change, force_err, ok, Path(args.reports))
+    print(f"wrote {path}: peak von Mises {b:.1f} MPa, change {change:.1f}%, load error {force_err:.2f}%"
+          f"{'' if ok else ' -- NOT CONVERGED or load mismatch'}")
+    return 0 if ok else 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -206,6 +235,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("cad", help="build the parametric concept CAD (needs the [cad] extra)")
     p.add_argument("--out", default="build/cad")
     p.add_argument("--reports", default="reports")
+    p = sub.add_parser("fea", help="side-plate FEA convergence study (needs the [fea] extra)")
+    p.add_argument("--reports", default="reports")
     p = sub.add_parser("report", help="render reports from simulation results")
     p.add_argument("--sim", default="build/sim")
     p.add_argument("--out", default="reports")
@@ -214,7 +245,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
-    handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report, "cad": cmd_cad}[args.command]
+    handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report, "cad": cmd_cad,
+               "fea": cmd_fea}[args.command]
     try:
         return handler(args)
     except ConfigError as exc:
