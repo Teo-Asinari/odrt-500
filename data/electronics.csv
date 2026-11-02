@@ -1,0 +1,14 @@
+id,item,role,qty,length_mm,width_mm,height_mm,mass_kg,dims_basis,source_url,accessed,notes
+psu,Mean Well RSP-1000-48,AC-DC supply 48 V 1 kW,1,295,127,41,,cited (listings disagree; check the official drawing),https://openelab.io/products/meanwell-rsp1000-48-switching-power,2026-11-02,~90% efficiency (distributors); built-in fan; operating -20 to 60 C with derating
+drive,ODrive S1,motor drive (FOC),1,66,50,20,,cited footprint; height estimated,https://docs.odriverobotics.com/v/latest/hardware/odrive-comparison.html,2026-11-02,40 A continuous with heat spreader; 80 A peak
+drive_heatsink,ODrive heatsink + 60 mm fan,drive cooling,1,70,70,25,,cited,https://odriverobotics.com/shop/heatsink-and-fan-for-odrive-pro,2026-11-02,fan needs a separate 12 V supply
+cap_cell,Wurth 850617022002 50 F 2.7 V,buffer cell (small-format reference),22,18,18,40,,cited (diameter x diameter x height),https://it.rs-online.com/web/p/supercondensatori/1855127,2026-11-02,ESR 20 mohm; -40 to 65 C; used to show why small cells do not work
+cap_cell_large,large-format 2.7 V cell (~350 F class),buffer cell (proposed),22,35,35,62,,estimated envelope (not a cited part),,,target ESR <= 5 mohm per cell; select and cite a real part
+load_cell,Phidgets 3140_0 500 kg S-type,tension sensing at the sheave hanger,1,75,25,65,,estimated envelope (dimensions not found),https://www.robotshop.com/products/phidgets-steel-s-type-load-cell-500kg-c3,2026-11-02,750 kg max overload; -20 to 55 C
+brake_resistor,aluminium-housed braking resistor 0.5 ohm,regeneration dump,1,165,60,30,,estimated envelope,,,power rating to be sized from dump energy
+safety_mcu,independent safety controller board,watchdog + wrong-sign check + STO,1,80,60,20,,estimated envelope,,,needs its own encoder input and tension input (H-06)
+sto_relay,phase-short relay with braking resistors,STO / power-loss braking,1,75,45,40,,estimated envelope,,,normally closed; contact rating to be sized
+presence_pad,deck presence load pad,deck occupancy sensing (H-14),4,40,40,8,,estimated envelope,,,between deck and stringers
+fan,80 mm 12 V fan,compartment exhaust,1,80,80,25,,estimated envelope,,,sized from the compartment heat budget
+mains_inlet,IEC C20 inlet + switch + fuse module,mains entry,1,80,50,45,,estimated envelope,,,16 A class inlet for a 1 kW supply
+estop,emergency stop button (mushroom),user stop,1,40,40,60,,estimated envelope,,,wired into the independent STO chain

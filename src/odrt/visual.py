@@ -34,6 +34,17 @@ MATERIALS = {
     "light": Material("status light", (0.6, 0.75, 0.68, 1.0), 0.0, 0.4, emissive=(0.35, 0.55, 0.45)),
     "skin": Material("mannequin", (0.62, 0.6, 0.57, 1.0), 0.0, 0.6),
     "floor": Material("floor", (0.3, 0.29, 0.28, 1.0), 0.0, 0.85),
+    "psu": Material("power supply case", (0.72, 0.73, 0.74, 1.0), 0.9, 0.35),
+    "pcb": Material("circuit board", (0.05, 0.22, 0.12, 1.0), 0.1, 0.5),
+    "cap": Material("capacitor sleeve", (0.08, 0.16, 0.38, 1.0), 0.2, 0.4),
+    "fan": Material("fan plastic", (0.03, 0.03, 0.03, 1.0), 0.0, 0.6),
+    "relay": Material("relay housing", (0.18, 0.18, 0.2, 1.0), 0.0, 0.5),
+    "black": Material("black plastic", (0.02, 0.02, 0.02, 1.0), 0.0, 0.55),
+    "estop": Material("e-stop red", (0.6, 0.02, 0.02, 1.0), 0.0, 0.35),
+    "cable_orange": Material("orange cable", (0.8, 0.25, 0.02, 1.0), 0.0, 0.5),
+    "cable_red": Material("red cable", (0.55, 0.02, 0.02, 1.0), 0.0, 0.5),
+    "cable_black": Material("black cable", (0.015, 0.015, 0.015, 1.0), 0.0, 0.5),
+    "deck_mat": Material("deck rubber mat", (0.05, 0.05, 0.055, 1.0), 0.0, 0.85),
     "wall": Material("wall", (0.7, 0.69, 0.67, 1.0), 0.0, 0.9),
 }
 

@@ -226,6 +226,23 @@ def cmd_cad(args) -> int:
     plat["envelope_mm"] = cad.envelope_mm(pparts)
     write_platform_report(inputs, plat, Path(args.reports))
     clashes = clashes + pclash
+    # electronics packaging, heat/power budget and presentation GLBs (full, cutaway, exploded)
+    import yaml as _yaml
+    from odrt import electronics, packaging, visual
+    from odrt.reporting import write_electronics_report
+    el_parts = electronics.load_electronics(Path(args.root) / "data/electronics.csv")
+    el_cfg = _yaml.safe_load((Path(args.root) / "configs/electronics.yaml").read_text())
+    budget = electronics.budget(inputs, el_cfg)
+    kplat, kparts, kgeo, bay = packaging.build(st, opt, inputs.common, sizes, inputs.platform, plat, el_parts)
+    kclash = packaging.interferences(kplat, kparts)
+    vparts, pivots, vinfo = visual.build(st, opt, inputs.common, sizes)
+    glbs = []
+    for tag, kw in (("full", {}), ("cutaway", {"cutaway": True}), ("exploded", {"exploded": True})):
+        glbs.append(packaging.export_glb(vparts, pivots, vinfo, kplat, kparts, kgeo,
+                                         out / f"odrt500_platform_{tag}.glb", **kw))
+    write_electronics_report(inputs, el_parts, el_cfg, budget, kparts, kclash, bay, Path(args.reports))
+    clashes = clashes + kclash
+    print("wrote " + ", ".join(str(g) for g in glbs))
     print(f"wrote {step}, {glb}, {report} and {len(views)} views; {len(clashes)} interferences")
     return 1 if clashes else 0
 

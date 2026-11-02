@@ -692,3 +692,68 @@ def write_motor_report(inputs, f, fam, cfg, rows, base, out: Path) -> Path:
     path = out / "custom_motor.md"
     path.write_text("\n".join(lines))
     return path
+
+
+def write_electronics_report(inputs, el_parts, cfg, b, parts, clashes, bay, out: Path) -> Path:
+    yes = lambda v: "yes" if v else "no"  # noqa: E731
+    lines = _header("Electronics and packaging (first pass)", inputs)
+    lines += ["Electrical architecture, heat and current budget for the lead design, and placement of the "
+              "parts inside the floor platform (A-024). Part envelopes are cited where a source was found "
+              "and estimated otherwise (see the basis column).", "",
+              "## Architecture", "", "```mermaid", "flowchart LR",
+              "  MAINS[Mains inlet + switch + fuse] --> PSU[48 V 1 kW supply]",
+              "  PSU --> BUS((48 V DC bus))",
+              "  BUS --- CAP[Supercapacitor buffer 22s]",
+              "  BUS --- BR[Braking chopper + 0.5 ohm resistor]",
+              "  BUS --> DRV[Motor drive ODrive S1]",
+              "  DRV --> MOT[RO100 motor]",
+              "  MOT --- ENC[Motor encoder / Halls]",
+              "  STO[Phase-short relay + braking resistors] --- MOT",
+              "  LP[Load-pin sheave axle] --> CTRL[Main controller]",
+              "  ENC --> CTRL",
+              "  CTRL --> DRV",
+              "  LP --> SAF[Independent safety controller]",
+              "  ENC2[Independent speed sensing] --> SAF",
+              "  PAD[Deck presence pads x4] --> SAF",
+              "  ESTOP[E-stop] --> SAF",
+              "  SAF -->|STO / enable| DRV",
+              "  SAF -->|trip| STO",
+              "  CTRL -->|target, heartbeat| SAF",
+              "```", "",
+              "## Parts", "", "| Part | Role | Qty | Envelope mm | Basis | Notes |", "|---|---|---:|---|---|---|"]
+    for p in el_parts.values():
+        src = f"[source]({p.source_url})" if p.source_url else ""
+        lines.append(f"| {p.item} | {p.role} | {p.qty} | {' × '.join(f'{v:g}' for v in p.dims_mm)} "
+                     f"| {p.dims_basis} {src} | {p.notes} |")
+    lines += ["", "## Current and heat budget", "", "| Quantity | Value | Note |", "|---|---:|---|",
+              f"| Motor current, peak / RMS over a heavy set | {b['motor_peak_current_a']:.0f} / "
+              f"{b['motor_window_rms_current_a']:.0f} A | drive rated {cfg['drive_continuous_a']} A continuous: "
+              f"over rating = **{yes(b['drive_over_continuous'])}** (needs heatsink + fan) |",
+              f"| DC bus peak current | {b['bus_peak_current_a']:.0f} A | |",
+              f"| Conductors at {cfg['current_density_a_mm2']:g} A/mm² | phase AWG {b['phase_awg']}, bus AWG "
+              f"{b['bus_awg']} | rule of thumb |",
+              f"| Buffer RMS current over a heavy set | {b['buffer_rms_current_a']:.0f} A | |",
+              f"| Buffer from cited 50 F cells (22 s) | {b['buffer_small_bank_f']:.2f} F, {b['buffer_esr_small_ohm']:.2f} Ω "
+              f"→ {b['buffer_loss_small_w']:.0f} W loss, {b['buffer_drop_small_v']:.0f} V sag | **unworkable** |",
+              f"| Buffer from large ≤ {cfg['large_cell_esr_ohm'] * 1e3:g} mΩ cells (22 s) | {b['buffer_esr_large_ohm']:.2f} Ω "
+              f"→ {b['buffer_loss_large_w']:.0f} W loss, {b['buffer_drop_large_v']:.1f} V sag | cells not yet selected |",
+              f"| Heat in the platform, heavy set (motor copper + supply + drive + buffer) | {b['set_heat_w']:.0f} W | |",
+              f"| Heat in the platform, session average | {b['session_heat_w']:.0f} W | |",
+              f"| Compartment air, session average: sealed / with fan | {b['air_natural_c']:.0f} / {b['air_fan_c']:.0f} °C "
+              f"| limits: {', '.join(f'{k} {v} °C' for k, v in cfg['limits_c'].items())} |", "",
+              "## Packaging", "",
+              f"Electronics bay between the mechanism and the sheave cross-beam: y = {bay[0]:.0f} to {bay[1]:.0f} mm, "
+              "under the deck and clear of a ±45 mm rope keep-out. Power cables run in a tray level above the "
+              "buffer and below the rope. Intake slots are in the left skirt; an 80 mm exhaust fan sits in the right "
+              "skirt above the supply, with the braking resistor in its air path. Tension is measured by a "
+              "load-pin sheave axle (no room for an S-type cell under a 200 mm deck). "
+              f"**Interferences: {len(clashes)}.**", ""]
+    if clashes:
+        lines += ["| Part A | Part B | Overlap mm³ |", "|---|---|---:|"] + [f"| {a} | {b_} | {v:.0f} |" for a, b_, v in clashes]
+    lines += ["", "GLBs (from `make cad`): `build/cad/odrt500_platform_full.glb`, `_cutaway.glb` (deck and right "
+              "skirt removed), `_exploded.glb`.", "",
+              "Not done: mains safety (creepage, clearance, earthing), EMC, real part selection for the "
+              "estimated envelopes, harness connectors, service access.", ""]
+    path = out / "electronics.md"
+    path.write_text("\n".join(lines))
+    return path

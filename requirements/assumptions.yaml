@@ -140,3 +140,9 @@ assumptions:
     confidence: low
     status: open
     affects: [R-01, R-02, R-07, R-11, R-12]
+  - id: A-024
+    statement: The electronics budget and packaging are a first pass. Heat budget uses supply efficiency 90% (cited), drive loss 3% plus 3 W idle, 15 W standby, platform skin 1.2 m2 at 5 W/m2K, and an 80 mm fan at ~32 CFM. Conductors are sized at 6 A/mm2. The buffer is 22 cells in series. Several part envelopes (resistor, relay, safety controller, fan, inlet, e-stop, presence pads, large buffer cells, load cell) are estimates, flagged in data/electronics.csv.
+    basis: Enough to place parts, route cables and spot heat, current and space problems. Real part selection, derating curves, EMC, creepage and clearance, and mains safety design are not done.
+    confidence: low
+    status: open
+    affects: [R-06, R-07, R-09, R-14]
