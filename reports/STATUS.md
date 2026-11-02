@@ -1,43 +1,56 @@
 # Status
 
-Last updated: 2026-11-02. Hand-written by the coding agent; everything else in `reports/` is generated.
+Last updated: 2026-11-02. Hand-written by the coding agent; everything else in `reports/` is generated. `make ci` regenerates and checks all of it.
 
-## Done
+## Where the project stands
 
-- **WP0 (bootstrap and traceability):** `odrt` package and CLI (`check`, `simulate`, `report`), a Makefile, pinned dependencies and a pytest suite. Requirements R-01 to R-13 and assumptions A-001 to A-012 are machine-readable, and every scenario cites them (`reports/traceability.md`). Reports record a hash of all inputs. `odrt report` refuses stale or partial results, and `make ci` fails if the committed reports are out of date.
-- **WP1 (duty cycles):** 11 named scenarios, 4 reference movements and 7 limit cases (`reports/duty_cycles.md`).
-- **WP2 analytical baseline:** each duty cycle is mapped to drum torque (with winding-layer radius) and then to motor torque, speed, copper loss and bus power, for three illustrative architectures (`reports/drivetrain_baseline.md`).
-- **R-01 scoped:** per the user, 500 lbf is a human maximum at normal heavy-lift tempos (A-007). That speed is now cited: at 1RM, squats average 0.29 m/s but peak at 0.89 m/s (Conceição et al., URL in A-007). `heavy_tempo_limit` therefore peaks at 0.94 m/s and 2.1 kW mechanical.
+Every work package in the brief now has a first, simulation-only pass. **The current design is a concept, not a validated design.** Every model uses placeholder parameters, which are listed in the assumptions register (A-001 to A-019). Gate D (independent engineering review) still applies before any hardware.
+
+| Step | Report | State |
+|---|---|---|
+| WP0 bootstrap and traceability | `traceability.md` | Done |
+| WP1 duty cycles | `duty_cycles.md` | Done; R-01 scoped to heavy-lift tempos (A-007, cited) |
+| WP2 drivetrain baseline | `drivetrain_baseline.md` | Done (illustrative architectures) |
+| WP3 real components | `components.md` | Done for 5 cited candidates; lead design: **two CubeMars RO100 motors driving one drum through a 6:1 belt** |
+| R-07 thermal | `thermal.md` | Done; placeholder thermal data |
+| Dynamics and faults (WP2 rest) | `dynamics.md` | Done; 11 cases × 2 designs |
+| WP4 structure, CAD and FEA | `structure.md`, `cad.md`, `fea.md` | First pass done; STEP and GLB in `build/cad/` |
+| WP5 hazards | `hazards.md` | Preliminary log, 13 hazards |
+| WP6 economics | `economics.md` | Partial BOM; assessment **REVISE** |
+
+## Key findings
+
+1. **500 lbf is reachable for short holds.** The lead design gives 1,139 lbf static peak and 380 lbf continuous. It can hold 500 lbf for about 4 minutes from cold (placeholder thermal data, A-015).
+2. **Low-force control (R-03) is not met.** The design feels like 86 kg of drum inertia at the handle. At 8 lbf the simple controller's tension error is about 290%, with cable slack-and-snap. Tracking at 500 lbf is good (about 4.5% error with the 1 kW supply).
+3. **Releasing the handle at 500 lbf is a slingshot (H-01, S4).** The cable's stored energy launches the handle at about 5.5 m/s whatever firmware does, so a mechanical arrestor is required. Release detection does cut the follow-on end-stop snap loads.
+4. **Power electronics need a braking resistor or energy buffer.** Without one, the bus passes 60 V within 0.3 s of a heavy pull. A 1 kW supply dips to undervoltage lockout when lowering 500 lbf.
+5. **Shorting the motor windings on power loss looks like a reasonable passive fail-safe**: 0.2 m of hand lurch versus 1.15 m with the windings left open. This is an upper-bound model.
+6. **Two of my own safety functions conflict.** A load cell stuck at zero looks like a handle release, so the load drops (H-02). A fault-handling policy is needed.
+7. **The structure is sized for motor stall, but dynamic snap loads exceed stall** (up to about 4,300 lbf in the unprotected release case). They need their own load case and a mechanical end stop.
+8. **FEA caught a real layout error:** the bearing bore broke through the top of the side plate. That is fixed, and the plate now shows a 2.6× static margin.
+9. **Cost: REVISE.** Motors, drivers and power supply alone cost $910 at one-off prices, against a $500 retail target.
 
 ## Tests
 
-64 tests pass. They cover:
-- unit conversions against the brief's numbers;
-- minimum-jerk kinematics and duty-cycle energy against closed forms;
-- motor torque in each power-flow direction, copper loss and Km temperature derating against hand calculations;
-- energy conservation over a full scenario with inertia and gear losses;
-- multi-layer drum radius steps;
-- negative tests for invalid inputs.
-
-## What WP2 suggests (illustrative parameters, A-008: directions, not results)
-
-- **Wall power may not be the limit; energy buffering is.** A and B draw up to ~1.45 kW at 500 lbf heavy tempo and ~2.1 kW in fast reversals, and regenerate up to ~1.7 kW on every pull. Session-mean bus power is only 50–380 W. A lossless buffer of about 2 kJ per heavy set (about 6 kJ for the endurance session) would let the supply run near the mean, so this is worth testing early (R-06). Drive and PSU losses are not yet included (A-010).
-- **Heat at 500 lbf is the binding constraint for R-01/R-02.** With the illustrative motors, holding 500 lbf costs ~360–400 W of copper loss continuously. How long 500 lbf can be held is a thermal question, not a torque question.
-- **High reduction (C) looks poor:** 260 kg effective cable mass, 10,000–25,000 motor rpm, and a 5.1 kW peak bus draw in fast reversals just to move its own inertia. A and B land within ~10% of each other on power and heat. B needs a 5× smaller motor torque (10.6 vs 50 N·m) at the cost of a gearbox.
+119 tests pass (`make test`). `make ci` regenerates all reports, CAD and FEA and fails if anything changed.
 
 ## Main assumptions to challenge
 
-- A-008: every architecture number is a placeholder. Nothing above is a feasibility claim.
-- A-002 / A-007: minimum-jerk motion doesn't reproduce measured 1RM speed profiles (peak about 3× mean). The scenario matches peak speed, so it overstates average speed, power and heat.
-- A-010: no drive, PSU or iron losses yet.
-- A-012: a 60 s worst-window RMS stands in for a thermal model.
+- A-016: arm surrogate, cable stiffness and friction. Every dynamic result depends on them.
+- A-015: thermal data is backed out of rated torque.
+- A-017: every safety threshold and controller gain is a proposal.
+- A-019: retail is modelled as BOM × a single multiplier.
 
-## Open questions
+## Open questions for the user
 
-- How long must 500 lbf be held? This now decides motor size and cooling.
-- Is an internal energy buffer (capacitors) acceptable within "no battery operation"? It isn't a battery, but it adds stored energy, which is a hazard (R-09).
-- The upper-body 1RM velocity is not yet sourced (A-007 cites lower-body lifts only).
+- How long must 500 lbf be held? This decides the thermal design.
+- Is an energy buffer acceptable within "no battery operation"?
+- Would you accept a lower peak, or two 250 lbf units, if that recovers low-force feel and cost?
+- What mounting is intended: wall, floor or rack?
 
-## Next smallest verifiable milestone
+## Next smallest verifiable milestones
 
-WP3 component reality: replace A and B's placeholder motor and gearbox values with 2–3 real, cited candidates each (Km, continuous and peak torque, max speed, inertia, price with source URL and date). Then turn the requirement columns in `drivetrain_baseline.md` into pass/fail margins. After that, a first-order thermal network (R-07) to replace A-012.
+1. Simulate H-06 (frozen or inverted torque) and H-07 (encoder loss), and define a fault-handling policy that separates sensor faults from releases.
+2. Compare inertia and cost for a lower-inertia motor set or a single dual driver, to address R-03 and R-12.
+3. Mechanical handle arrestor concept plus a snap-load case in the structure model.
+4. Price the remaining 14 BOM lines.

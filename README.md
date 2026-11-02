@@ -16,6 +16,8 @@ make venv     # create .venv with pinned dependencies (constraints.txt)
 make check    # validate requirements, assumptions and scenarios
 make test     # unit and negative tests
 make report   # simulate all scenarios, regenerate reports/
+make cad      # parametric concept CAD: build/cad/*.step and *.glb, reports/cad.md
+make fea      # side-plate FEA convergence study, reports/fea.md
 make ci       # all of the above; fails if committed reports are stale
 ```
 
@@ -25,9 +27,9 @@ There is no hosted CI. Run `make ci` before committing.
 
 | Path | Contents |
 |---|---|
-| `requirements/` | Requirements (R-xx) and assumptions register (A-xxx), machine-readable |
-| `configs/` | System envelope (`baseline.yaml`), duty-cycle scenarios (`scenarios.yaml`), illustrative drivetrains (`architectures.yaml`) |
-| `data/` | Real component candidates with cited specs (`components.csv`); blank = not stated by the source |
+| `requirements/` | Requirements (R-xx), assumptions (A-xxx) and hazard log (H-xx), machine-readable |
+| `configs/` | Envelope, duty-cycle scenarios, drivetrains, component study, thermal, dynamics and structure/layout parameters |
+| `data/` | Real components with cited specs (`components.csv`) and the cited BOM (`bom.csv`); blank = not stated or not priced |
 | `src/odrt/` | Models, CLI and report generation |
 | `reports/` | Generated reports and figures, plus the hand-written `STATUS.md` |
 | `tests/` | pytest suite |
