@@ -37,3 +37,9 @@ assumptions:
     confidence: medium
     status: open
     affects: [R-07]
+  - id: A-007
+    statement: Peak tension (500 lbf) is only needed at heavy-lift tempos, taken as mean concentric cable speed <= 0.35 m/s (min-jerk peak ~0.66 m/s). Faster movements need less force.
+    basis: User intent (2026-11-02) that 500 lbf is a human maximum at normal lift tempos. Force-velocity relationship. Velocity-based-training literature reports roughly 0.15-0.35 m/s mean concentric velocity near one-rep max; the source still needs a URL and access date.
+    confidence: medium
+    status: open
+    affects: [R-01, R-02, R-06]

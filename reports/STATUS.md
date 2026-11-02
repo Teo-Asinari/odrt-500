@@ -4,8 +4,8 @@ Last updated: 2026-11-02. Hand-written by the coding agent; everything else in `
 
 ## Done
 
-- **WP0 (bootstrap and traceability):** `odrt` package and CLI (`check`, `simulate`, `report`), a Makefile, pinned dependencies (`constraints.txt`) and a pytest suite. Requirements R-01 to R-13 are in `requirements/requirements.yaml`; assumptions A-001 to A-006 are in `requirements/assumptions.yaml`. Every scenario cites both, and `reports/traceability.md` maps them. Reports record a hash of all inputs, and `odrt report` refuses stale or partial simulation results. `make ci` fails if the committed reports are out of date.
-- **WP1 (reference use cases and duty cycles):** 11 named scenarios in `configs/scenarios.yaml`: 4 illustrative reference movements (curl, row, press, slow heavy pull) and 7 limit cases (500 lbf hold, 500 lbf at 1 m/s, full 2 m stroke, fast reversals, eccentric overload, a long endurance session, 8 lbf low force). Each one produces a 1 kHz trajectory (position, speed, acceleration, tension setpoint) and duty-cycle metrics: peak and RMS tension, peak absorbed and returned power, energy in each direction, time under tension, and longest time near peak. See `reports/duty_cycles.md`.
+- **WP0 (bootstrap and traceability):** `odrt` package and CLI (`check`, `simulate`, `report`), a Makefile, pinned dependencies (`constraints.txt`) and a pytest suite. Requirements R-01 to R-13 are in `requirements/requirements.yaml`; assumptions A-001 to A-007 are in `requirements/assumptions.yaml`. Every scenario cites both, and `reports/traceability.md` maps them. Reports record a hash of all inputs, and `odrt report` refuses stale or partial simulation results. `make ci` fails if the committed reports are out of date.
+- **WP1 (reference use cases and duty cycles):** 11 named scenarios in `configs/scenarios.yaml`: 4 illustrative reference movements (curl, row, press, slow heavy pull) and 7 limit cases (500 lbf hold, 500 lbf at heavy-lift tempo, full 2 m stroke, fast reversals, eccentric overload, a long endurance session, 8 lbf low force). Each one produces a 1 kHz trajectory (position, speed, acceleration, tension setpoint) and duty-cycle metrics: peak and RMS tension, peak absorbed and returned power, energy in each direction, time under tension, and longest time near peak. See `reports/duty_cycles.md`.
 
 ## Tests
 
@@ -15,7 +15,7 @@ One bug was found and fixed during development: the first tension-ramp design le
 
 ## What the numbers already say (inputs, not feasibility)
 
-- `power_corner_limit` asks for **2.2 kW absorbed and 2.1 kW returned** at peak, so the device must handle regenerated energy at that scale (R-06).
+- `heavy_tempo_limit` (500 lbf at 0.35 m/s mean concentric speed) peaks at **1.5 kW absorbed**. 500 lbf at 1 m/s would need 2.2 kW, but R-01 no longer asks for that (A-007).
 - `fast_reversal_limit` reaches **14 m/s²** and swings ±1.7 kW within 0.4 s (R-04, R-06).
 - `peak_tension_hold_limit` holds near 500 lbf for **39 s continuously**, which sizes stall torque and stall heating (R-07).
 - `eccentric_overload_limit` returns more energy than it absorbs (12.0 vs 8.0 kJ), so it needs a net power source, not only a brake.
@@ -28,7 +28,7 @@ One bug was found and fixed during development: the first tension-ramp design le
 
 ## Open questions
 
-- At what cable speed must 500 lbf be available, and for how long? This sets whether `power_corner_limit` is a requirement or an out-of-scope stress case.
+- Resolved 2026-11-02: 500 lbf is a human maximum at normal heavy-lift tempos (A-007). Still open: the exact speed bound (0.35 m/s mean is a placeholder until a cited source is found) and how long 500 lbf must be held.
 - Is a 0.2 s tension ramp acceptable? It is a placeholder and sets the minimum hold time when tensions change.
 
 ## Next smallest verifiable milestone

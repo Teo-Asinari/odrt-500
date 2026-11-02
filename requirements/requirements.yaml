@@ -3,8 +3,8 @@
 requirements:
   - id: R-01
     title: Peak cable tension
-    target: 500 lbf (2,224 N) peak, in a bounded simulated operating region; duration TBD from thermal model
-    acceptance: Demonstrated in simulation within a stated speed/duration region
+    target: 500 lbf (2,224 N) peak as a human's maximal force at normal heavy-lift tempos (A-007), not at high cable speed; duration TBD from thermal model
+    acceptance: Demonstrated in simulation over the heavy-lift speed range of A-007
     status: hypothesis
   - id: R-02
     title: Sustained tension
