@@ -1,0 +1,44 @@
+# WP2 analytical baseline: three ILLUSTRATIVE drivetrain parameter sets.
+# These are placeholders chosen to be the right order of magnitude, NOT catalog
+# parts and NOT recommendations (A-008). WP3 replaces them with cited supplier data.
+# No motor ratings are given on purpose: the model reports what each
+# architecture would REQUIRE of a motor, not whether some motor meets it.
+common:
+  cable_diameter_m: 0.004      # placeholder; real size set by R-08 strength review
+  dead_turns: 3                # turns that never leave the drum
+  winding_temp_c: 100          # copper loss evaluated hot (A-010)
+  thermal_window_s: 60         # worst moving-window RMS, placeholder for a thermal model (A-012)
+
+architectures:
+  A_direct_drive:
+    description: Large low-speed torque motor coupled directly to the drum.
+    gear_ratio: 1
+    gear_efficiency: 0.98        # bearings/seals only
+    drum_core_radius_m: 0.020
+    turns_per_layer: 20
+    max_layers: 1
+    drum_inertia_kg_m2: 0.0002
+    motor_rotor_inertia_kg_m2: 0.010
+    motor_km_nm_per_sqrt_w: 3.0  # motor constant at 25 C
+
+  B_quasi_direct:
+    description: Outrunner-class BLDC with a single-stage ~6:1 low-backlash reduction.
+    gear_ratio: 6
+    gear_efficiency: 0.95
+    drum_core_radius_m: 0.025
+    turns_per_layer: 18
+    max_layers: 1
+    drum_inertia_kg_m2: 0.0003
+    motor_rotor_inertia_kg_m2: 0.0006
+    motor_km_nm_per_sqrt_w: 0.6
+
+  C_high_reduction:
+    description: Small fast servo with ~25:1 reduction and a compact multi-layer drum.
+    gear_ratio: 25
+    gear_efficiency: 0.85
+    drum_core_radius_m: 0.015
+    turns_per_layer: 10
+    max_layers: 3
+    drum_inertia_kg_m2: 0.0001
+    motor_rotor_inertia_kg_m2: 0.00012
+    motor_km_nm_per_sqrt_w: 0.2

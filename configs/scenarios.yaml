@@ -100,13 +100,13 @@ scenarios:
     retraction_tension_lbf: 500
 
   heavy_tempo_limit:
-    description: 500 lbf at the fast end of heavy-lift tempos (0.35 m/s mean, ~0.66 m/s peak concentric; A-007). Sizes peak power and regeneration.
+    description: 500 lbf at the fast end of heavy-lift tempos (0.94 m/s peak concentric, A-007). Min-jerk fixes peak/mean at 1.875, so the mean (0.5 m/s) is higher than measured 1RM lifts; conservative for power and heat.
     kind: limit
     requirements: [R-01, R-02, R-06]
     assumptions: [A-001, A-002, A-003, A-007]
     start_offset_m: 0.2
     stroke_m: 0.6
-    extend_s: 1.7
+    extend_s: 1.2
     top_hold_s: 0.5
     retract_s: 2.5
     bottom_hold_s: 0.5

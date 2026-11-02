@@ -4,33 +4,40 @@ Last updated: 2026-11-02. Hand-written by the coding agent; everything else in `
 
 ## Done
 
-- **WP0 (bootstrap and traceability):** `odrt` package and CLI (`check`, `simulate`, `report`), a Makefile, pinned dependencies (`constraints.txt`) and a pytest suite. Requirements R-01 to R-13 are in `requirements/requirements.yaml`; assumptions A-001 to A-007 are in `requirements/assumptions.yaml`. Every scenario cites both, and `reports/traceability.md` maps them. Reports record a hash of all inputs, and `odrt report` refuses stale or partial simulation results. `make ci` fails if the committed reports are out of date.
-- **WP1 (reference use cases and duty cycles):** 11 named scenarios in `configs/scenarios.yaml`: 4 illustrative reference movements (curl, row, press, slow heavy pull) and 7 limit cases (500 lbf hold, 500 lbf at heavy-lift tempo, full 2 m stroke, fast reversals, eccentric overload, a long endurance session, 8 lbf low force). Each one produces a 1 kHz trajectory (position, speed, acceleration, tension setpoint) and duty-cycle metrics: peak and RMS tension, peak absorbed and returned power, energy in each direction, time under tension, and longest time near peak. See `reports/duty_cycles.md`.
+- **WP0 (bootstrap and traceability):** `odrt` package and CLI (`check`, `simulate`, `report`), a Makefile, pinned dependencies and a pytest suite. Requirements R-01 to R-13 and assumptions A-001 to A-012 are machine-readable, and every scenario cites them (`reports/traceability.md`). Reports record a hash of all inputs. `odrt report` refuses stale or partial results, and `make ci` fails if the committed reports are out of date.
+- **WP1 (duty cycles):** 11 named scenarios, 4 reference movements and 7 limit cases (`reports/duty_cycles.md`).
+- **WP2 analytical baseline:** each duty cycle is mapped to drum torque (with winding-layer radius) and then to motor torque, speed, copper loss and bus power, for three illustrative architectures (`reports/drivetrain_baseline.md`).
+- **R-01 scoped:** per the user, 500 lbf is a human maximum at normal heavy-lift tempos (A-007). That speed is now cited: at 1RM, squats average 0.29 m/s but peak at 0.89 m/s (Conceição et al., URL in A-007). `heavy_tempo_limit` therefore peaks at 0.94 m/s and 2.1 kW mechanical.
 
 ## Tests
 
-49 tests pass. Among them, the unit conversions are checked against the brief's numbers (2224 N, 44.5 N·m, the 222/556/1112/2224 W table), and the minimum-jerk kinematics and energy accounting are checked against closed-form results. Negative tests confirm that invalid inputs exit with an error.
+64 tests pass. They cover:
+- unit conversions against the brief's numbers;
+- minimum-jerk kinematics and duty-cycle energy against closed forms;
+- motor torque in each power-flow direction, copper loss and Km temperature derating against hand calculations;
+- energy conservation over a full scenario with inertia and gear losses;
+- multi-layer drum radius steps;
+- negative tests for invalid inputs.
 
-One bug was found and fixed during development: the first tension-ramp design let ramps run into cable motion, which undercounted energy by about 0.02%. Tension now changes only while the cable is stationary, and an input that leaves no room for a ramp is rejected.
+## What WP2 suggests (illustrative parameters, A-008: directions, not results)
 
-## What the numbers already say (inputs, not feasibility)
-
-- `heavy_tempo_limit` (500 lbf at 0.35 m/s mean concentric speed) peaks at **1.5 kW absorbed**. 500 lbf at 1 m/s would need 2.2 kW, but R-01 no longer asks for that (A-007).
-- `fast_reversal_limit` reaches **14 m/s²** and swings ±1.7 kW within 0.4 s (R-04, R-06).
-- `peak_tension_hold_limit` holds near 500 lbf for **39 s continuously**, which sizes stall torque and stall heating (R-07).
-- `eccentric_overload_limit` returns more energy than it absorbs (12.0 vs 8.0 kJ), so it needs a net power source, not only a brake.
+- **Wall power may not be the limit; energy buffering is.** A and B draw up to ~1.45 kW at 500 lbf heavy tempo and ~2.1 kW in fast reversals, and regenerate up to ~1.7 kW on every pull. Session-mean bus power is only 50–380 W. A lossless buffer of about 2 kJ per heavy set (about 6 kJ for the endurance session) would let the supply run near the mean, so this is worth testing early (R-06). Drive and PSU losses are not yet included (A-010).
+- **Heat at 500 lbf is the binding constraint for R-01/R-02.** With the illustrative motors, holding 500 lbf costs ~360–400 W of copper loss continuously. How long 500 lbf can be held is a thermal question, not a torque question.
+- **High reduction (C) looks poor:** 260 kg effective cable mass, 10,000–25,000 motor rpm, and a 5.1 kW peak bus draw in fast reversals just to move its own inertia. A and B land within ~10% of each other on power and heat. B needs a 5× smaller motor torque (10.6 vs 50 N·m) at the cost of a gearbox.
 
 ## Main assumptions to challenge
 
-- A-002: minimum-jerk motion is smoother than real pulls. Real peak acceleration and power will be higher.
-- A-005: the reference strokes, speeds and loads are guesses. Measured cable data would replace them.
-- A-006: RMS tension stands in for heating until the WP2 motor model exists.
+- A-008: every architecture number is a placeholder. Nothing above is a feasibility claim.
+- A-002 / A-007: minimum-jerk motion doesn't reproduce measured 1RM speed profiles (peak about 3× mean). The scenario matches peak speed, so it overstates average speed, power and heat.
+- A-010: no drive, PSU or iron losses yet.
+- A-012: a 60 s worst-window RMS stands in for a thermal model.
 
 ## Open questions
 
-- Resolved 2026-11-02: 500 lbf is a human maximum at normal heavy-lift tempos (A-007). Still open: the exact speed bound (0.35 m/s mean is a placeholder until a cited source is found) and how long 500 lbf must be held.
-- Is a 0.2 s tension ramp acceptable? It is a placeholder and sets the minimum hold time when tensions change.
+- How long must 500 lbf be held? This now decides motor size and cooling.
+- Is an internal energy buffer (capacitors) acceptable within "no battery operation"? It isn't a battery, but it adds stored energy, which is a hazard (R-09).
+- The upper-body 1RM velocity is not yet sourced (A-007 cites lower-body lifts only).
 
 ## Next smallest verifiable milestone
 
-WP2 analytical baseline: map each duty cycle to drum torque and speed (with winding-layer radius), then to motor torque, speed and copper loss for three clearly illustrative architectures (A direct drive, B quasi-direct, C high reduction), with unit tests against hand calculations.
+WP3 component reality: replace A and B's placeholder motor and gearbox values with 2–3 real, cited candidates each (Km, continuous and peak torque, max speed, inertia, price with source URL and date). Then turn the requirement columns in `drivetrain_baseline.md` into pass/fail margins. After that, a first-order thermal network (R-07) to replace A-012.

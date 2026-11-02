@@ -11,6 +11,7 @@ import numpy as np
 
 import odrt
 from odrt.config import ConfigError
+from odrt.drivetrain import drive_metrics, solve
 from odrt.dutycycle import metrics
 from odrt.project import load_inputs
 from odrt.scenarios import generate
@@ -24,7 +25,7 @@ def cmd_check(args) -> int:
     for s in inputs.scenarios.values():
         kinds[s.kind] = kinds.get(s.kind, 0) + 1
     print(f"OK: {len(inputs.requirements)} requirements, {len(inputs.assumptions)} assumptions, "
-          f"{len(inputs.scenarios)} scenarios {kinds}")
+          f"{len(inputs.scenarios)} scenarios {kinds}, {len(inputs.architectures)} architectures")
     print(f"input hash {inputs.input_hash[:12]}")
     return 0
 
@@ -37,12 +38,15 @@ def cmd_simulate(args) -> int:
         raise ConfigError(f"unknown scenarios {unknown}")
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    results = {}
+    results, drive = {}, {a: {} for a in inputs.architectures}
     for name in names:
         traj = generate(inputs.scenarios[name], inputs.defaults)
         np.savez_compressed(out / f"{name}.npz", t=traj.t, x=traj.x, v=traj.v, a=traj.a,
                             tension_n=traj.tension_n, phase=traj.phase)
         results[name] = metrics(traj, inputs.defaults)
+        for arch_name, arch in inputs.architectures.items():
+            sig = solve(traj, arch, inputs.common, inputs.envelope.max_usable_stroke_m)
+            drive[arch_name][name] = drive_metrics(traj, sig, arch, inputs.common)
         m = results[name]
         print(f"{name:28s} {m['duration_s']:7.1f} s  peak {m['peak_tension_lbf']:5.0f} lbf  "
               f"peak P {m['peak_power_absorbed_w']:6.0f} W  TUT {m['time_under_tension_s']:6.1f} s")
@@ -54,6 +58,7 @@ def cmd_simulate(args) -> int:
             "numpy": np.__version__,
         },
         "scenarios": results,
+        "drivetrain": drive,
     }
     (out / METRICS_FILE).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(f"wrote {len(results)} scenarios to {out}")
@@ -72,8 +77,10 @@ def cmd_report(args) -> int:
     if payload["provenance"]["input_hash"] != inputs.input_hash:
         raise ConfigError("simulation results are stale (input hash differs): rerun `odrt simulate`")
     missing = sorted(set(inputs.scenarios) - set(payload["scenarios"]))
+    missing += sorted(f"{a}/{s}" for a in inputs.architectures for s in inputs.scenarios
+                      if s not in payload.get("drivetrain", {}).get(a, {}))
     if missing:
-        raise ConfigError(f"simulation results missing scenarios {missing}: rerun `odrt simulate`")
+        raise ConfigError(f"simulation results missing {missing}: rerun `odrt simulate`")
     written = write_reports(inputs, payload, sim, Path(args.out))
     for path in written:
         print(f"wrote {path}")

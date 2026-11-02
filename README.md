@@ -26,7 +26,7 @@ There is no hosted CI. Run `make ci` before committing.
 | Path | Contents |
 |---|---|
 | `requirements/` | Requirements (R-xx) and assumptions register (A-xxx), machine-readable |
-| `configs/` | System envelope (`baseline.yaml`) and named duty-cycle scenarios (`scenarios.yaml`) |
+| `configs/` | System envelope (`baseline.yaml`), duty-cycle scenarios (`scenarios.yaml`), illustrative drivetrains (`architectures.yaml`) |
 | `src/odrt/` | Models, CLI and report generation |
 | `reports/` | Generated reports and figures, plus the hand-written `STATUS.md` |
 | `tests/` | pytest suite |

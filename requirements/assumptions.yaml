@@ -38,8 +38,38 @@ assumptions:
     status: open
     affects: [R-07]
   - id: A-007
-    statement: Peak tension (500 lbf) is only needed at heavy-lift tempos, taken as mean concentric cable speed <= 0.35 m/s (min-jerk peak ~0.66 m/s). Faster movements need less force.
-    basis: User intent (2026-11-02) that 500 lbf is a human maximum at normal lift tempos. Force-velocity relationship. Velocity-based-training literature reports roughly 0.15-0.35 m/s mean concentric velocity near one-rep max; the source still needs a URL and access date.
+    statement: Peak tension (500 lbf) is only needed at heavy-lift tempos, taken as peak concentric cable speed <= 0.95 m/s (mean ~0.3 m/s). Faster movements need less force.
+    basis: User intent (2026-11-02) that 500 lbf is a human maximum at normal lift tempos. At 1RM, Conceicao et al. measured mean propulsive / peak velocity of 0.21/0.63 (leg press), 0.29/0.89 (full squat) and 0.33/0.95 m/s (half squat). Source https://cifi2d.fade.up.pt/files/movement-velocity-as-a-measure-of-exercise-intensity-in-three-lower-limb-exercises.pdf (accessed 2026-11-02). Barbell velocity, not cable velocity; upper-body lifts not yet sourced.
     confidence: medium
     status: open
     affects: [R-01, R-02, R-06]
+  - id: A-008
+    statement: The three drivetrain architectures in configs/architectures.yaml use illustrative placeholder parameters (ratio, efficiency, drum, inertia, motor constant), not catalog parts.
+    basis: WP2 baseline compares how the architectures scale under the same duty cycles. WP3 replaces every value with cited supplier data.
+    confidence: low
+    status: open
+    affects: [R-01, R-02, R-04, R-06, R-07, R-11]
+  - id: A-009
+    statement: The drivetrain is rigid and lumped. No cable compliance, backlash, torque ripple, control loop or sensor error. Gear efficiency is constant and the same in both directions, the inertia path is lossless, and the dr/dt term of a changing drum radius is ignored.
+    basis: Simplest model that conserves energy. Compliance, backlash, ripple and control come in the dynamic model (R-04).
+    confidence: medium
+    status: open
+    affects: [R-04, R-06, R-07]
+  - id: A-010
+    statement: Motor loss is copper loss only, (torque / Km)^2, with Km derated for winding temperature. Iron, drive, PSU and fan losses are neglected, and Km is constant (no magnetic saturation).
+    basis: Copper loss dominates at high torque and low speed, which is the heavy-load case. Iron and drive losses grow with speed and are needed before power-supply sizing.
+    confidence: medium
+    status: open
+    affects: [R-06, R-07]
+  - id: A-011
+    statement: Drum layers stack at a full cable-diameter pitch, the effective radius is at the cable centreline, and the cable pays off the outermost occupied layer.
+    basis: Simple, conservative (largest radius) layer model. Real layers nest and cross over.
+    confidence: medium
+    status: open
+    affects: [R-05, R-08]
+  - id: A-012
+    statement: The worst 60 s moving-window RMS motor torque and copper loss stand in for a winding thermal model.
+    basis: Placeholder until the thermal network (R-07) exists. Real winding and housing time constants decide the right window.
+    confidence: low
+    status: open
+    affects: [R-07]
