@@ -146,3 +146,13 @@ hazards:
     channel: independent-hardware
     validation_gap: The presence sensor is idealised. Thresholds for light users and a partial stance (one foot on the deck) are undefined.
     requirements: [R-09, R-14]
+  - id: H-15
+    title: Feet slip on angled heavy pulls
+    cause: At large rope tilts, the horizontal pull exceeds what the user's weight and deck friction can hold (light users, smooth soles).
+    effect: The user slides or falls while under load.
+    severity: S3
+    evidence: []
+    mitigations: [Firmware tension cap by tilt and body weight (body weight from the presence pads; needs a rope-tilt sensor on the swivel head) (firmware, not simulated), High-friction deck mat and toe stops (mechanical, not designed)]
+    channel: firmware
+    validation_gap: The tilt sensor is not designed. Friction and the pull envelope are placeholders (A-025). See reports/swivel.md.
+    requirements: [R-09, R-14]

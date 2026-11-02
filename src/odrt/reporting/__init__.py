@@ -757,3 +757,35 @@ def write_electronics_report(inputs, el_parts, cfg, b, parts, clashes, bay, out:
     path = out / "electronics.md"
     path.write_text("\n".join(lines))
     return path
+
+
+def write_swivel_report(inputs, cfg, rows, out: Path) -> Path:
+    from odrt.swivel import max_safe_tension_lbf
+    lines = _header("Swivel cable exit (first pass)", inputs)
+    lines += ["A swivel head on the deck rotates about the vertical rope axis. An exit sheave turns the rope to "
+              f"any tilt up to {cfg.max_tilt_deg:g}° in the head's plane, under a {cfg.dome_r_mm:g} mm guard dome. "
+              "Because the user stands on the platform, angled pulls are internal to the user-platform system: "
+              "the platform cannot tip, but the user's feet must not slip. Loads use the angled-pull envelope "
+              f"and a {cfg.snap_factor:g}× snap factor (A-025).", "",
+              "| Tilt ° | Tension lbf | Exit axle N | Bearing radial N | Bearing axial N | Bearing moment N·m "
+              f"| Grip needed μ ({cfg.min_user_kg:g} kg user) | Grip OK (μ {cfg.deck_mu:g}) |",
+              "|---:|---:|---:|---:|---:|---:|---:|---|"]
+    for r in rows:
+        lines.append(f"| {r['tilt_deg']:g} | {r['tension_lbf']:g} | {r['exit_axle_n']:.0f} | {r['bearing_radial_n']:.0f} "
+                     f"| {r['bearing_axial_n']:.0f} | {r['bearing_moment_nm']:.0f} | {r['mu_needed']:.2f} "
+                     f"| {'yes' if r['grip_ok'] else '**no**'} |")
+    lines += ["", "Largest tension before the feet slip (μ " + f"{cfg.deck_mu:g}):", "",
+              "| Tilt ° | 50 kg user lbf | 80 kg user lbf |", "|---:|---:|---:|"]
+    import dataclasses
+    for a in (30, 45, 60, 80):
+        vals = []
+        for kg in (50, 80):
+            v = max_safe_tension_lbf(dataclasses.replace(cfg, min_user_kg=kg), a)
+            vals.append("any" if v == float("inf") else f"{v:.0f}")
+        lines.append(f"| {a} | {vals[0]} | {vals[1]} |")
+    lines += ["", "Below about atan(μ) ≈ 39° any tension is grip-safe. Beyond that, firmware should cap tension by "
+              "tilt and body weight (H-15). Body weight is available from the presence pads; rope tilt needs a "
+              "sensor on the swivel head (not designed).", ""]
+    path = out / "swivel.md"
+    path.write_text("\n".join(lines))
+    return path

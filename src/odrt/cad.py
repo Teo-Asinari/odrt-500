@@ -296,7 +296,8 @@ def build_platform(st, opt, common, sizes, cfg, z):
         out.append(Part(f"end frame {label}", cross, "shaft", False))
     deck = (cq.Workplane("XY").box(width, length, cfg.deck_t_mm, centered=(True, False, False))
             .translate((0, y_back, deck_top - cfg.deck_t_mm)).edges("|Z").fillet(15.0))
-    deck = deck.cut(cq.Workplane("XY").circle(22).extrude(cfg.deck_t_mm + 2).translate((0, y_port, deck_top - cfg.deck_t_mm - 1)))
+    deck = deck.cut(cq.Workplane("XY").circle(cfg.port_radius_mm).extrude(cfg.deck_t_mm + 2)
+                    .translate((0, y_port, deck_top - cfg.deck_t_mm - 1)))
     out.append(Part("deck", deck, "plate", False))
     r = cfg.sheave_r_mm
     yc, zc = y_port - r, exit_z + r

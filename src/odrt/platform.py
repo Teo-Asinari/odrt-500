@@ -29,6 +29,7 @@ class PlatformCfg:
     foot_room_mm: float
     side_margin_mm: float
     back_margin_mm: float
+    port_radius_mm: float
     user_mass_kg: float
     frame_mass_kg: float
     deflection_limit_mm: float
@@ -46,7 +47,7 @@ def load_platform(path: Path) -> PlatformCfg:
                       "frame_mass_estimate_kg", "deflection_limit_mm"])
     dk = d["deck"]
     check_keys(dk, f"{w}.deck", ["material", "thickness_mm", "height_mm", "stance_half_width_mm", "foot_room_mm",
-                                 "side_margin_mm", "back_margin_mm"])
+                                 "side_margin_mm", "back_margin_mm", "port_radius_mm"])
     pos = dict(minimum=0, exclusive_minimum=True)
     sg = d["stringer"]
     check_keys(sg, f"{w}.stringer", ["material", "section_mm"])
@@ -70,6 +71,7 @@ def load_platform(path: Path) -> PlatformCfg:
         foot_room_mm=number(dk["foot_room_mm"], f"{w}.deck.foot_room_mm", **pos),
         side_margin_mm=number(dk["side_margin_mm"], f"{w}.deck.side_margin_mm", minimum=0),
         back_margin_mm=number(dk["back_margin_mm"], f"{w}.deck.back_margin_mm", minimum=0),
+        port_radius_mm=number(dk["port_radius_mm"], f"{w}.deck.port_radius_mm", **pos),
         user_mass_kg=number(d["design_user_mass_kg"], f"{w}.design_user_mass_kg", **pos),
         frame_mass_kg=number(d["frame_mass_estimate_kg"], f"{w}.frame_mass_estimate_kg", **pos),
         deflection_limit_mm=number(d["deflection_limit_mm"], f"{w}.deflection_limit_mm", **pos),

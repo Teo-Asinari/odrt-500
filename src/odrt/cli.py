@@ -233,7 +233,11 @@ def cmd_cad(args) -> int:
     el_parts = electronics.load_electronics(Path(args.root) / "data/electronics.csv")
     el_cfg = _yaml.safe_load((Path(args.root) / "configs/electronics.yaml").read_text())
     budget = electronics.budget(inputs, el_cfg)
-    kplat, kparts, kgeo, bay = packaging.build(st, opt, inputs.common, sizes, inputs.platform, plat, el_parts)
+    from odrt import swivel
+    sw_cfg = swivel.load_swivel(Path(args.root) / "configs/swivel.yaml")
+    kplat, kparts, kgeo, bay = packaging.build(st, opt, inputs.common, sizes, inputs.platform, plat, el_parts, sw_cfg)
+    from odrt.reporting import write_swivel_report
+    write_swivel_report(inputs, sw_cfg, swivel.envelope(sw_cfg), Path(args.reports))
     kclash = packaging.interferences(kplat, kparts)
     vparts, pivots, vinfo = visual.build(st, opt, inputs.common, sizes)
     glbs = []

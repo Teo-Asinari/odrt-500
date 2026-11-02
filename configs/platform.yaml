@@ -11,6 +11,7 @@ deck:
   foot_room_mm: 180               # deck beyond the port, front and back, for the feet
   side_margin_mm: 60
   back_margin_mm: 30
+  port_radius_mm: 52              # deck opening for the swivel bearing housing (configs/swivel.yaml)
 stringer:                         # one longitudinal steel tube under each foot line, supported at the platform ends
   material: {name: "steel, structural tube", yield_mpa: 350, density_kg_m3: 7850, youngs_gpa: 200, poisson: 0.29}
   section_mm: [40, 40, 3]         # square hollow section: width, height, wall

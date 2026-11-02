@@ -1,0 +1,12 @@
+# Swivel cable exit on the deck (A-025). The head rotates about the vertical rope axis;
+# an exit sheave in the head turns the rope to any tilt in the head's plane.
+exit_sheave_radius_mm: 30          # rope pitch radius; D/d = 15 for a 4 mm rope (same review flag as the turning sheave)
+head_height_mm: 45                 # exit sheave centre above the swivel bearing
+max_tilt_deg: 80                   # from vertical
+bearing_pcd_mm: 70                 # swivel bearing pitch diameter (placeholder)
+dome_radius_mm: 95                 # guard dome over the head (clears cheeks and exit sheave)
+# Angled-pull envelope: largest tension (lbf) planned at each tilt from vertical (placeholder, A-025)
+envelope: [[0, 500], [30, 500], [45, 250], [60, 200], [80, 150]]
+snap_factor: 1.86                  # snap/design ratio from the dynamics (932 / 500 lbf)
+min_user_mass_kg: 50               # lightest user the grip check covers
+deck_friction: 0.8                 # shoe on rubber deck mat (placeholder)

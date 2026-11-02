@@ -54,7 +54,7 @@ def _perp(d):
     return tuple(p / np.linalg.norm(p))
 
 
-def build(st, opt, common, sizes, cfg_platform, z, el_parts):
+def build(st, opt, common, sizes, cfg_platform, z, el_parts, swivel_cfg=None):
     cq = cad._cq()
     plat_parts, geo = cad.build_platform(st, opt, common, sizes, cfg_platform, z)
     plat_parts = list(plat_parts)
@@ -151,9 +151,11 @@ def build(st, opt, common, sizes, cfg_platform, z, el_parts):
     phase = [drv_top, (drive_x + 10, drive_y + dw / 2, tray_z), (route_x, drive_y + dw / 2, tray_z),
              (route_x, mot_y, tray_z), (route_x, mot_y, mot_z), (mb.xmin - 4, mot_y, mot_z)]
     parts.append(_cable(cq, "motor phase cable (3 x AWG 8)", phase, 14, "cable_orange"))
+    # DC bus goes around the buffer bank (behind it), never over the capacitor terminals
     psu_top = (psu_x0 + 25, y0 + psu_w / 2, psu_h + 5)
-    bus = [psu_top, (psu_x0 + 25, y0 + psu_w / 2, tray_z + 16), (drive_x + dl - 10, y0 + psu_w / 2, tray_z + 16),
-           (drive_x + dl - 10, drive_y + dw / 2, tray_z + 16), (drive_x + dl - 10, drive_y + dw / 2, dh + oh / 2 + 4)]
+    behind_bank = drive_y + dw / 2
+    bus = [psu_top, (psu_x0 + 25, y0 + psu_w / 2, 52), (psu_x0 + 25, behind_bank, 52),
+           (drive_x + dl - 10, behind_bank, 52), (drive_x + dl - 10, behind_bank, dh + oh / 2 + 4)]
     parts.append(_cable(cq, "DC bus cable (2 x AWG 8)", bus, 10, "cable_red"))
     inlet = (xs_in - mh - 4, y_back + 60 + ml / 2, 30 + mw / 2)
     # runs low along the skirt (under the exhaust fan), then up the service gap into the supply's input end
@@ -166,6 +168,8 @@ def build(st, opt, common, sizes, cfg_platform, z, el_parts):
     signal = [pin, (75, yc, zc), (75, yc, 12), (75, sig_end[1] + 20, 12), (sig_end[0], sig_end[1] + 20, 12),
               (sig_end[0], sig_end[1], 12)]
     parts.append(_cable(cq, "load-pin signal cable", signal, 5, "cable_black"))
+    if swivel_cfg is not None:
+        parts += swivel_head(cq, swivel_cfg, cfg_platform, y_port)
     # vent slots in the left skirt (intake, low) and the fan opening in the right skirt (exhaust)
     for i, p in enumerate(plat_parts):
         if p.name == "skirt left":
@@ -179,6 +183,43 @@ def build(st, opt, common, sizes, cfg_platform, z, el_parts):
     return plat_parts, parts, geo, (y0, y1)
 
 
+def swivel_head(cq, sw, cfg_platform, y_port):
+    """Swivel exit on the deck: bearing housing in the deck, rotating head with exit sheave, guard dome.
+    Shown with the exit plane facing forward (+Y) at zero tilt."""
+    deck_top = cfg_platform.deck_h_mm
+    r_house = cfg_platform.port_radius_mm - 1
+    parts = []
+    # flush with the deck underside (the under-deck sheave cheeks end there) and 6 mm proud of the deck top
+    housing = (cq.Workplane("XY").circle(r_house).circle(sw.bearing_pcd_mm / 2 - 8).extrude(cfg_platform.deck_t_mm + 5)
+               .translate((0, y_port, deck_top - cfg_platform.deck_t_mm + 0.5)))
+    parts.append(PPart("swivel bearing housing", housing, "alu", "electronics"))
+    base_z = deck_top + 6
+    plate = cq.Workplane("XY").circle(sw.bearing_pcd_mm / 2 + 6).circle(9).extrude(6).translate((0, y_port, base_z))
+    parts.append(PPart("swivel head plate", plate, "dark_steel", "electronics"))
+    r = sw.sheave_r_mm
+    zc = base_z + sw.head_h_mm
+    yc = y_port + r  # vertical rope leg is tangent to the sheave on the swivel axis
+    for s in (-1, 1):
+        cheek = (cq.Workplane("XY").box(5, 2 * r + 24, zc + 12 - (base_z + 6), centered=(True, True, False))
+                 .translate((s * 12, yc - 6, base_z + 6)))
+        parts.append(PPart(f"swivel cheek {'left' if s < 0 else 'right'}", cheek, "alu", "electronics"))
+    sheave = cq.Workplane("YZ").workplane(offset=-7).center(yc, zc).circle(r).circle(6).extrude(14)
+    groove = cq.Workplane("YZ").workplane(offset=-1.5).center(yc, zc).circle(r + 0.1).circle(r - 2.2).extrude(3)
+    parts.append(PPart("swivel exit sheave", sheave.cut(groove), "steel", "electronics"))
+    axle = cq.Workplane("YZ").workplane(offset=-17).center(yc, zc).circle(6).extrude(34)
+    parts.append(PPart("swivel exit axle", axle, "steel", "electronics"))
+    dome_r = sw.dome_r_mm
+    dome = (cq.Workplane("XY").sphere(dome_r).cut(cq.Workplane("XY").sphere(dome_r - 3))
+            .cut(cq.Workplane("XY").box(4 * dome_r, 4 * dome_r, 2 * dome_r).translate((0, 0, -dome_r)))
+            .translate((0, y_port, base_z)))
+    # rope slot through the dome: vertical over the axis, sweeping forward to near-horizontal (max tilt)
+    slot = (cq.Workplane("YZ").workplane(offset=-10).center(0, 0)
+            .polyline([(-6, 0), (-6, dome_r + 5), (dome_r + 5, dome_r + 5), (dome_r + 5, 6), (6, 6)]).close()
+            .extrude(20).translate((0, y_port, base_z + 2)))
+    parts.append(PPart("swivel guard dome", dome.cut(slot), "graphite", "electronics"))
+    return parts
+
+
 PLATFORM_MATERIALS = {"platform pan": "dark_steel", "stringer": "dark_steel", "end frame": "dark_steel",
                       "sheave cross-beam": "dark_steel", "skirt": "graphite", "deck": "deck_mat",
                       "turning sheave": "alu", "sheave cheek": "alu", "sheave axle": "steel", "rubber foot": "rubber"}
@@ -187,6 +228,8 @@ MECH_ONLY = ("enclosure", "cable port", "arrestor", "status light")
 
 EXPLODE = (  # (name prefix, offset mm in device frame); first match wins
     ("deck", (0, 0, 330)), ("presence pad", (0, 0, 270)), ("emergency stop", (0, 0, 330)),
+    ("swivel guard dome", (0, 0, 520)), ("swivel exit", (0, 0, 450)), ("swivel cheek", (0, 0, 450)),
+    ("swivel head plate", (0, 0, 420)), ("swivel bearing housing", (0, 0, 390)),
     ("stringer", (0, 0, 200)), ("sheave cross-beam", (0, 120, 200)),
     ("skirt left", (-220, 0, 0)), ("skirt right", (220, 0, 0)), ("end frame back", (0, -220, 0)),
     ("end frame front", (0, 220, 0)), ("rubber foot", (0, 0, -60)),
@@ -278,6 +321,9 @@ ALLOWED = {  # intended contacts: (prefix A, prefix B)
     ("DC bus cable", "power supply"), ("DC bus cable", "motor drive"), ("DC bus cable", "drive heat"),
     ("mains cable", "mains inlet"), ("mains cable", "power supply"), ("mains cable", "skirt"),
     ("load-pin signal cable", "sheave"), ("load-pin signal cable", "independent safety"),
+    ("swivel bearing housing", "deck"), ("swivel head plate", "swivel cheek"), ("swivel cheek", "swivel exit axle"),
+    ("swivel exit sheave", "swivel exit axle"), ("swivel guard dome", "swivel head plate"),
+    ("rope keep-out", "swivel"),
     ("buffer cell", "buffer tray"), ("motor drive", "drive heat"), ("braking resistor", "power supply"),
     ("exhaust fan", "skirt"), ("mains inlet", "skirt"), ("emergency stop", "deck"),
     ("power supply", "platform pan"), ("buffer tray", "platform pan"), ("drive heat", "platform pan"),
