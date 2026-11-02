@@ -7,12 +7,14 @@ from pathlib import Path
 
 from odrt.components import Study, load_components, load_study, options
 from odrt.drivetrain import Common, load_architectures
+from odrt.thermal import ThermalParams, load_thermal
 from odrt.requirements import load_assumptions, load_requirements
 from odrt.scenarios import Defaults, Envelope, load_envelope, load_scenarios
 
 INPUT_FILES = ("requirements/requirements.yaml", "requirements/assumptions.yaml",
                "configs/baseline.yaml", "configs/scenarios.yaml", "configs/architectures.yaml",
-               "data/components.csv", "configs/component_study.yaml")
+               "data/components.csv", "configs/component_study.yaml",
+               "configs/thermal.yaml")
 
 
 @dataclass(frozen=True)
@@ -28,12 +30,14 @@ class Inputs:
     components: dict
     study: Study
     options: dict
+    thermal: ThermalParams
     input_hash: str
 
 
 def load_inputs(root: Path = Path(".")) -> Inputs:
     root = Path(root)
-    req_path, asm_path, base_path, scen_path, arch_path, comp_path, study_path = (root / p for p in INPUT_FILES)
+    (req_path, asm_path, base_path, scen_path, arch_path, comp_path, study_path,
+     thermal_path) = (root / p for p in INPUT_FILES)
     requirements = load_requirements(req_path)
     assumptions = load_assumptions(asm_path, requirements)
     envelope = load_envelope(base_path)
@@ -42,7 +46,14 @@ def load_inputs(root: Path = Path(".")) -> Inputs:
     components = load_components(comp_path)
     study = load_study(study_path, architectures)
     return Inputs(root, requirements, assumptions, envelope, defaults, scenarios, common, architectures,
-                  components, study, options(components, study, architectures), input_hash(root))
+                  components, study, options(components, study, architectures), load_thermal(thermal_path),
+                  input_hash(root))
+
+
+def thermal_models(inputs: Inputs) -> dict:
+    """{option name: (MotorThermal or None, reason or None)}; raises if the step is too coarse."""
+    from odrt.thermal import motor_thermal
+    return {name: motor_thermal(opt.component, inputs.thermal) for name, opt in inputs.options.items()}
 
 
 def input_hash(root: Path) -> str:

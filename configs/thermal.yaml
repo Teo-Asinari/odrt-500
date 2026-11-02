@@ -1,0 +1,11 @@
+# First-order two-node motor thermal model (winding -> housing -> ambient).
+# Total thermal resistance is backed out from each motor's rated continuous
+# torque (rated torque = steady winding_max_c at ambient_c). Every value below
+# is a placeholder until vendor thermal data is found (A-015).
+ambient_c: 25
+winding_max_c: 120               # insulation limit; not stated by any cited source
+specific_heat_j_per_kg_k: 460    # steel/copper mix, whole motor mass
+winding_capacity_fraction: 0.3   # share of heat capacity in the winding node
+winding_resistance_fraction: 0.3 # share of total thermal resistance winding -> housing
+step_s: 0.1                      # thermal integration step (copper loss averaged per step)
+peak_hold_cap_s: 3600            # stop the 500 lbf hold test here

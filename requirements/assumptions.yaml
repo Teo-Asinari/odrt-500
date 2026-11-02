@@ -85,3 +85,9 @@ assumptions:
     confidence: low
     status: open
     affects: [R-06, R-07]
+  - id: A-015
+    statement: Motor thermal model is two nodes (winding, housing) with total resistance backed out from rated continuous torque at a 120 C winding limit, heat capacity from total mass x 460 J/kg/K, and fixed 30/70 splits. Natural convection only; no fan; motors start cold.
+    basis: No cited source gives thermal resistance, time constants or insulation class. Back-calculating from rated torque is standard but inherits the vendor's (unstated) rating conditions.
+    confidence: low
+    status: open
+    affects: [R-01, R-02, R-07]

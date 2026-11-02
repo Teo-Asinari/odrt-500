@@ -41,6 +41,7 @@ def write_reports(inputs, payload: dict, sim_dir: Path, out: Path):
     _plot_drivetrain(inputs, np.load(sim_dir / f"{FOCUS_SCENARIO}.npz"), path)
     written.append(path)
     written.append(_write_text(out / "components.md", _components_md(inputs, payload)))
+    written.append(_write_text(out / "thermal.md", _thermal_md(inputs, payload)))
     written.append(_write_text(out / "traceability.md", _traceability_md(inputs)))
     written.append(_write_text(out / "assumptions.md", _assumptions_md(inputs)))
     return written
@@ -304,4 +305,38 @@ def _components_md(inputs, payload) -> str:
     lines += ["", "Rotor inertia is not stated for most candidates, so their torque requirements leave out "
               "rotor inertia. That understates peak torque in fast scenarios. Actuator speed limits are "
               "not stated.", ""]
+    return "\n".join(lines)
+
+
+def _thermal_md(inputs, payload) -> str:
+    tp = inputs.thermal
+    lines = _header("R-07 motor thermal estimate", inputs)
+    lines += [f"Two-node model (winding, housing) per motor, starting cold at {tp.ambient_c:g} °C, limit "
+              f"{tp.winding_max_c:g} °C. Thermal resistance is backed out from each motor's rated continuous "
+              "torque, and heat capacity comes from its mass (A-015). With natural convection only, every number "
+              "here inherits the vendor's unstated rating conditions. Treat these as rough estimates, not limits.", "",
+              "## How long can 500 lbf be held from cold?", "",
+              "| Option | R_th K/W | Winding τ s | Torque per motor N·m | Time to limit | Steady-state winding °C |",
+              "|---|---:|---:|---:|---|---:|"]
+    names = [n for n, e in payload["thermal"].items() if not e["reason"]]
+    for name in names:
+        e = payload["thermal"][name]
+        hold = e["peak_tension_hold_s"]
+        hold_txt = (f"{hold:.0f} s" if hold is not None and hold < 120 else
+                    f"{hold / 60:.1f} min" if hold is not None else f"> {tp.peak_hold_cap_s / 60:.0f} min (no limit)")
+        steady = e["peak_tension_steady_winding_c"]
+        lines.append(f"| {name} | {e['r_total_k_per_w']:.2f} | {e['winding_tau_s']:.0f} "
+                     f"| {e['peak_tension_torque_per_motor_nm']:.2f} | {hold_txt} "
+                     f"| {'runaway' if steady is None else format(steady, '.0f')} |")
+    skipped = sorted({(inputs.options[n].component.id, e["reason"]) for n, e in payload["thermal"].items()
+                      if e["reason"]})
+    lines += ["", "Not modelled: " + "; ".join(f"{cid} ({why})" for cid, why in skipped) + ".", "",
+              "## Peak winding temperature per scenario (°C, from cold)", ""]
+    scen = list(inputs.scenarios)
+    lines += ["| Option | " + " | ".join(scen) + " |", "|---|" + "---:|" * len(scen)]
+    for name in names:
+        temps = payload["thermal"][name]["scenarios"]
+        cells = [f"{temps[s]:.0f}{' ✗' if temps[s] >= tp.winding_max_c else ''}" for s in scen]
+        lines.append(f"| {name} | " + " | ".join(cells) + " |")
+    lines += ["", f"✗ = reaches the {tp.winding_max_c:g} °C placeholder limit.", ""]
     return "\n".join(lines)
