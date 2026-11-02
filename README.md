@@ -6,3 +6,7 @@ Simulation-first research project for an open, wall-powered, digitally controlle
 
 - Design brief: [`docs/DESIGN.md`](docs/DESIGN.md)
 - Coding agents: start with §11 of the brief ("Instructions to the first coding agent"), then WP0 and WP1.
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
