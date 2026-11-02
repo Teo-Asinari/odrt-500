@@ -630,3 +630,65 @@ def write_platform_report(inputs, z: dict, out: Path) -> Path:
     path = out / "platform.md"
     path.write_text("\n".join(lines))
     return path
+
+
+def write_motor_report(inputs, f, fam, cfg, rows, base, out: Path) -> Path:
+    lim = cfg["winding_limit_c"]
+    lines = _header("Custom motor sizing study (pre-design)", inputs)
+    lines += ["What would a custom motor need, to remove the heat limit of the single-RO100 design? There is no "
+              "electromagnetic design here. Scaling laws are fitted to seven cited Tecnotion frameless motors "
+              "(`data/motor_family.csv`), and the sized candidates are run through the same drivetrain model and "
+              f"heavy scenarios (A-023). Winding limit {lim} °C; mount-to-air {cfg['mount_to_air_k_per_w']} K/W with "
+              f"{cfg['mount_heat_capacity_j_per_k']} J/K of mount heat capacity (placeholders).", "",
+              "## Fitted laws (r = gap-radius proxy, L = stack, H = stator height, SI units)", "",
+              f"- Km² = {f.c:.3g} · r^{f.a:.2f} · L² / (L + {f.e:.2f} r): max error over the family {f.errors['km2']:.0%}",
+              f"- Peak torque = {f.s:.3g} · r^{f.b:.2f} · L: max error {f.errors['peak']:.0%}",
+              f"- Winding-to-mount Rth = {f.q:.3g} / (r^{f.g:.2f} · H): max error {f.errors['rth']:.0%}",
+              f"- Winding time constant = {f.t0:.3g} · r^{f.h:.2f}: max error {f.errors['tau']:.0%}",
+              f"- Mass from active annulus volume (ρ_eff {f.rho:.0f} kg/m³, H = L + {f.k_h:.2f} r); inertia "
+              f"J = {f.j:.2f} · mass · r²",
+              "", "The radius dependence rests on only two diameters (105 and 210 mm), so treat values away from "
+              "those sizes as rough.", "",
+              "## RO100 baseline under the same thermal assumptions", "",
+              "| Motor | Km | Copper at 500 lbf W | Holds 500 lbf | Heavy set °C | 3 s pauses °C | Slow 400 lbf °C | Verdict |",
+              "|---|---:|---:|---|---:|---:|---:|---|"]
+    def hold(r):
+        return f"{r['hold_500lbf_s'] / 60:.1f} min" if r["hold_500lbf_s"] else "> 60 min"
+    for label, c, r in base:
+        t = r["temps"]
+        lines.append(f"| {label} | {c.km:.2f} | {r['copper_500lbf_w']:.0f} | {hold(r)} | {t['heavy_tempo_limit']:.0f} "
+                     f"| {t['peak_tension_hold_limit']:.0f} | {t['slow_heavy_pull_reference']:.0f} "
+                     f"| {'pass' if r['thermal_ok'] and r['peak_ok'] else '**fail**'} |")
+    for kind, title in (("geared", f"Geared ({cfg['geared']['ratio']}:1 belt kept)"),
+                        ("direct_drive", "Direct drive (motor on the drum shaft, no belt)")):
+        lines += ["", f"## {title}", "",
+                  "| Stator OD mm | Target Km | Stack mm | Active mass kg | Peak / need N·m | Copper at 500 lbf W "
+                  "| Holds 500 lbf | Heavy / 3 s pauses / slow °C | Felt inertia kg | Verdict |",
+                  "|---:|---:|---:|---:|---|---:|---|---|---:|---|"]
+        for k, c, r in rows:
+            if k != kind:
+                continue
+            if r is None:
+                lines.append(f"| {c.od_m * 1e3:.0f} | {c.km:g} | {c.stack_m * 1e3:.0f} | — | — | — | — | — | — "
+                             f"| stack over {cfg['max_stack_mm']} mm |")
+                continue
+            t = r["temps"]
+            lines.append(f"| {c.od_m * 1e3:.0f} | {c.km:g} | {c.stack_m * 1e3:.0f} | {c.mass_kg:.1f} "
+                         f"| {c.peak_nm:.0f} / {r['peak_need_nm']:.0f} | {r['copper_500lbf_w']:.0f} | {hold(r)} "
+                         f"| {t['heavy_tempo_limit']:.0f} / {t['peak_tension_hold_limit']:.0f} / "
+                         f"{t['slow_heavy_pull_reference']:.0f} | {r['felt_inertia_kg']:.0f} "
+                         f"| {'pass' if r['thermal_ok'] and r['peak_ok'] else '**fail**'} |")
+    lines += ["", "## Reading this", "",
+              "- The winding-to-mount thermal path matters as much as Km. The cited frameless motors (stator potted "
+              "into a housing) shed winding heat far better than the RO100 as modelled (A-015, A-022). A custom motor "
+              "only gets these numbers if it is built the same way.",
+              "- Off-the-shelf frameless parts already sit in the useful range. QTR-A-105-60 (Km ≈ 0.63, 1.9 kg) "
+              "is close to the 105 mm / Km 0.6 candidate, and QTL-A-210-85 (Km ≈ 3.7, 8.3 kg) is close to direct "
+              "drive at 210 mm / Km 3.5. Their listed windings are far too slow at 48 V, and prices are not stated, "
+              "so a custom winding or a higher bus voltage would be needed.",
+              "- Direct drive cuts felt inertia (about 11-26 kg versus 31-91 kg geared) and removes the belt, but "
+              "needs a 6-13 kg motor and roughly 40-60 N·m. Not modelled: speed and voltage limits, magnet "
+              "cost, manufacturability.", ""]
+    path = out / "custom_motor.md"
+    path.write_text("\n".join(lines))
+    return path

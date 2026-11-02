@@ -1,0 +1,8 @@
+family,model,stator_od_mm,rotor_id_mm,stack_mm,stator_height_mm,km2_nm2_per_w,peak_torque_nm,cont_power_w,rth_k_per_w,tau_th_s,mass_kg,rotor_inertia_kg_m2,source_url,page,accessed
+QTR-105,QTR-A-105-17 (Y),105,56,8,17,0.022,2.2,116,0.65,22,0.378,0.00008,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,16,2026-11-02
+QTR-105,QTR-A-105-25 (Y),105,56,16,25,0.063,4.3,213,0.35,17,0.618,0.00015,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,16,2026-11-02
+QTR-105,QTR-A-105-34 (Y),105,56,24,34,0.114,6.5,295,0.25,15,0.964,0.00022,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,16,2026-11-02
+QTR-105,QTR-A-105-60 (N),105,56,48,60,0.397,18.0,483,0.16,23,1.909,0.00043,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,16,2026-11-02
+QTL-210,QTL-A-210-65 (N),210,140,40,65,8.0,140,690,0.116,53,5.8,0.009,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,22,2026-11-02
+QTL-210,QTL-A-210-85 (N),210,140,60,85,13.5,211,1028,0.078,47,8.3,0.014,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,22,2026-11-02
+QTL-210,QTL-A-210-105 (N),210,140,80,105,19.2,281,1363,0.059,45,10.7,0.019,https://www.tecnotion.com/wp-content/uploads/2022/05/Torque_Brochure_EN_2-5.pdf,22,2026-11-02

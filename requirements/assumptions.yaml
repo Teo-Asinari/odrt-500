@@ -134,3 +134,9 @@ assumptions:
     status: open
     affects: [R-01, R-02, R-06, R-07]
 
+  - id: A-023
+    statement: The custom-motor sizing uses scaling laws (Km, peak torque, winding-to-mount thermal resistance and time constant, mass, inertia) fitted to seven cited Tecnotion frameless motors at two diameters (105 and 210 mm). The mount-to-air path is a 1 K/W, 2000 J/K placeholder for an aluminium housing and frame. Air-gap radius is approximated from the published rotor ID and stator OD.
+    basis: A pre-design estimate only, with no electromagnetic design. Radius exponents rest on two diameters, so extrapolation is uncertain. The cited motors' winding-to-mount data comes from a potted frameless construction with the mount held at 20 C. A custom motor would have to match that construction to get the same thermal path. Speed and voltage (winding choice) and cost are not modelled.
+    confidence: low
+    status: open
+    affects: [R-01, R-02, R-07, R-11, R-12]

@@ -1,0 +1,16 @@
+# Custom motor sizing study (A-023). Candidates are sized from scaling laws fitted to
+# data/motor_family.csv, then run through the drivetrain and thermal models.
+winding_limit_c: 140
+geared:            # keep the 6:1 belt reduction
+  ratio: 6
+  efficiency: 0.95
+  stator_od_mm: [105, 130, 160]
+  km_targets: [0.6, 0.8, 1.0, 1.3]
+direct_drive:      # motor on the drum shaft, no belt
+  ratio: 1
+  efficiency: 0.98
+  stator_od_mm: [160, 210, 260]
+  km_targets: [2.5, 3.5, 5.0]
+max_stack_mm: 150
+mount_to_air_k_per_w: 1.0        # frame/heat-sink to room air, natural convection (placeholder; RO100 back-out gives ~1.1 K/W total)
+mount_heat_capacity_j_per_k: 2000  # ~2 kg of aluminium frame near the motor (placeholder)

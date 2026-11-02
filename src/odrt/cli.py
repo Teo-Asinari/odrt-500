@@ -283,6 +283,41 @@ def cmd_visual(args) -> int:
     return 0
 
 
+def cmd_motor(args) -> int:
+    import yaml as _yaml
+    from odrt import motor_sizing as ms
+    from odrt.reporting import write_motor_report
+    inputs = load_inputs(args.root)
+    root = Path(args.root)
+    cfg = _yaml.safe_load((root / "configs/custom_motor.yaml").read_text())
+    fam = ms.load_family(root / "data/motor_family.csv")
+    f = ms.fit(fam)
+    rows = []
+    for kind in ("geared", "direct_drive"):
+        c = cfg[kind]
+        for od in c["stator_od_mm"]:
+            for km in c["km_targets"]:
+                cand = ms.size(f, f"{kind}", od / 1e3, km)
+                if cand.stack_m * 1e3 > cfg["max_stack_mm"]:
+                    rows.append((kind, cand, None))
+                    continue
+                rows.append((kind, cand, ms.evaluate(inputs, cand, c["ratio"], c["efficiency"], cfg["winding_limit_c"],
+                                                     cfg["mount_to_air_k_per_w"], cfg["mount_heat_capacity_j_per_k"])))
+    # RO100 baseline under the same thermal assumptions (cited Km and the analogue's Km)
+    from odrt.project import thermal_models
+    mt, _ = thermal_models(inputs)["cubemars_ro100_kv55@6:1"]
+    ro = inputs.components["cubemars_ro100_kv55"]
+    base = []
+    for label, km in (("RO100, cited Km", ro.km()), ("RO100 at analogue Km", 0.34)):
+        cand = ms.Candidate(label, 0.1135, 0.0, 0.0, km, ro.peak_torque_nm, mt.r_wh, mt.winding_tau_s, ro.mass_kg,
+                            ro.rotor_inertia_kg_m2)
+        base.append((label, cand, ms.evaluate(inputs, cand, 6, 0.95, cfg["winding_limit_c"],
+                                              cfg["mount_to_air_k_per_w"], cfg["mount_heat_capacity_j_per_k"])))
+    path = write_motor_report(inputs, f, fam, cfg, rows, base, Path(args.reports))
+    print(f"wrote {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="odrt", description=__doc__)
     parser.add_argument("--root", default=".", help="repository root (default: .)")
@@ -297,6 +332,8 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("visual", help="detailed model and animated exercise GLBs (needs the [cad] extra)")
     p.add_argument("--out", default="build/visual")
     p.add_argument("--only", nargs="+", metavar="EXERCISE")
+    p = sub.add_parser("motor", help="custom motor sizing study from the cited motor family")
+    p.add_argument("--reports", default="reports")
     p = sub.add_parser("fea", help="side-plate FEA convergence study (needs the [fea] extra)")
     p.add_argument("--reports", default="reports")
     p = sub.add_parser("report", help="render reports from simulation results")
@@ -308,7 +345,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report, "cad": cmd_cad,
-               "fea": cmd_fea, "visual": cmd_visual}[args.command]
+               "fea": cmd_fea, "visual": cmd_visual,
+               "motor": cmd_motor}[args.command]
     try:
         return handler(args)
     except ConfigError as exc:
