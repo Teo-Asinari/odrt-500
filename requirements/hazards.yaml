@@ -136,3 +136,13 @@ hazards:
     channel: independent-hardware
     validation_gap: Bleed time, pre-charge, fusing and balancing are not designed. The buffer is sized in dynamics only.
     requirements: [R-06, R-09]
+  - id: H-14
+    title: Pull with nobody on the deck
+    cause: Someone pulls the cable while standing beside the platform, or steps off during a set.
+    effect: The pull is no longer reacted by body weight. The platform lifts or tips at low tension (see the platform report) and can strike the user.
+    severity: S3
+    evidence: []
+    mitigations: [Deck presence sensing (load cells or mat switch) that enables tension above rest only when someone is on the deck (independent-hardware, not designed), Release detection drops tension when a user steps off (firmware, simulated for handle release only)]
+    channel: independent-hardware
+    validation_gap: Not simulated. Presence sensing and its threshold are undefined.
+    requirements: [R-09, R-14]

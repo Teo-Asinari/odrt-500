@@ -161,12 +161,27 @@ def structural_summary(inputs, payload) -> dict:
     return sizes
 
 
+def platform_summary(inputs, sizes, mech_env_mm, mech_mass_kg, mech_back_mm=None) -> dict:
+    from odrt import cad, platform
+    from odrt.drivetrain import Drum
+    st = inputs.structure
+    opt = inputs.options[st.design]
+    return platform.evaluate(inputs.platform, cad.layout(st, opt, inputs.common, sizes), mech_env_mm,
+                             Drum(opt.architecture, inputs.common).width_m * 1e3,
+                             sizes["design_tension_lbf"] * 4.4482216152605,
+                             sizes["observed_fault_peak_lbf"] * 4.4482216152605, mech_mass_kg, mech_back_mm)
+
+
 def cmd_cad(args) -> int:
     from odrt import cad
     inputs = load_inputs(args.root)
     st = inputs.structure
     opt = inputs.options[st.design]
-    sizes = structural_summary(inputs, {})
+    sim_metrics = Path("build/sim/metrics.json")
+    sizes = structural_summary(inputs, json.loads(sim_metrics.read_text()) if sim_metrics.exists() else {})
+    if sizes.get("observed_fault_peak_lbf") is None:
+        print("error: run `odrt simulate` first (platform checks need the dynamic snap load)", file=sys.stderr)
+        return 2
     try:
         parts, geo = cad.build(st, opt, inputs.common, sizes)
     except cad.CadUnavailable as exc:
@@ -192,8 +207,25 @@ def cmd_cad(args) -> int:
         cq.exporters.export(cq.Workplane().add(compound), str(figs / f"cad_{view}.svg"), exportType="SVG",
                             opt={"projectionDir": direction, "showAxes": False, "width": 520, "height": 400,
                                  "marginLeft": 10, "marginTop": 10, "strokeWidth": 0.4, "showHidden": False})
-    from odrt.reporting import write_cad_report
+    from odrt.reporting import write_cad_report, write_platform_report
     report = write_cad_report(inputs, sizes, geo, env, masses, clashes, step, Path(args.reports))
+    back = -min(p.shape.val().BoundingBox().ymin for p in parts)
+    plat = platform_summary(inputs, sizes, env, sum(masses.values()), back)
+    pparts, pgeo = cad.build_platform(st, opt, inputs.common, sizes, inputs.platform, plat)
+    pclash = cad.interferences(pparts)
+    passy = cad.assemble(pparts)
+    passy.save(str(out / "odrt500_platform.step"))
+    pglb = out / "odrt500_platform.glb"
+    passy.save(str(pglb), exportType="GLTF")
+    cad.gltf_to_metres_y_up(pglb)
+    cq.exporters.export(cq.Workplane().add(passy.toCompound().mirror("XY")), str(figs / "cad_platform_iso.svg"),
+                        exportType="SVG", opt={"projectionDir": (1.2, 1.0, -0.9), "showAxes": False, "width": 560,
+                                               "height": 420, "marginLeft": 10, "marginTop": 10, "strokeWidth": 0.4,
+                                               "showHidden": False})
+    plat["interferences"] = len(pclash)
+    plat["envelope_mm"] = cad.envelope_mm(pparts)
+    write_platform_report(inputs, plat, Path(args.reports))
+    clashes = clashes + pclash
     print(f"wrote {step}, {glb}, {report} and {len(views)} views; {len(clashes)} interferences")
     return 1 if clashes else 0
 

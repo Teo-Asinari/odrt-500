@@ -587,3 +587,34 @@ def _economics_md(inputs) -> str:
               "motors (e.g. hub motors), which need cited data; and the brief's alternative of a lower peak "
               "target or two 250 lbf units.", ""]
     return "\n".join(lines)
+
+
+def write_platform_report(inputs, z: dict, out: Path) -> Path:
+    c = inputs.platform
+    ok = lambda b: "pass" if b else "**FAIL**"  # noqa: E731
+    lines = _header("R-14 floor platform (first pass)", inputs)
+    lines += [f"Design `{inputs.structure.design}` built into a floor platform (ADR-001). The mechanism sits at the back, "
+              "the cable runs forward to a turning sheave and leaves vertically through a deck port between the feet. "
+              "The user's weight on the deck closes the pull loads inside the platform. Hand calculations only (A-021).", "",
+              "| Quantity | Value | Check |", "|---|---:|---|",
+              f"| Platform (L × W × deck height) | {z['platform_length_mm']:.0f} × {z['platform_width_mm']:.0f} × "
+              f"{z['deck_height_mm']:.0f} mm | deck height ≥ {z['deck_height_needed_mm']:.0f} mm: {ok(z['deck_height_ok'])} |",
+              f"| Drum-to-sheave run | {z['drum_to_sheave_mm']:.0f} mm | fleet angle {z['fleet_angle_deg']:.1f}° "
+              f"(limit {c.max_fleet_deg:g}°) |",
+              f"| Port position from the back | {z['port_from_back_mm']:.0f} mm | |",
+              f"| Foot load (user {c.user_mass_kg:g} kg + snap {z['snap_tension_lbf']:.0f} lbf, per foot) | {z['foot_load_n']:.0f} N | |",
+              f"| Stringer stress ({c.stringer.name}, {'×'.join(f'{v:g}' for v in c.stringer_section_mm)} mm) | "
+              f"{z['stringer_stress_mpa']:.0f} MPa | allowable {z['stringer_allow_mpa']:.0f} MPa: {ok(z['stringer_stress_ok'])} |",
+              f"| Stringer deflection | {z['stringer_deflection_mm']:.2f} mm | limit {c.deflection_limit_mm:g} mm: "
+              f"{ok(z['stringer_deflection_ok'])} |",
+              f"| Turning-sheave load (90° wrap, snap tension) | {z['sheave_load_n']:.0f} N | sheave and axle not yet sized |",
+              f"| Platform mass (estimate) | {z['platform_mass_kg']:.0f} kg | |",
+              f"| Pull that lifts an empty platform | {z['empty_platform_lift_off_lbf']:.0f} lbf | hazard H-14: needs deck presence sensing |",
+              f"| CAD envelope / interferences | {' × '.join(f'{v:.0f}' for v in z.get('envelope_mm', (0, 0, 0)))} mm "
+              f"/ {z.get('interferences', '—')} | |",
+              "", "Open items: frame joints and FEA, sheave and axle sizing, fleet-angle limit from real groove and "
+              "sheave data, foot-traction surface, and tipping when the cable pulls off vertical.", "",
+              "![platform](figures/cad_platform_iso.svg)", ""]
+    path = out / "platform.md"
+    path.write_text("\n".join(lines))
+    return path

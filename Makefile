@@ -27,7 +27,7 @@ simulate:
 report: simulate
 	$(PY) -m odrt report --sim $(SIM_DIR) --out reports
 
-cad:
+cad: simulate
 	$(PY) -m odrt cad --out build/cad --reports reports
 
 fea:

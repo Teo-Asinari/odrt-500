@@ -1,0 +1,19 @@
+# R-14 floor platform (ADR-001). The mechanism sits at one end; the cable runs
+# horizontally to a turning sheave under the deck port and leaves vertically
+# between the user's feet. Placeholders throughout (A-021).
+max_fleet_angle_deg: 4.0          # drum-to-sheave fleet angle limit; real limit depends on groove and sheave design
+sheave_radius_mm: 30                # sheave must fit under the deck; D/d = 15 for a 4 mm rope (review)
+deck:
+  material: {name: "aluminium 6061-T6", yield_mpa: 240, density_kg_m3: 2700, youngs_gpa: 68.9, poisson: 0.33}
+  thickness_mm: 10
+  height_mm: 200                  # deck top above the floor
+  stance_half_width_mm: 200       # foot centres either side of the port
+  foot_room_mm: 180               # deck beyond the port, front and back, for the feet
+  side_margin_mm: 60
+  back_margin_mm: 30
+stringer:                         # one longitudinal steel tube under each foot line, supported at the platform ends
+  material: {name: "steel, structural tube", yield_mpa: 350, density_kg_m3: 7850, youngs_gpa: 200, poisson: 0.29}
+  section_mm: [40, 40, 3]         # square hollow section: width, height, wall
+design_user_mass_kg: 120          # heaviest user the deck is sized for (placeholder)
+frame_mass_estimate_kg: 12        # deck, rails, sheave, enclosure (excl. mechanism), placeholder
+deflection_limit_mm: 2.0          # deck sag under a foot at the design load

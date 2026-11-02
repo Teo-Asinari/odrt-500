@@ -187,11 +187,16 @@ def interferences(parts, tol_mm3: float = 1.0):
     bearing in plate bore) are excluded by name.
     """
     allowed = {("drum", "shaft"), ("shaft", "bearing"), ("shaft", "belt wheel"), ("drum", "cable layers"),
-               ("side plate", "bearing"), ("pinion", "motor"), ("motor bracket", "pinion")}
+               ("side plate", "bearing"), ("pinion", "motor"), ("motor bracket", "pinion"),
+               ("turning sheave", "sheave axle"), ("sheave cheek", "sheave axle"), ("rubber foot", "platform pan"),
+               ("stringer", "end frame"), ("stringer", "deck"), ("skirt", "end frame"), ("skirt", "deck"),
+               ("end frame", "deck"), ("end frame", "platform pan"), ("skirt", "platform pan"),
+               ("base plate", "platform pan"), ("sheave cheek", "platform pan")}
 
     def kind(name):
         for k in ("cable layers", "side plate", "belt wheel", "motor bracket", "fairlead post", "fairlead roller",
-                  "base plate", "drum", "shaft", "bearing", "motor", "pinion"):
+                  "base plate", "turning sheave", "sheave cheek", "sheave axle", "rubber foot", "platform pan",
+                  "stringer", "skirt", "end frame", "deck", "drum", "shaft", "bearing", "motor", "pinion"):
             if name.startswith(k):
                 return k
         return name
@@ -257,3 +262,53 @@ def gltf_to_metres_y_up(path) -> None:
     out = (data[:12] + struct.pack("<I", len(blob)) + data[16:20] + blob + rest)
     out = out[:8] + struct.pack("<I", len(out)) + out[12:]
     open(path, "wb").write(out)
+
+
+def build_platform(st, opt, common, sizes, cfg, z):
+    """Floor-platform assembly (R-14): mechanism at the back, cable forward to a turning sheave, up through
+    the deck port. Returns parts in the same device frame (mm); the floor is at z = -(pan + feet)."""
+    cq = _cq()
+    parts, geo = build(st, opt, common, sizes)
+    lay = layout(st, opt, common, sizes)
+    exit_z = geo["cable_exit_height_mm"]
+    length, width = z["platform_length_mm"], z["platform_width_mm"]
+    y_back = -(z["port_from_back_mm"] - z["drum_to_sheave_mm"])  # drum axis is at y = 0
+    y_port = y_back + z["port_from_back_mm"]
+    y_front = y_back + length
+    deck_top = cfg.deck_h_mm
+    bw, bh, wall = cfg.stringer_section_mm
+    out = list(parts)
+    pan = cq.Workplane("XY").box(width, length, 3, centered=(True, False, False)).translate((0, y_back, -3))
+    out.append(Part("platform pan", pan, "plate", False))
+    for s in (-1, 1):
+        sx = s * cfg.stance_half_mm
+        tube = (cq.Workplane("XZ").rect(bw, bh).rect(bw - 2 * wall, bh - 2 * wall).extrude(-length)
+                .translate((sx, y_back, deck_top - cfg.deck_t_mm - bh / 2)))
+        out.append(Part(f"stringer {'left' if s < 0 else 'right'}", tube, "shaft", False))
+        skirt = (cq.Workplane("XY").box(4, length, deck_top - cfg.deck_t_mm, centered=(True, False, False))
+                 .translate((s * (width / 2 - 2), y_back, 0)))
+        out.append(Part(f"skirt {'left' if s < 0 else 'right'}", skirt, "plate", False))
+    for y, label in ((y_back, "back"), (y_front - bh, "front")):
+        cross = (cq.Workplane("XY").box(width - 8, bh, deck_top - cfg.deck_t_mm, centered=(True, False, False))
+                 .translate((0, y, 0)))
+        out.append(Part(f"end frame {label}", cross, "shaft", False))
+    deck = (cq.Workplane("XY").box(width, length, cfg.deck_t_mm, centered=(True, False, False))
+            .translate((0, y_back, deck_top - cfg.deck_t_mm)).edges("|Z").fillet(15.0))
+    deck = deck.cut(cq.Workplane("XY").circle(22).extrude(cfg.deck_t_mm + 2).translate((0, y_port, deck_top - cfg.deck_t_mm - 1)))
+    out.append(Part("deck", deck, "plate", False))
+    r = cfg.sheave_r_mm
+    yc, zc = y_port - r, exit_z + r
+    sheave = (cq.Workplane("YZ").workplane(offset=-8).center(yc, zc).circle(r).circle(6).extrude(16))
+    out.append(Part("turning sheave", sheave, "plate", True))
+    for s in (-1, 1):
+        cheek = (cq.Workplane("XY").box(5, 2 * r + 30, zc + r + 8 - 0, centered=(True, True, False))
+                 .translate((s * 13, yc, 0)))
+        out.append(Part(f"sheave cheek {'left' if s < 0 else 'right'}", cheek, "plate", False))
+    axle = (cq.Workplane("YZ").workplane(offset=-16).center(yc, zc).circle(6).extrude(32))
+    out.append(Part("sheave axle", axle, "shaft", False))
+    for cx in (-width / 2 + 25, width / 2 - 25):
+        for cy in (y_back + 25, y_front - 25):
+            foot = cq.Workplane("XY").circle(18).extrude(10).translate((cx, cy, -13))
+            out.append(Part(f"rubber foot {cx:.0f} {cy:.0f}", foot, "none", False))
+    geo = dict(geo, platform_y_back_mm=y_back, port_y_mm=y_port, sheave_centre_mm=(yc, zc))
+    return out, geo

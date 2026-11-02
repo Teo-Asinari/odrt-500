@@ -65,3 +65,19 @@ def test_cad_detects_interference(inputs):
     opt = inputs.options[st.design]
     parts, _ = cad.build(st, opt, inputs.common, sizing(st, opt, inputs.common, 500))
     assert cad.interferences(parts)
+
+
+def test_platform_stringer_hand_calc():
+    from odrt.platform import PlatformCfg, evaluate  # noqa: F401
+    inputs = load_inputs(REPO)
+    cfg = inputs.platform
+    z = evaluate(cfg, {}, (300.0, 300.0, 160.0), 72.0, 2500.0, 4000.0, 7.0)
+    # fleet angle exactly at the limit by construction
+    assert z["fleet_angle_deg"] == pytest.approx(cfg.max_fleet_deg)
+    foot = (cfg.user_mass_kg * 9.80665 + 4000.0) / 2
+    assert z["foot_load_n"] == pytest.approx(foot)
+    L, a = z["platform_length_mm"] / 1e3, z["port_from_back_mm"] / 1e3
+    bw, bh, t = (v / 1e3 for v in cfg.stringer_section_mm)
+    i = (bw * bh**3 - (bw - 2 * t) * (bh - 2 * t) ** 3) / 12
+    assert z["stringer_stress_mpa"] == pytest.approx(foot * a * (L - a) / L * (bh / 2) / i / 1e6)
+    assert z["empty_platform_lift_off_lbf"] == pytest.approx((cfg.frame_mass_kg + 7.0) * 9.80665 / 4.4482216152605)
