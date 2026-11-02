@@ -610,7 +610,16 @@ def write_platform_report(inputs, z: dict, out: Path) -> Path:
               f"{z['stringer_stress_mpa']:.0f} MPa | allowable {z['stringer_allow_mpa']:.0f} MPa: {ok(z['stringer_stress_ok'])} |",
               f"| Stringer deflection | {z['stringer_deflection_mm']:.2f} mm | limit {c.deflection_limit_mm:g} mm: "
               f"{ok(z['stringer_deflection_ok'])} |",
-              f"| Turning-sheave load (90° wrap, snap tension) | {z['sheave_load_n']:.0f} N | sheave and axle not yet sized |",
+              f"| Turning-sheave load (90° wrap, snap tension) | {z['sheave_load_n']:.0f} N | hung from a cross-beam between the stringers |",
+              f"| Sheave axle (steel, between cheeks) | ≥ {z['axle_min_mm']:.1f} mm → {z['axle_mm']} mm | |",
+              f"| Sheave bearings: required static rating each | {z['sheave_bearing_c0_n']:.0f} N | select and cite a bearing |",
+              f"| Cheek bearing / tear-out stress | {z['cheek_bearing_mpa']:.0f} / {z['cheek_tearout_mpa']:.0f} MPa | |",
+              f"| Cheek bending (bracket from the cross-beam, {c.deck.name}) | {z['cheek_bending_mpa']:.0f} MPa | "
+              f"{ok(z['cheek_bending_ok'])} |",
+              f"| Cross-beam stress / deflection (same tube as stringers) | {z['cross_beam_stress_mpa']:.0f} MPa / "
+              f"{z['cross_beam_deflection_mm']:.2f} mm | {ok(z['cross_beam_stress_ok'])} |",
+              f"| Mechanism base bolts in shear (snap tension) | {z['bolt_shear_mpa']:.0f} MPa | {ok(z['bolt_shear_ok'])} |",
+              f"| Sheave-to-rope diameter ratio | {z['sheave_d_over_rope']:.0f} | low for rope bending fatigue; review |",
               f"| Platform mass (estimate) | {z['platform_mass_kg']:.0f} kg | |",
               f"| Pull that lifts an empty platform | {z['empty_platform_lift_off_lbf']:.0f} lbf | hazard H-14: needs deck presence sensing |",
               f"| CAD envelope / interferences | {' × '.join(f'{v:.0f}' for v in z.get('envelope_mm', (0, 0, 0)))} mm "

@@ -81,3 +81,17 @@ def test_platform_stringer_hand_calc():
     i = (bw * bh**3 - (bw - 2 * t) * (bh - 2 * t) ** 3) / 12
     assert z["stringer_stress_mpa"] == pytest.approx(foot * a * (L - a) / L * (bh / 2) / i / 1e6)
     assert z["empty_platform_lift_off_lbf"] == pytest.approx((cfg.frame_mass_kg + 7.0) * 9.80665 / 4.4482216152605)
+
+
+def test_sheave_axle_and_cross_beam_hand_calc():
+    import math
+    from odrt.platform import evaluate
+    inputs = load_inputs(REPO)
+    cfg = inputs.platform
+    z = evaluate(cfg, {}, (300.0, 300.0, 160.0), 72.0, 2500.0, 4000.0, 7.0)
+    p = math.sqrt(2) * 4000.0
+    allow = cfg.stringer.yield_mpa * 1e6 / 2
+    d = (32 * p * cfg.sheave["cheek_gap_mm"] / 1000 / 4 / (math.pi * allow)) ** (1 / 3) * 1000
+    assert z["axle_min_mm"] == pytest.approx(d)
+    assert z["axle_mm"] >= z["axle_min_mm"]
+    assert z["sheave_bearing_c0_n"] == pytest.approx(cfg.sheave["bearing_static_factor"] * p / 2)

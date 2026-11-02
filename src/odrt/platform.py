@@ -34,12 +34,15 @@ class PlatformCfg:
     deflection_limit_mm: float
     stringer: Material
     stringer_section_mm: tuple
+    sheave: dict
+    bolts: dict
 
 
 def load_platform(path: Path) -> PlatformCfg:
     d = load_yaml(path)
     w = str(path)
-    check_keys(d, w, ["max_fleet_angle_deg", "sheave_radius_mm", "deck", "stringer", "design_user_mass_kg",
+    check_keys(d, w, ["max_fleet_angle_deg", "sheave_radius_mm", "deck", "stringer", "sheave", "mechanism_bolts",
+                      "design_user_mass_kg",
                       "frame_mass_estimate_kg", "deflection_limit_mm"])
     dk = d["deck"]
     check_keys(dk, f"{w}.deck", ["material", "thickness_mm", "height_mm", "stance_half_width_mm", "foot_room_mm",
@@ -50,7 +53,12 @@ def load_platform(path: Path) -> PlatformCfg:
     sec = sg["section_mm"]
     if not (isinstance(sec, list) and len(sec) == 3 and 2 * sec[2] < min(sec[0], sec[1])):
         raise ConfigError(f"{w}.stringer.section_mm: expected [width, height, wall] with wall < half the size")
+    sh, bo = d["sheave"], d["mechanism_bolts"]
+    check_keys(sh, f"{w}.sheave", ["cheek_gap_mm", "cheek_thickness_mm", "edge_distance_mm", "bearing_static_factor"])
+    check_keys(bo, f"{w}.mechanism_bolts", ["count", "tensile_area_mm2", "shear_allow_mpa"])
     return PlatformCfg(
+        sheave={k: number(v, f"{w}.sheave.{k}", **pos) for k, v in sh.items()},
+        bolts={k: number(v, f"{w}.mechanism_bolts.{k}", **pos) for k, v in bo.items()},
         stringer=_material(sg["material"], f"{w}.stringer.material"),
         stringer_section_mm=tuple(number(v, f"{w}.stringer.section_mm", **pos) for v in sec),
         max_fleet_deg=number(d["max_fleet_angle_deg"], f"{w}.max_fleet_angle_deg", minimum=0.5, maximum=15),
@@ -101,6 +109,28 @@ def evaluate(cfg: PlatformCfg, lay: dict, mech_env_mm: tuple, drum_width_mm: flo
     defl = foot * short * (span**2 - short**2) ** 1.5 / (9 * math.sqrt(3) * span * e * i)
     allow = cfg.stringer.yield_mpa * 1e6 / 2.0
     sheave_load = math.sqrt(2) * snap_tension_n  # 90-degree wrap
+    # Sheave axle: pin between two cheeks, central load -> M = P L / 4; solid round, yield / 2.
+    sh = cfg.sheave
+    allow_steel = cfg.stringer.yield_mpa * 1e6 / 2.0
+    m_axle = sheave_load * (sh["cheek_gap_mm"] / 1000) / 4
+    d_axle = (32 * m_axle / (math.pi * allow_steel)) ** (1 / 3) * 1000
+    d_axle_std = next(v for v in (8, 10, 12, 15, 17, 20, 25) if v >= d_axle)
+    bearing_c0_n = sh["bearing_static_factor"] * sheave_load / 2
+    cheek_bearing_mpa = sheave_load / 2 / (d_axle_std * sh["cheek_thickness_mm"])
+    cheek_tearout_mpa = sheave_load / 2 / (2 * sh["edge_distance_mm"] * sh["cheek_thickness_mm"])
+    # Cheeks reach forward from a cross-beam behind the sheave: cantilever arm ~ r + beam/2 + 5 mm,
+    # section = cheek thickness x (beam depth + sheave radius), conservative.
+    arm = (cfg.sheave_r_mm + cfg.stringer_section_mm[0] / 2 + 5) / 1000
+    h_cheek = (cfg.stringer_section_mm[1] + cfg.sheave_r_mm) / 1000
+    cheek_bending = (sheave_load / 2 * arm) / (sh["cheek_thickness_mm"] / 1000 * h_cheek**2 / 6)
+    # Cross-beam between the stringers carrying the sheave: central point load over the stringer spacing.
+    span_cb = 2 * cfg.stance_half_mm / 1000
+    m_cb = sheave_load * span_cb / 4
+    cb_stress = m_cb * (bh / 2) / i
+    cb_defl = sheave_load * span_cb**3 / (48 * e * i)
+    # Mechanism base bolts in shear: the drum pulls the mechanism toward the sheave with the snap tension.
+    bo = cfg.bolts
+    bolt_shear_mpa = snap_tension_n / bo["count"] / bo["tensile_area_mm2"]
     empty_lift_off_n = (cfg.frame_mass_kg + mech_mass_kg) * G
     return {
         "fleet_angle_deg": math.degrees(math.atan(half_wrap / drum_to_sheave)),
@@ -112,6 +142,13 @@ def evaluate(cfg: PlatformCfg, lay: dict, mech_env_mm: tuple, drum_width_mm: flo
         "stringer_stress_mpa": stress / 1e6, "stringer_allow_mpa": allow / 1e6, "stringer_stress_ok": stress <= allow,
         "stringer_deflection_mm": defl * 1e3, "stringer_deflection_ok": defl * 1e3 <= cfg.deflection_limit_mm,
         "sheave_load_n": sheave_load, "design_tension_lbf": n_to_lbf(design_tension_n),
+        "sheave_d_over_rope": 2 * cfg.sheave_r_mm / 4.0,
+        "axle_min_mm": d_axle, "axle_mm": d_axle_std, "sheave_bearing_c0_n": bearing_c0_n,
+        "cheek_bearing_mpa": cheek_bearing_mpa, "cheek_tearout_mpa": cheek_tearout_mpa,
+        "cheek_bending_mpa": cheek_bending / 1e6, "cheek_bending_ok": cheek_bending <= cfg.deck.yield_mpa * 1e6 / 2.0,
+        "cross_beam_stress_mpa": cb_stress / 1e6, "cross_beam_stress_ok": cb_stress <= allow,
+        "cross_beam_deflection_mm": cb_defl * 1e3, "bolt_shear_mpa": bolt_shear_mpa,
+        "bolt_shear_ok": bolt_shear_mpa <= bo["shear_allow_mpa"],
         "snap_tension_lbf": n_to_lbf(snap_tension_n),
         "empty_platform_lift_off_lbf": n_to_lbf(empty_lift_off_n),
         "platform_mass_kg": cfg.frame_mass_kg + mech_mass_kg,

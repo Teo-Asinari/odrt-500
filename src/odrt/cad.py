@@ -191,11 +191,13 @@ def interferences(parts, tol_mm3: float = 1.0):
                ("turning sheave", "sheave axle"), ("sheave cheek", "sheave axle"), ("rubber foot", "platform pan"),
                ("stringer", "end frame"), ("stringer", "deck"), ("skirt", "end frame"), ("skirt", "deck"),
                ("end frame", "deck"), ("end frame", "platform pan"), ("skirt", "platform pan"),
-               ("base plate", "platform pan"), ("sheave cheek", "platform pan")}
+               ("base plate", "platform pan"), ("sheave cheek", "sheave cross-beam"), ("sheave cross-beam", "stringer"),
+               ("sheave cross-beam", "deck")}
 
     def kind(name):
         for k in ("cable layers", "side plate", "belt wheel", "motor bracket", "fairlead post", "fairlead roller",
-                  "base plate", "turning sheave", "sheave cheek", "sheave axle", "rubber foot", "platform pan",
+                  "base plate", "turning sheave", "sheave cross-beam", "sheave cheek", "sheave axle", "rubber foot",
+                  "platform pan",
                   "stringer", "skirt", "end frame", "deck", "drum", "shaft", "bearing", "motor", "pinion"):
             if name.startswith(k):
                 return k
@@ -298,13 +300,26 @@ def build_platform(st, opt, common, sizes, cfg, z):
     out.append(Part("deck", deck, "plate", False))
     r = cfg.sheave_r_mm
     yc, zc = y_port - r, exit_z + r
-    sheave = (cq.Workplane("YZ").workplane(offset=-8).center(yc, zc).circle(r).circle(6).extrude(16))
+    axle_r = z["axle_mm"] / 2
+    sheave = (cq.Workplane("YZ").workplane(offset=-8).center(yc, zc).circle(r).circle(axle_r + 0.5).extrude(16))
     out.append(Part("turning sheave", sheave, "plate", True))
+    # sheave hangs from a cross-beam between the stringers (load path straight into the feet)
+    beam_z = deck_top - cfg.deck_t_mm - bh / 2
+    # the deck is too shallow for a beam above the sheave, so the beam runs just behind it and the cheeks
+    # reach forward from it as brackets (adds a short moment arm in the cheeks; review)
+    beam_y = yc - r - bw / 2 - 5
+    beam = (cq.Workplane("YZ").rect(bw, bh).rect(bw - 2 * wall, bh - 2 * wall)
+            .extrude(2 * cfg.stance_half_mm - bw).translate((-cfg.stance_half_mm + bw / 2, beam_y, beam_z)))
+    out.append(Part("sheave cross-beam", beam, "shaft", False))
+    gap, ct = cfg.sheave["cheek_gap_mm"], cfg.sheave["cheek_thickness_mm"]
+    cheek_bottom = zc - r - 10
+    cheek_y0, cheek_y1 = beam_y - bw / 2, yc + r + 10
     for s in (-1, 1):
-        cheek = (cq.Workplane("XY").box(5, 2 * r + 30, zc + r + 8 - 0, centered=(True, True, False))
-                 .translate((s * 13, yc, 0)))
+        cheek = (cq.Workplane("XY").box(ct, cheek_y1 - cheek_y0, beam_z + bh / 2 - cheek_bottom,
+                                        centered=(True, False, False))
+                 .translate((s * gap / 2, cheek_y0, cheek_bottom)))
         out.append(Part(f"sheave cheek {'left' if s < 0 else 'right'}", cheek, "plate", False))
-    axle = (cq.Workplane("YZ").workplane(offset=-16).center(yc, zc).circle(6).extrude(32))
+    axle =(cq.Workplane("YZ").workplane(offset=-(gap / 2 + ct)).center(yc, zc).circle(axle_r).extrude(gap + 2 * ct))
     out.append(Part("sheave axle", axle, "shaft", False))
     for cx in (-width / 2 + 25, width / 2 - 25):
         for cy in (y_back + 25, y_front - 25):
