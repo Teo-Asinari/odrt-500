@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 
 import odrt
+from odrt.components import none_if_nan
 from odrt.config import ConfigError
 from odrt.drivetrain import drive_metrics, solve
 from odrt.dutycycle import metrics
@@ -25,7 +26,8 @@ def cmd_check(args) -> int:
     for s in inputs.scenarios.values():
         kinds[s.kind] = kinds.get(s.kind, 0) + 1
     print(f"OK: {len(inputs.requirements)} requirements, {len(inputs.assumptions)} assumptions, "
-          f"{len(inputs.scenarios)} scenarios {kinds}, {len(inputs.architectures)} architectures")
+          f"{len(inputs.scenarios)} scenarios {kinds}, {len(inputs.architectures)} architectures, "
+          f"{len(inputs.components)} components ({len(inputs.options)} options)")
     print(f"input hash {inputs.input_hash[:12]}")
     return 0
 
@@ -39,6 +41,7 @@ def cmd_simulate(args) -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     results, drive = {}, {a: {} for a in inputs.architectures}
+    comp = {o: {} for o in inputs.options}
     for name in names:
         traj = generate(inputs.scenarios[name], inputs.defaults)
         np.savez_compressed(out / f"{name}.npz", t=traj.t, x=traj.x, v=traj.v, a=traj.a,
@@ -47,6 +50,12 @@ def cmd_simulate(args) -> int:
         for arch_name, arch in inputs.architectures.items():
             sig = solve(traj, arch, inputs.common, inputs.envelope.max_usable_stroke_m)
             drive[arch_name][name] = drive_metrics(traj, sig, arch, inputs.common)
+        for opt_name, opt in inputs.options.items():
+            sig = solve(traj, opt.architecture, inputs.common, inputs.envelope.max_usable_stroke_m)
+            m = drive_metrics(traj, sig, opt.architecture, inputs.common)
+            comp[opt_name][name] = {k: none_if_nan(m[k]) for k in (
+                "peak_motor_torque_nm", "worst_window_rms_motor_torque_nm", "peak_motor_speed_rpm",
+                "worst_window_copper_w", "effective_cable_mass_kg", "radius_max_m")}
         m = results[name]
         print(f"{name:28s} {m['duration_s']:7.1f} s  peak {m['peak_tension_lbf']:5.0f} lbf  "
               f"peak P {m['peak_power_absorbed_w']:6.0f} W  TUT {m['time_under_tension_s']:6.1f} s")
@@ -59,6 +68,7 @@ def cmd_simulate(args) -> int:
         },
         "scenarios": results,
         "drivetrain": drive,
+        "components": comp,
     }
     (out / METRICS_FILE).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(f"wrote {len(results)} scenarios to {out}")
@@ -79,6 +89,8 @@ def cmd_report(args) -> int:
     missing = sorted(set(inputs.scenarios) - set(payload["scenarios"]))
     missing += sorted(f"{a}/{s}" for a in inputs.architectures for s in inputs.scenarios
                       if s not in payload.get("drivetrain", {}).get(a, {}))
+    missing += sorted(f"{o}/{s}" for o in inputs.options for s in inputs.scenarios
+                      if s not in payload.get("components", {}).get(o, {}))
     if missing:
         raise ConfigError(f"simulation results missing {missing}: rerun `odrt simulate`")
     written = write_reports(inputs, payload, sim, Path(args.out))

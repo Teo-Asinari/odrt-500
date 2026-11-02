@@ -13,6 +13,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 
+from odrt.components import tension_capability_lbf  # noqa: E402
 from odrt.drivetrain import RPM_PER_RAD_S, solve  # noqa: E402
 from odrt.scenarios import Trajectory, settle_s  # noqa: E402
 from odrt.units import n_to_lbf  # noqa: E402
@@ -39,6 +40,7 @@ def write_reports(inputs, payload: dict, sim_dir: Path, out: Path):
     path = out / "figures" / f"drivetrain_{FOCUS_SCENARIO}.png"
     _plot_drivetrain(inputs, np.load(sim_dir / f"{FOCUS_SCENARIO}.npz"), path)
     written.append(path)
+    written.append(_write_text(out / "components.md", _components_md(inputs, payload)))
     written.append(_write_text(out / "traceability.md", _traceability_md(inputs)))
     written.append(_write_text(out / "assumptions.md", _assumptions_md(inputs)))
     return written
@@ -224,3 +226,82 @@ def _plot_drivetrain(inputs, data, path: Path) -> None:
     axes[-1].set_xlabel("time (s)")
     fig.savefig(path, dpi=110, metadata={"Software": None})
     plt.close(fig)
+
+
+def _fmt(value, spec, missing="not stated"):
+    return missing if value is None else format(value, spec)
+
+
+def _min_margin(rating, per_scenario: dict, key: str):
+    """(margin, binding scenario) = min over scenarios of rating / required, or (None, None)."""
+    if rating is None:
+        return None, None
+    worst = None
+    for scen, m in per_scenario.items():
+        need = m[key]
+        if need is None or need <= 0:
+            continue
+        margin = rating / need
+        if worst is None or margin < worst[0]:
+            worst = (margin, scen)
+    return worst if worst else (None, None)
+
+
+def _components_md(inputs, payload) -> str:
+    lines = _header("WP3 component candidates", inputs)
+    st = inputs.study
+    lines += ["Real parts with cited data (`data/components.csv`), each run through the WP2 drivetrain model "
+              f"on every scenario. Drum geometry is reused from `{st.drum_from_architecture}` (A-008). Gear "
+              f"efficiencies are placeholders: {st.external_gear_efficiency:g} for an external stage, "
+              f"{st.actuator_gear_efficiency:g} for an integrated one (A-013). Copper loss uses A-014. "
+              "Blank source fields are shown as *not stated* and never estimated.", "",
+              "A margin is rating ÷ worst requirement over all scenarios: below 1 means at least one scenario "
+              "exceeds the rating. `2x` options share one drum between two identical motors. "
+              "Continuous margins compare the rating with the worst 60 s RMS (A-012), "
+              "so they are a placeholder for a thermal check, not a verdict.", "",
+              "## Sourced data", "",
+              "| Component | Kind | Built-in ratio | Kt N·m/A | R Ω (basis) | Km N·m/√W | Cont. N·m (basis) "
+              "| Peak N·m (basis) | Max rpm | Inertia kg·m² | Price USD | Source (accessed) |",
+              "|---|---|---:|---:|---|---:|---|---|---:|---:|---:|---|"]
+    for c in inputs.components.values():
+        r = "not stated" if c.resistance_ohm is None else f"{c.resistance_ohm:g} ({c.resistance_basis})"
+        km = c.km()
+        lines.append(
+            f"| {c.vendor} {c.model} | {c.kind} | {c.built_in_ratio:g} | {_fmt(c.kt_nm_per_a, 'g')} | {r} "
+            f"| {_fmt(km, '.3f', 'n/a')} | {_fmt(c.continuous_torque_nm, 'g')} ({c.continuous_torque_basis or '—'}) "
+            f"| {_fmt(c.peak_torque_nm, 'g')} ({c.peak_torque_basis or '—'}) | {_fmt(c.max_speed_rpm, 'g')} "
+            f"| {_fmt(c.rotor_inertia_kg_m2, 'g')} | {_fmt(c.price_usd, '.2f')} "
+            f"| [{c.source_url.split('/')[2]}]({c.source_url}) ({c.accessed}) |")
+    lines += ["", "Notes from the sources:", ""]
+    lines += [f"- **{c.id}:** {c.notes}" for c in inputs.components.values() if c.notes]
+    lines += ["", "## Options against all scenarios", "",
+              "| Option | Cable tension at cont. / peak rating, lbf | Peak torque margin (binding) "
+              "| Cont. margin (binding) | Speed margin (binding) | Worst 60 s copper W | Effective cable mass kg |",
+              "|---|---|---|---|---|---:|---:|"]
+    for name, opt in inputs.options.items():
+        res = payload["components"][name]
+        c = opt.component
+        radius = max(m["radius_max_m"] for m in res.values())
+        cont_t = tension_capability_lbf(opt, c.continuous_torque_nm, radius)
+        peak_t = tension_capability_lbf(opt, c.peak_torque_nm, radius)
+        cells = []
+        for rating, key in ((c.peak_torque_nm, "peak_motor_torque_nm"),
+                            (c.continuous_torque_nm, "worst_window_rms_motor_torque_nm"),
+                            (c.max_speed_rpm if c.kind == "motor" else None, "peak_motor_speed_rpm")):
+            scale = opt.count if key != "peak_motor_speed_rpm" else 1
+            margin, scen = _min_margin(None if rating is None else rating * scale, res, key)
+            if margin is None:
+                cells.append("not stated" if rating is None else "n/a")
+            else:
+                flag = "" if margin >= 1 else " ✗"
+                cells.append(f"{margin:.2f}{flag} ({scen})")
+        copper = [m["worst_window_copper_w"] for m in res.values() if m["worst_window_copper_w"] is not None]
+        mass = (max(m["effective_cable_mass_kg"] for m in res.values())
+                if c.rotor_inertia_kg_m2 is not None else None)
+        lines.append(f"| {name} | {_fmt(cont_t, '.0f')} / {_fmt(peak_t, '.0f')} | " + " | ".join(cells)
+                     + f" | {_fmt(max(copper) if copper else None, '.0f', 'n/a')} "
+                     f"| {_fmt(mass, '.0f', 'inertia not stated')} |")
+    lines += ["", "Rotor inertia is not stated for most candidates, so their torque requirements leave out "
+              "rotor inertia. That understates peak torque in fast scenarios. Actuator speed limits are "
+              "not stated.", ""]
+    return "\n".join(lines)

@@ -73,3 +73,15 @@ assumptions:
     confidence: low
     status: open
     affects: [R-07]
+  - id: A-013
+    statement: Component study uses placeholder gear efficiencies (0.95 for an external single stage, 0.90 for an integrated actuator gearbox) and reuses architecture B's drum.
+    basis: Vendor efficiency data not yet sourced. Real efficiency varies with load, speed and lubrication, and is lower when back-driven.
+    confidence: low
+    status: open
+    affects: [R-01, R-02, R-06]
+  - id: A-014
+    statement: Copper loss uses Km = Kt / sqrt(1.5 R) for phase-amplitude Kt with phase-neutral R (ODrive convention), and Km = Kt / sqrt(R) for phase-phase R. Where the vendor convention is unclear, the result may be off by a factor of about 1.5 in loss.
+    basis: Datasheet conventions vary and are often unstated (A-010).
+    confidence: low
+    status: open
+    affects: [R-06, R-07]

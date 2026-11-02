@@ -1,0 +1,8 @@
+# WP3 component study: real candidates from data/components.csv, evaluated on
+# every scenario through the WP2 drivetrain model. Motors get an external
+# reduction from `external_ratios`; actuators use their built-in ratio.
+drum_from_architecture: B_quasi_direct   # drum geometry and inertia reused (A-008)
+external_ratios: [4, 6, 8, 10]
+motor_counts: [1, 2]                      # identical motors sharing one drum through the reduction
+external_gear_efficiency: 0.95            # single-stage planetary or belt, placeholder (A-013)
+actuator_gear_efficiency: 0.90            # integrated planetary, placeholder (A-013)
