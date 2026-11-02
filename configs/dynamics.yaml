@@ -39,7 +39,7 @@ safety:
   rest_tension_n: 22
 bus:
   nominal_v: 48
-  capacitance_f: 0.002
+  capacitance_f: 2.0            # supercapacitor buffer (ADR-001); 1 kW + 2 F holds 40-56 V over a 500 lbf set
   supply_max_w: 1000
   undervoltage_v: 40             # drive inhibits torque below this
   overvoltage_v: 60

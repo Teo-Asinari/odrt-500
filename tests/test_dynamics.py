@@ -59,11 +59,17 @@ def test_shorted_braking_force_scales_with_speed(setup):
 
 def test_bus_rises_without_dump_resistor(setup):
     inputs, plant = setup
-    m_with = run(dataclasses.replace(inputs.dynamics.cases[-1]), _traj_pull(), plant, inputs.dynamics)["metrics"]
-    m_without = run(Case("nd", "x", 3.0, "no_dump_resistor", 0.0, True), _traj_pull(), plant,
-                    inputs.dynamics)["metrics"]
-    assert m_without["peak_bus_v"] > inputs.dynamics.overvoltage_v
-    assert m_with["peak_bus_v"] <= inputs.dynamics.dump_on_v + 1.0
+    p = dataclasses.replace(inputs.dynamics, bus_c=0.002)  # plain bus capacitors, no buffer
+    m_with = run(dataclasses.replace(inputs.dynamics.cases[-1]), _traj_pull(), plant, p)["metrics"]
+    m_without = run(Case("nd", "x", 3.0, "no_dump_resistor", 0.0, True), _traj_pull(), plant, p)["metrics"]
+    assert m_without["peak_bus_v"] > p.overvoltage_v
+    assert m_with["peak_bus_v"] <= p.dump_on_v + 1.0
+
+
+def test_buffer_absorbs_regeneration(setup):
+    inputs, plant = setup
+    m = run(Case("nd", "x", 3.0, "no_dump_resistor", 0.0, True), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    assert m["peak_bus_v"] < inputs.dynamics.overvoltage_v  # 2 F buffer holds a few reps of regen
 
 
 def _traj_pull():

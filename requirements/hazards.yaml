@@ -128,11 +128,11 @@ hazards:
     requirements: [R-09]
   - id: H-13
     title: Stored electrical energy
-    cause: Bus capacitors or an energy buffer remain charged after shutdown.
-    effect: Shock or arc during service.
-    severity: S2
+    cause: The 2 F supercapacitor buffer (about 3.1 kJ at 56 V) or the bus capacitors stay charged after shutdown.
+    effect: Shock, arc or burn during service, and high fault current into a shorted drive.
+    severity: S3
     evidence: []
     mitigations: [Bleed resistors and a discharge indicator (independent-hardware, not designed)]
     channel: independent-hardware
-    validation_gap: Buffer size not chosen.
+    validation_gap: Bleed time, pre-charge, fusing and balancing are not designed. The buffer is sized in dynamics only.
     requirements: [R-06, R-09]
