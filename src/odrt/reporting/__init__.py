@@ -57,6 +57,7 @@ def write_reports(inputs, payload: dict, sim_dir: Path, out: Path, structure: di
     if structure is not None:
         written.append(_write_text(out / "structure.md", _structure_md(inputs, structure)))
     written.append(_write_text(out / "hazards.md", _hazards_md(inputs, payload)))
+    written.append(_write_text(out / "economics.md", _economics_md(inputs)))
     written.append(_write_text(out / "traceability.md", _traceability_md(inputs)))
     written.append(_write_text(out / "assumptions.md", _assumptions_md(inputs)))
     return written
@@ -547,4 +548,42 @@ def _hazards_md(inputs, payload) -> str:
     unsim = sum(1 for h in inputs.hazards.values() if not h.evidence)
     lines += [f"Summary: {counts['S4']} S4, {counts['S3']} S3, {counts['S2']} S2, {counts['S1']} S1. "
               f"{unsim} hazards have no simulation evidence yet.", ""]
+    return "\n".join(lines)
+
+
+def _economics_md(inputs) -> str:
+    from odrt.costing import max_bom_for_retail, retail_from_bom, summary
+    z = summary(inputs.bom)
+    lines = _header("WP6 economics (preliminary)", inputs)
+    lines += [f"Design: `{inputs.structure.design}`. Prices are cited one-off retail prices only "
+              "(`data/bom.csv`). Unpriced lines are counted, never estimated, and currencies are not "
+              "converted. Retail scenarios use a single BOM multiplier (A-019).", "",
+              "| Item | Qty | Unit | Total | Basis | Source (accessed) |", "|---|---:|---:|---:|---|---|"]
+    for l in inputs.bom:
+        if l.unit_price is None:
+            lines.append(f"| {l.item} | {l.qty} | unpriced | — | {l.notes} | — |")
+        else:
+            lines.append(f"| {l.item} | {l.qty} | {l.unit_price:.2f} {l.currency} | {l.total:.2f} {l.currency} "
+                         f"| {l.price_basis} | [{l.source_url.split('/')[2]}]({l.source_url}) ({l.accessed}) |")
+    other = ", ".join(f"{v:.2f} {k}" for k, v in z["known_other"].items())
+    known = z["known_usd"]
+    lines += ["", f"**Known cost so far:** {known:.2f} USD{' + ' + other if other else ''}, from "
+              f"{z['lines'] - z['unpriced_lines']} of {z['lines']} lines. {z['unpriced_lines']} lines are "
+              "unpriced, so this is a floor, not a BOM.", "",
+              "| BOM → retail multiplier (A-019) | Retail implied by the known floor | Largest BOM that fits $500 retail |",
+              "|---:|---:|---:|"]
+    for mult in (2.0, 3.0, 4.0):
+        lines.append(f"| {mult:g}× | ≥ ${retail_from_bom(known, mult):,.0f} | ${max_bom_for_retail(500, mult):,.0f} |")
+    lines += ["", "## Assessment: REVISE", "",
+              f"- **$500 retail (R-12): not credible for this design.** The motors, drivers and power supply "
+              f"alone cost ${known:,.0f} at one-off prices, which is {known / 500:.1f}× the whole retail target "
+              "before anything else is added.",
+              f"- **$500 manufacturing cost: also exceeded by the known lines.** Volume pricing could move "
+              "this, but the only volume price found (ODrive S1 at 100 units) is about 4% lower.",
+              f"- **Lowest credible retail:** cannot be computed until the BOM is complete. The known floor "
+              f"implies at least ${retail_from_bom(known, 2):,.0f}–{retail_from_bom(known, 4):,.0f} under A-019.",
+              "- **Levers to test before reconsidering:** a single dual-motor driver board instead of two "
+              "ODrive S1s; a smaller supply plus an energy buffer (see dynamics.md); cheaper commodity "
+              "motors (e.g. hub motors), which need cited data; and the brief's alternative of a lower peak "
+              "target or two 250 lbf units.", ""]
     return "\n".join(lines)

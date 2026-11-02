@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from odrt.components import Study, load_components, load_study, options
+from odrt.costing import load_bom
 from odrt.drivetrain import Common, load_architectures
 from odrt.thermal import ThermalParams, load_thermal
 from odrt.requirements import load_assumptions, load_requirements
@@ -15,7 +16,7 @@ INPUT_FILES = ("requirements/requirements.yaml", "requirements/assumptions.yaml"
                "configs/baseline.yaml", "configs/scenarios.yaml", "configs/architectures.yaml",
                "data/components.csv", "configs/component_study.yaml",
                "configs/thermal.yaml", "configs/dynamics.yaml", "configs/structure.yaml",
-               "requirements/hazards.yaml")
+               "requirements/hazards.yaml", "data/bom.csv")
 
 
 @dataclass(frozen=True)
@@ -35,13 +36,14 @@ class Inputs:
     dynamics: object
     structure: object
     hazards: dict
+    bom: list
     input_hash: str
 
 
 def load_inputs(root: Path = Path(".")) -> Inputs:
     root = Path(root)
     (req_path, asm_path, base_path, scen_path, arch_path, comp_path, study_path,
-     thermal_path, dyn_path, struct_path, haz_path) = (root / p for p in INPUT_FILES)
+     thermal_path, dyn_path, struct_path, haz_path, bom_path) = (root / p for p in INPUT_FILES)
     requirements = load_requirements(req_path)
     assumptions = load_assumptions(asm_path, requirements)
     envelope = load_envelope(base_path)
@@ -58,7 +60,7 @@ def load_inputs(root: Path = Path(".")) -> Inputs:
     hazards = load_hazards(haz_path, requirements, {c.name for c in dynamics.cases})
     return Inputs(root, requirements, assumptions, envelope, defaults, scenarios, common, architectures,
                   components, study, opts, load_thermal(thermal_path), dynamics, structure, hazards,
-                  input_hash(root))
+                  load_bom(bom_path), input_hash(root))
 
 
 def thermal_models(inputs: Inputs) -> dict:

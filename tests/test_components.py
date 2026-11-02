@@ -95,3 +95,21 @@ def test_tension_capability_hand_calc():
     act = inputs.options["cubemars_ak10_9_v2_kv60@9:1 (built-in)"]
     assert tension_capability_lbf(act, 48, r) == pytest.approx(n_to_lbf(48 / r))
     assert tension_capability_lbf(opt, None, r) is None
+
+
+def test_bom_floor_counts_only_cited_usd():
+    from odrt.costing import load_bom, summary
+    z = summary(load_bom(REPO / "data/bom.csv"))
+    assert z["known_usd"] == pytest.approx(2 * 171.90 + 2 * 149.00 + 267.90)
+    assert z["known_other"] == {"GBP": pytest.approx(2 * 32.47)}
+    assert z["unpriced_lines"] > 0
+
+
+def test_priced_bom_line_needs_source(tmp_path):
+    from odrt.costing import load_bom
+    fields, rows = _rows(REPO / "data/bom.csv")
+    rows[0]["source_url"] = ""
+    path = tmp_path / "b.csv"
+    _write(path, fields, rows)
+    with pytest.raises(ConfigError, match="needs a currency"):
+        load_bom(path)
