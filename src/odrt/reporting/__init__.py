@@ -56,6 +56,7 @@ def write_reports(inputs, payload: dict, sim_dir: Path, out: Path, structure: di
         written.append(path)
     if structure is not None:
         written.append(_write_text(out / "structure.md", _structure_md(inputs, structure)))
+    written.append(_write_text(out / "hazards.md", _hazards_md(inputs, payload)))
     written.append(_write_text(out / "traceability.md", _traceability_md(inputs)))
     written.append(_write_text(out / "assumptions.md", _assumptions_md(inputs)))
     return written
@@ -513,3 +514,37 @@ def write_fea_report(inputs, dims, force, runs, change, force_err, ok, out: Path
     path = out / "fea.md"
     path.write_text("\n".join(lines))
     return path
+
+
+def _evidence_value(value):
+    if value is None:
+        return "—"
+    if isinstance(value, bool):
+        return "yes" if value else "no"
+    return f"{value:.3g}" if abs(value) < 100 else f"{value:.0f}"
+
+
+def _hazards_md(inputs, payload) -> str:
+    design = inputs.dynamics.designs[0]
+    dyn = payload["dynamics"][design]
+    lines = _header("WP5 preliminary hazard log", inputs)
+    lines += ["Source of truth: `requirements/hazards.yaml`. Severity levels are **proposed** qualitative "
+              "categories (S1 nuisance … S4 severe or irreversible injury possible) for independent review. "
+              f"Evidence values come from the dynamic model for `{design}` (placeholder parameters, A-016). "
+              "Simulated mitigations are simulation-only; none is a validated safety function. "
+              "**No human-loading experiment is authorized.**", "",
+              "| ID | Hazard | Severity | Mitigation channel | Evidence | Gap |", "|---|---|---|---|---|---|"]
+    for h in sorted(inputs.hazards.values(), key=lambda h: (-int(h.severity[1]), h.id)):
+        ev = "; ".join(f"{case}.{metric} = {_evidence_value(dyn[case][metric])}" for case, metric in h.evidence)
+        lines.append(f"| {h.id} | {h.title} | {h.severity} | {h.channel} | {ev or 'not simulated'} "
+                     f"| {h.validation_gap} |")
+    lines.append("")
+    for h in inputs.hazards.values():
+        lines += [f"## {h.id} — {h.title} ({h.severity})", "", f"- **Cause:** {h.cause}", f"- **Effect:** {h.effect}",
+                  "- **Mitigations:**"] + [f"  - {m}" for m in h.mitigations] + [
+                  f"- **Requirements:** {', '.join(h.requirements)}", ""]
+    counts = {s: sum(1 for h in inputs.hazards.values() if h.severity == s) for s in ("S4", "S3", "S2", "S1")}
+    unsim = sum(1 for h in inputs.hazards.values() if not h.evidence)
+    lines += [f"Summary: {counts['S4']} S4, {counts['S3']} S3, {counts['S2']} S2, {counts['S1']} S1. "
+              f"{unsim} hazards have no simulation evidence yet.", ""]
+    return "\n".join(lines)

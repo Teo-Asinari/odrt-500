@@ -73,3 +73,17 @@ def test_envelope_must_be_positive(repo_copy):
               lambda d: d["envelope"].__setitem__("peak_tension_lbf", 0))
     with pytest.raises(ConfigError, match="> 0"):
         load_inputs(repo_copy)
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (lambda d: d["hazards"][0].__setitem__("severity", "S5"), "severity"),
+    (lambda d: d["hazards"][0].__setitem__("channel", "hope"), "channel"),
+    (lambda d: d["hazards"][0]["evidence"].append({"case": "nope", "metric": "peak_bus_v"}), "unknown dynamics case"),
+    (lambda d: d["hazards"][0]["evidence"].append({"case": "release_at_500lbf", "metric": "vibes"}), "unknown metric"),
+    (lambda d: d["hazards"][1].__setitem__("id", "H-01"), "duplicate"),
+    (lambda d: d["hazards"][0].__setitem__("requirements", ["R-77"]), "unknown ids"),
+])
+def test_invalid_hazards_fail(repo_copy, mutate, message):
+    edit_yaml(repo_copy / "requirements/hazards.yaml", mutate)
+    with pytest.raises(ConfigError, match=message):
+        load_inputs(repo_copy)
