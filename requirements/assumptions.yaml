@@ -1,0 +1,39 @@
+# Assumptions / uncertainty register. Every scenario and result cites the
+# assumptions it depends on. Retire or revise entries rather than deleting them.
+assumptions:
+  - id: A-001
+    statement: Cable motion is modeled as a one-dimensional trajectory at the drum exit. No user biomechanics, routing pulleys or cable angle are modeled.
+    basis: WP1 scope in docs/DESIGN.md section 8. These are abstract test inputs, not exercise prescriptions.
+    confidence: high
+    status: accepted
+    affects: [R-04, R-05, R-07]
+  - id: A-002
+    statement: Each extension and retraction follows a minimum-jerk position profile (peak speed 1.875 x stroke / duration).
+    basis: Common smooth-motion idealisation. Real human pulls are less smooth and often asymmetric, which raises peak acceleration and power.
+    confidence: low
+    status: open
+    affects: [R-02, R-04, R-06, R-07]
+  - id: A-003
+    statement: The tension setpoint is constant within each phase and changes as a linear ramp over tension_ramp_s. No variable-resistance curve along the stroke.
+    basis: Simplest setpoint for duty-cycle sizing. How well the actuator tracks that setpoint is WP2.
+    confidence: medium
+    status: open
+    affects: [R-03, R-04, R-07]
+  - id: A-004
+    statement: Between sets the cable is held at rest_tension_lbf (placeholder 5 lbf) to stay taut. Top and bottom holds keep the extension tension.
+    basis: Placeholder. Low-force behaviour is an open question (R-03).
+    confidence: low
+    status: open
+    affects: [R-03, R-07]
+  - id: A-005
+    statement: Reference scenario strokes, speeds, loads, rep counts and rest periods are engineering guesses for illustrative movements.
+    basis: Not validated against measured cable data. Replace with measured or cited values when available.
+    confidence: low
+    status: open
+    affects: [R-02, R-05, R-07]
+  - id: A-006
+    statement: RMS cable tension is reported as a proxy for motor copper-loss heating (I^2 R). The proxy assumes constant effective drum radius and torque constant.
+    basis: Torque is proportional to current below saturation. Winding-layer radius change and saturation are ignored until WP2.
+    confidence: medium
+    status: open
+    affects: [R-07]

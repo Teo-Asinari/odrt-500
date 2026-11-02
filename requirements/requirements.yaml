@@ -1,0 +1,68 @@
+# Machine-readable form of docs/DESIGN.md section 3. IDs are stable; results
+# and scenarios cite them. Targets are hypotheses unless the status says otherwise.
+requirements:
+  - id: R-01
+    title: Peak cable tension
+    target: 500 lbf (2,224 N) peak, in a bounded simulated operating region; duration TBD from thermal model
+    acceptance: Demonstrated in simulation within a stated speed/duration region
+    status: hypothesis
+  - id: R-02
+    title: Sustained tension
+    target: Force-versus-speed-versus-duration envelope; no unsupported 500 lbf continuous claim
+    acceptance: Envelope derived from electrical and thermal models
+    status: required-analysis
+  - id: R-03
+    title: Adjustable tension
+    target: Nominal working range 5-500 lbf; assess whether fine low-force control is realistic
+    acceptance: Simulated low-force tracking and smoothness metrics
+    status: stretch
+  - id: R-04
+    title: Dynamic behavior
+    target: Step response, tracking error, overshoot, oscillation and reversals across load cases
+    acceptance: Simulation metrics to be defined
+    status: simulation-metric-tbd
+  - id: R-05
+    title: Cable stroke
+    target: 1.5-2.0 m usable stroke (parametric)
+    acceptance: Confirmed through use cases and winding geometry
+    status: provisional
+  - id: R-06
+    title: Power
+    target: Wall-powered; model AC input, PSU, regeneration/braking/dump load, duty cycle and circuit limits
+    acceptance: Electrical model with energy accounting
+    status: required-analysis
+  - id: R-07
+    title: Thermal
+    target: Motor, driver, gearbox, supply and enclosure temperatures under realistic training duty cycles
+    acceptance: Thermal network model driven by named duty cycles
+    status: required-analysis
+  - id: R-08
+    title: Mechanical integrity
+    target: Stress/fatigue checks for cable, terminations, drum, shaft, bearings, mount, enclosure and fasteners
+    acceptance: Conservative models plus independent review
+    status: independent-review-required
+  - id: R-09
+    title: Fault handling
+    target: Fault matrix, fail-safe states, watchdogs, emergency stop concept, runaway-tension prevention
+    acceptance: Hazard analysis plus independent review
+    status: independent-review-required
+  - id: R-10
+    title: Acoustic behavior
+    target: Estimate gearbox/motor/fan noise and vibration
+    acceptance: Estimates now; bench validation later
+    status: exploratory
+  - id: R-11
+    title: Unit manufacturing BOM
+    target: Supplier-backed cost at prototype, 100-unit and 1,000-unit volumes
+    acceptance: Sourced, dated BOM
+    status: target-tbd
+  - id: R-12
+    title: Retail price
+    target: $500 aspirational, with explicit margins, freight, tariffs, assembly, certification, warranty, support, returns and channel costs
+    acceptance: Costed retail model
+    status: hypothesis
+  - id: R-13
+    title: Agent reproducibility
+    target: Clean environment regenerates models, runs tests and renders reports via CLI
+    acceptance: make venv && make ci passes from a fresh clone
+    status: required

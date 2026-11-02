@@ -1,0 +1,202 @@
+# WP1 named scenarios: abstract 1-D cable trajectories plus tension setpoints.
+# They are test inputs for the electrical/thermal/dynamics models, NOT exercise
+# prescriptions and NOT evidence that any load is achievable or safe.
+#
+# kind: reference = illustrative movement (numbers are guesses, A-005)
+#       limit     = deliberate corner of the requirement envelope
+#
+# Phase order per rep: extend -> top_hold -> retract -> bottom_hold.
+# Peak cable speed of a minimum-jerk stroke = 1.875 * stroke_m / duration (A-002).
+defaults:
+  sample_rate_hz: 1000
+  tension_ramp_s: 0.2
+  rest_tension_lbf: 5        # keeps cable taut between sets (A-004)
+  tut_threshold_lbf: 6       # "under tension" means above this
+
+scenarios:
+  curl_reference:
+    description: Curl-like short stroke at light tension, slow lowering.
+    kind: reference
+    requirements: [R-03, R-05, R-07]
+    assumptions: [A-001, A-002, A-003, A-004, A-005]
+    start_offset_m: 0.3
+    stroke_m: 0.5
+    extend_s: 1.2
+    top_hold_s: 0.3
+    retract_s: 2.0
+    bottom_hold_s: 0.5
+    reps: 10
+    sets: 3
+    rest_s: 90
+    extension_tension_lbf: 40
+    retraction_tension_lbf: 40
+
+  row_reference:
+    description: Row-like medium stroke at moderate tension.
+    kind: reference
+    requirements: [R-02, R-05, R-07]
+    assumptions: [A-001, A-002, A-003, A-004, A-005]
+    start_offset_m: 0.4
+    stroke_m: 0.6
+    extend_s: 1.0
+    top_hold_s: 0.5
+    retract_s: 1.5
+    bottom_hold_s: 0.3
+    reps: 10
+    sets: 4
+    rest_s: 120
+    extension_tension_lbf: 120
+    retraction_tension_lbf: 120
+
+  press_reference:
+    description: Press-like longer stroke at moderate-to-high tension.
+    kind: reference
+    requirements: [R-02, R-05, R-06, R-07]
+    assumptions: [A-001, A-002, A-003, A-004, A-005]
+    start_offset_m: 0.3
+    stroke_m: 0.7
+    extend_s: 1.0
+    top_hold_s: 0.2
+    retract_s: 1.5
+    bottom_hold_s: 0.3
+    reps: 8
+    sets: 4
+    rest_s: 120
+    extension_tension_lbf: 150
+    retraction_tension_lbf: 150
+
+  slow_heavy_pull_reference:
+    description: Slow heavy pull near the top of the range (~0.23 m/s peak).
+    kind: reference
+    requirements: [R-01, R-02, R-07]
+    assumptions: [A-001, A-002, A-003, A-004, A-005]
+    start_offset_m: 0.2
+    stroke_m: 0.5
+    extend_s: 4.0
+    top_hold_s: 1.0
+    retract_s: 4.0
+    bottom_hold_s: 1.0
+    reps: 5
+    sets: 3
+    rest_s: 180
+    extension_tension_lbf: 400
+    retraction_tension_lbf: 400
+
+  peak_tension_hold_limit:
+    description: Short pull then a 10 s hold at the full 500 lbf target. Sizes stall torque and stall heating.
+    kind: limit
+    requirements: [R-01, R-02, R-07]
+    assumptions: [A-001, A-002, A-003]
+    start_offset_m: 0.2
+    stroke_m: 0.1
+    extend_s: 1.0
+    top_hold_s: 10.0
+    retract_s: 1.0
+    bottom_hold_s: 1.0
+    reps: 3
+    sets: 1
+    rest_s: 0
+    extension_tension_lbf: 500
+    retraction_tension_lbf: 500
+
+  power_corner_limit:
+    description: 500 lbf at 1.0 m/s peak extension speed (~2.2 kW mechanical). The corner case the brief's power table points at.
+    kind: limit
+    requirements: [R-01, R-02, R-06]
+    assumptions: [A-001, A-002, A-003]
+    start_offset_m: 0.2
+    stroke_m: 1.0
+    extend_s: 1.875
+    top_hold_s: 0.5
+    retract_s: 2.0
+    bottom_hold_s: 0.5
+    reps: 5
+    sets: 1
+    rest_s: 0
+    extension_tension_lbf: 500
+    retraction_tension_lbf: 500
+
+  full_stroke_limit:
+    description: Full 2.0 m usable stroke from fully wound. Sizes drum capacity and winding-layer range.
+    kind: limit
+    requirements: [R-05]
+    assumptions: [A-001, A-002, A-003]
+    start_offset_m: 0.0
+    stroke_m: 2.0
+    extend_s: 2.0
+    top_hold_s: 0.5
+    retract_s: 2.5
+    bottom_hold_s: 0.5
+    reps: 5
+    sets: 1
+    rest_s: 0
+    extension_tension_lbf: 100
+    retraction_tension_lbf: 100
+
+  fast_reversal_limit:
+    description: Fast back-to-back reversals with no holds (~1.9 m/s, ~14 m/s^2 peak). Stresses direction changes and regeneration.
+    kind: limit
+    requirements: [R-04, R-06]
+    assumptions: [A-001, A-002, A-003]
+    start_offset_m: 0.4
+    stroke_m: 0.4
+    extend_s: 0.4
+    top_hold_s: 0.0
+    retract_s: 0.4
+    bottom_hold_s: 0.0
+    reps: 20
+    sets: 1
+    rest_s: 0
+    extension_tension_lbf: 200
+    retraction_tension_lbf: 200
+
+  eccentric_overload_limit:
+    description: Retraction tension above extension tension, so the device returns more energy than it absorbs.
+    kind: limit
+    requirements: [R-03, R-06]
+    assumptions: [A-001, A-002, A-003]
+    start_offset_m: 0.3
+    stroke_m: 0.5
+    extend_s: 1.5
+    top_hold_s: 0.5
+    retract_s: 4.0
+    bottom_hold_s: 0.5
+    reps: 6
+    sets: 3
+    rest_s: 120
+    extension_tension_lbf: 200
+    retraction_tension_lbf: 300
+
+  endurance_session_limit:
+    description: Long session with short rests at 250 lbf. Drives thermal soak.
+    kind: limit
+    requirements: [R-02, R-07]
+    assumptions: [A-001, A-002, A-003, A-004]
+    start_offset_m: 0.3
+    stroke_m: 0.6
+    extend_s: 1.5
+    top_hold_s: 0.5
+    retract_s: 2.0
+    bottom_hold_s: 0.5
+    reps: 12
+    sets: 8
+    rest_s: 60
+    extension_tension_lbf: 250
+    retraction_tension_lbf: 250
+
+  low_force_limit:
+    description: Very light tension (8 lbf) for fine low-force control and smoothness questions.
+    kind: limit
+    requirements: [R-03, R-04]
+    assumptions: [A-001, A-002, A-003, A-004]
+    start_offset_m: 0.3
+    stroke_m: 0.5
+    extend_s: 1.0
+    top_hold_s: 0.3
+    retract_s: 1.5
+    bottom_hold_s: 0.3
+    reps: 10
+    sets: 2
+    rest_s: 60
+    extension_tension_lbf: 8
+    retraction_tension_lbf: 8

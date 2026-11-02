@@ -1,0 +1,5 @@
+# System-level envelope that scenarios are validated against. Values are
+# requirement targets (hypotheses), not demonstrated capabilities.
+envelope:
+  peak_tension_lbf: 500      # R-01
+  max_usable_stroke_m: 2.0   # R-05 (upper end of 1.5-2.0 m)
