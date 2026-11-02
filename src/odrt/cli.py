@@ -224,6 +224,33 @@ def cmd_fea(args) -> int:
     return 0 if ok else 1
 
 
+def cmd_visual(args) -> int:
+    from odrt import animate, cad, visual
+    inputs = load_inputs(args.root)
+    st = inputs.structure
+    opt = inputs.options[st.design]
+    try:
+        parts, pivots, info = visual.build(st, opt, inputs.common, structural_summary(inputs, {}))
+        handle = visual.handle()
+    except cad.CadUnavailable as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 3
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    scene, _ = animate.build_scene(inputs, parts, pivots, info, handle)
+    (out / "odrt500_detailed.glb").write_bytes(scene.to_glb())
+    print(f"wrote {out / 'odrt500_detailed.glb'}")
+    for ex in animate.EXERCISES:
+        if args.only and ex.name not in args.only:
+            continue
+        scene, rep = animate.build_scene(inputs, parts, pivots, info, handle, ex)
+        path = out / f"odrt500_{ex.name}.glb"
+        path.write_bytes(scene.to_glb())
+        print(f"wrote {path}: {rep['duration_s']:.1f} s, cable stroke {rep['stroke_m']:.2f} m, "
+              f"peak cable speed {rep['peak_cable_speed_m_s']:.2f} m/s ({rep['scenario']} timing)")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="odrt", description=__doc__)
     parser.add_argument("--root", default=".", help="repository root (default: .)")
@@ -235,6 +262,9 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("cad", help="build the parametric concept CAD (needs the [cad] extra)")
     p.add_argument("--out", default="build/cad")
     p.add_argument("--reports", default="reports")
+    p = sub.add_parser("visual", help="detailed model and animated exercise GLBs (needs the [cad] extra)")
+    p.add_argument("--out", default="build/visual")
+    p.add_argument("--only", nargs="+", metavar="EXERCISE")
     p = sub.add_parser("fea", help="side-plate FEA convergence study (needs the [fea] extra)")
     p.add_argument("--reports", default="reports")
     p = sub.add_parser("report", help="render reports from simulation results")
@@ -246,7 +276,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report, "cad": cmd_cad,
-               "fea": cmd_fea}[args.command]
+               "fea": cmd_fea, "visual": cmd_visual}[args.command]
     try:
         return handler(args)
     except ConfigError as exc:

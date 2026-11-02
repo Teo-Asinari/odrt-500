@@ -18,6 +18,7 @@ make test     # unit and negative tests
 make report   # simulate all scenarios, regenerate reports/
 make cad      # parametric concept CAD: build/cad/*.step and *.glb, reports/cad.md
 make fea      # side-plate FEA convergence study, reports/fea.md
+make visual   # detailed model + animated row/curl/deadlift GLBs in build/visual (glTF, metres, Y-up)
 make ci       # all of the above; fails if committed reports are stale
 ```
 

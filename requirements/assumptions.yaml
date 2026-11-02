@@ -115,3 +115,9 @@ assumptions:
     confidence: low
     status: open
     affects: [R-11, R-12]
+  - id: A-020
+    statement: The presentation model (enclosure look, handle, tooth profiles, wound cable) and the mannequin animations are visual only. Mannequin proportions and exercise poses are rough keyframes timed by the scenario motion profiles; the device motion is derived from the hand path kinematically, with no forces.
+    basis: For communication and layout review. It does not validate ergonomics, clearances under load or exercise technique.
+    confidence: low
+    status: open
+    affects: [R-05, R-09]

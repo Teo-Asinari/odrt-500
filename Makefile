@@ -8,7 +8,7 @@ VENV ?= .venv
 PY := $(VENV)/bin/python
 SIM_DIR ?= build/sim
 
-.PHONY: venv check test simulate report cad fea ci clean
+.PHONY: venv check test simulate report cad fea visual ci clean
 
 venv:
 	$(BOOTSTRAP_PYTHON) -m venv $(VENV)
@@ -33,9 +33,12 @@ cad:
 fea:
 	$(PY) -m odrt fea --reports reports
 
+visual:
+	$(PY) -m odrt visual --out build/visual
+
 # Local CI: validate inputs, run tests, regenerate reports, and fail if the
 # committed reports are stale.
-ci: check test report cad fea
+ci: check test report cad fea visual
 	git diff --exit-code -- reports/ || (echo "reports/ is stale: commit the regenerated reports" && exit 1)
 
 clean:
