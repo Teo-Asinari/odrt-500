@@ -6,7 +6,7 @@ max_tilt_deg: 80                   # from vertical
 bearing_pcd_mm: 70                 # swivel bearing pitch diameter (placeholder)
 dome_radius_mm: 95                 # guard dome over the head (clears cheeks and exit sheave)
 # Angled-pull envelope: largest tension (lbf) planned at each tilt from vertical (placeholder, A-025)
-envelope: [[0, 500], [30, 500], [45, 250], [60, 200], [80, 150]]
-snap_factor: 1.86                  # snap/design ratio from the dynamics (932 / 500 lbf)
+envelope: [[0, 250], [30, 250], [45, 125], [60, 100], [80, 75]]
+snap_factor: 3.728                  # provisional prior safety-on snap / unit target (932 / 250); CAD uses max of this and current simulation
 min_user_mass_kg: 50               # lightest user the grip check covers
 deck_friction: 0.8                 # shoe on rubber deck mat (placeholder)

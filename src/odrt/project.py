@@ -19,7 +19,7 @@ INPUT_FILES = ("requirements/requirements.yaml", "requirements/assumptions.yaml"
                "configs/thermal.yaml", "configs/dynamics.yaml", "configs/structure.yaml",
                "requirements/hazards.yaml", "data/bom.csv", "configs/platform.yaml",
                "configs/custom_motor.yaml", "data/motor_family.csv", "configs/electronics.yaml",
-               "data/electronics.csv", "configs/swivel.yaml")
+               "data/electronics.csv", "configs/swivel.yaml", "configs/modular.yaml")
 
 
 @dataclass(frozen=True)
@@ -47,8 +47,10 @@ class Inputs:
 def load_inputs(root: Path = Path(".")) -> Inputs:
     root = Path(root)
     (req_path, asm_path, base_path, scen_path, arch_path, comp_path, study_path,
-     thermal_path, dyn_path, struct_path, haz_path, bom_path, plat_path, _motor_cfg, _family, _el_cfg, _el, _sw) = (
+     thermal_path, dyn_path, struct_path, haz_path, bom_path, plat_path, _motor_cfg, _family, _el_cfg, _el, _sw, _modular) = (
         root / p for p in INPUT_FILES)
+    from odrt.modular import load_modular
+    load_modular(_modular)
     requirements = load_requirements(req_path)
     assumptions = load_assumptions(asm_path, requirements)
     envelope = load_envelope(base_path)

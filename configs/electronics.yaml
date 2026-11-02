@@ -1,5 +1,5 @@
 # Electronics heat/power budget (A-024). Placeholders unless marked cited.
-psu_efficiency: 0.90             # cited: distributor listings for RSP-1000-48
+psu_efficiency: 0.90             # assumed for unsourced 500 W candidate (A-026)
 drive_loss_fraction: 0.03        # drive losses as a fraction of processed power (placeholder)
 drive_idle_w: 3.0
 standby_w: 15.0                  # PSU no-load + controllers + fans between sets (placeholder)
@@ -7,7 +7,7 @@ cells_in_series: 22              # 22 x 2.7 V = 59.4 V >= 56 V dump threshold
 small_cell_f: 50                 # cited cell
 small_cell_esr_ohm: 0.020        # cited cell
 large_cell_esr_ohm: 0.004        # target for a large-format cell
-skin_area_m2: 1.2                # deck (partly covered by feet) + skirts
+skin_area_m2: 0.6                # conservative exposed area of one unit; confirm against packaged geometry
 skin_h_w_m2k: 5.0                # natural convection (placeholder)
 fan_flow_m3_s: 0.015             # ~32 CFM through the compartment
 room_c: 25

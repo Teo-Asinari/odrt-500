@@ -28,12 +28,12 @@ report: simulate
 	$(PY) -m odrt report --sim $(SIM_DIR) --out reports
 
 cad: simulate
-	$(PY) -m odrt cad --out build/cad --reports reports
+	$(PY) -m odrt cad --out build/cad --reports reports --sim $(SIM_DIR)/metrics.json
 
 fea:
 	$(PY) -m odrt fea --reports reports
 
-visual:
+visual: cad
 	$(PY) -m odrt visual --out build/visual
 
 motor:

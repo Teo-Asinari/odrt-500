@@ -32,4 +32,4 @@ def test_copper_scales_with_inverse_km_squared(fit):
     inputs = load_inputs(REPO)
     a = ms.evaluate(inputs, ms.size(fit, "a", 0.13, 0.6), 6, 0.95, 140)
     b = ms.evaluate(inputs, ms.size(fit, "b", 0.13, 1.2), 6, 0.95, 140)
-    assert a["copper_500lbf_w"] / b["copper_500lbf_w"] == pytest.approx(4.0, rel=1e-9)
+    assert a["copper_peak_w"] / b["copper_peak_w"] == pytest.approx(4.0, rel=1e-9)

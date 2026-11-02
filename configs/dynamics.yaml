@@ -1,7 +1,7 @@
 # Time-domain cable/drum/controller/bus model with fault injection (R-04, R-06, R-09).
 # Every number here is a placeholder (A-016). Safety values are PROPOSALS to be
 # reviewed (A-017): the brief forbids inventing validated safety thresholds.
-designs: ["cubemars_ro100_kv55@6:1", "2x cubemars_ro100_kv55@6:1"]  # iteration 2 lead first (ADR-001)
+designs: ["cubemars_ro100_kv55@6:1", "2x cubemars_ro100_kv55@6:1"]  # one motor per unit first; 2x is two motors on ONE drum, not the ADR-002 pair
 dt_s: 0.0002
 cable:
   axial_stiffness_ea_n: 500000   # EA of a ~4 mm synthetic rope, placeholder
@@ -47,8 +47,8 @@ independent:                       # separate safety MCU with its own sensing ->
   brake_n_s_per_m: 2500            # STO / power-loss relay shorts phases through resistors: drum force = c * v
 bus:
   nominal_v: 48
-  capacitance_f: 2.0            # supercapacitor buffer (ADR-001); 1 kW + 2 F holds 40-56 V over a 500 lbf set
-  supply_max_w: 1000
+  capacitance_f: 2.0            # supercapacitor buffer (ADR-001); 500 W per unit + 2 F; ideal buffer, ESR checked separately
+  supply_max_w: 500
   undervoltage_v: 40             # drive inhibits torque below this
   overvoltage_v: 60
   dump_on_v: 56
@@ -56,10 +56,11 @@ bus:
 
 cases:
   - {name: tracking_heavy_tempo, scenario: heavy_tempo_limit, window_s: 11.0, fault: none}
+  - {name: tracking_heavy_full_set, scenario: heavy_tempo_limit, window_s: 25.7, fault: none}
   - {name: tracking_low_force, scenario: low_force_limit, window_s: 7.0, fault: none}
   - {name: tracking_fast_reversal, scenario: fast_reversal_limit, window_s: 4.0, fault: none}
-  - {name: release_at_500lbf, scenario: heavy_tempo_limit, window_s: 4.0, fault: handle_release, fault_time_s: 2.6, safety: false}
-  - {name: release_at_500lbf_speed_limit, scenario: heavy_tempo_limit, window_s: 4.0, fault: handle_release, fault_time_s: 2.6, safety: true}
+  - {name: release_at_peak, scenario: heavy_tempo_limit, window_s: 4.0, fault: handle_release, fault_time_s: 2.6, safety: false}
+  - {name: release_at_peak_speed_limit, scenario: heavy_tempo_limit, window_s: 4.0, fault: handle_release, fault_time_s: 2.6, safety: true}
   - {name: load_cell_stuck_zero, scenario: heavy_tempo_limit, window_s: 3.5, fault: load_cell_zero, fault_time_s: 2.6, safety: false}
   - {name: load_cell_stuck_zero_monitored, scenario: heavy_tempo_limit, window_s: 3.5, fault: load_cell_zero, fault_time_s: 2.6, safety: true}
   - {name: power_loss_open_mid_pull, scenario: heavy_tempo_limit, window_s: 3.0, fault: power_loss_open, fault_time_s: 1.8, independent: false}

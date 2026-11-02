@@ -1,0 +1,22 @@
+# Iteration 3 integration assumptions (A-026), not manufacturing dimensions.
+units: 2
+compact_target_l: 20
+shell_mm: 3
+clearance_mm: 12
+tray_gap_mm: 15
+fleet_angle_deg: 4
+interface:
+  bolt_spacing_mm: [200, 120]
+  bolt_area_mm2: 36.6
+  allowable_mpa: 120
+  plate_thickness_mm: 10
+board:
+  width_mm: 800
+  depth_mm: 650
+  thickness_mm: 25
+  foot_half_spacing_mm: 200
+  youngs_gpa: 8
+  allowable_mpa: 20
+  density_kg_m3: 650
+  deflection_limit_mm: 2
+  # Generic plywood-like properties, no selected material or verified grain direction.

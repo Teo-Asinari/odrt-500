@@ -1,9 +1,9 @@
 # WP4 concept layout and first-pass structural sizing. Placeholders throughout
 # (A-018); every result needs independent mechanical review (R-08, Gate D).
-design: "cubemars_ro100_kv55@6:1"   # iteration 2 lead (ADR-001)
+design: "cubemars_ro100_kv55@6:1"   # one motor per modular unit (ADR-002)
 
 loads:
-  stall_is_design_case: true        # size for full motor stall torque, not just 500 lbf
+  stall_is_design_case: true        # size for full motor stall torque, not just the nominal per-unit target
   yield_safety_factor: 2.0
   cable_design_factor: 5.0          # required rope breaking strength / design tension
 

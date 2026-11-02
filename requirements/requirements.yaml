@@ -3,17 +3,17 @@
 requirements:
   - id: R-01
     title: Peak cable tension
-    target: 500 lbf (2,224 N) peak as a human's maximal force at normal heavy-lift tempos (A-007), not at high cable speed; sustained for seconds per rep with rests between sets (ADR-001)
+    target: 250 lbf (1,112 N) peak per unit, 500 lbf combined with two units on one bar (ADR-002), at normal heavy-lift tempos (A-007), sustained for seconds per rep with rests between sets (ADR-001)
     acceptance: Demonstrated in simulation over the heavy-lift speed range of A-007
     status: hypothesis
   - id: R-02
     title: Sustained tension
-    target: Force-versus-speed-versus-duration envelope; no unsupported 500 lbf continuous claim
+    target: Force-versus-speed-versus-duration envelope; no unsupported continuous peak-tension claim
     acceptance: Envelope derived from electrical and thermal models
     status: required-analysis
   - id: R-03
     title: Adjustable tension
-    target: Nominal working range 5-500 lbf; assess whether fine low-force control is realistic
+    target: Nominal working range 5-250 lbf per unit; assess whether fine low-force control is realistic
     acceptance: Simulated low-force tracking and smoothness metrics
     status: stretch
   - id: R-04
@@ -67,7 +67,12 @@ requirements:
     acceptance: make venv && make ci passes from a fresh clone
     status: required
   - id: R-14
-    title: Floor platform mounting
-    target: The user stands on the unit; cable exits upward through the deck; pull loads react through the user's weight; no wall or floor anchors required (ADR-001)
-    acceptance: Platform deck, frame and tipping checks under the design load cases
+    title: Common board
+    target: Two units mount to the sides of a common board the user stands on; pull loads react through the user's weight; no floor anchors required (ADR-002)
+    acceptance: Board stiffness and strength, unit retention, foot grip and tipping checks under the design load cases
+    status: required-analysis
+  - id: R-15
+    title: Modular self-contained unit
+    target: Each unit is a compact, self-contained cable trainer (mechanism, electronics, cable exit) with one universal mounting interface for board, wall, rack and door anchor; mains-powered per unit (ADR-002)
+    acceptance: Unit envelope and mass, interface load cases for each mount, standalone safety functions
     status: required-analysis

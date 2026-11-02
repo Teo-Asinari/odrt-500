@@ -20,8 +20,10 @@ def test_awg_table():
 def test_motor_current_from_torque(budget):
     inputs = load_inputs(REPO)
     opt = inputs.options[inputs.structure.design]
-    # 500 lbf hold torque / Kt, within the peak seen over the set
-    tau = 2224.11 * 0.027 / (opt.external_ratio * opt.efficiency)
+    # Unit peak torque / Kt, within the peak seen over the heavy set.
+    from odrt.units import lbf_to_n
+    radius = opt.architecture.drum_core_radius_m + inputs.common.cable_diameter_m / 2
+    tau = lbf_to_n(inputs.envelope.peak_tension_lbf) * radius / (opt.external_ratio * opt.efficiency)
     assert budget["motor_peak_current_a"] >= 0.95 * tau / opt.component.kt_nm_per_a
 
 
@@ -35,7 +37,7 @@ def test_buffer_esr_scales_with_cells(budget):
 def test_parts_file_rejects_uncited_cited_dims(tmp_path):
     import csv
     rows = list(csv.DictReader((REPO / "data/electronics.csv").open()))
-    rows[0]["source_url"] = ""
+    next(row for row in rows if row["dims_basis"].startswith("cited"))["source_url"] = ""
     path = tmp_path / "e.csv"
     with path.open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
@@ -44,21 +46,21 @@ def test_parts_file_rejects_uncited_cited_dims(tmp_path):
         el.load_electronics(path)
 
 
-def test_packaging_has_no_interferences():
+def test_current_modular_packaging_has_no_interferences():
     pytest.importorskip("cadquery")
-    import json
-    from odrt import cad, packaging
-    from odrt.cli import platform_summary, structural_summary
+    from odrt import cad
+    from odrt.cli import structural_summary
+    from odrt.drivetrain import Drum
+    from odrt.modular import load_modular, placement
     inputs = load_inputs(REPO)
-    sim = REPO / "build/sim/metrics.json"
-    if not sim.exists():
-        pytest.skip("needs `make simulate`")
     st = inputs.structure
     opt = inputs.options[st.design]
-    sz = structural_summary(inputs, json.loads(sim.read_text()))
-    mp, _ = cad.build(st, opt, inputs.common, sz)
-    back = -min(p.shape.val().BoundingBox().ymin for p in mp)
-    z = platform_summary(inputs, sz, cad.envelope_mm(mp), 7.0, back)
-    plat, parts, _, _ = packaging.build(st, opt, inputs.common, sz, inputs.platform, z,
-                                        el.load_electronics(REPO / "data/electronics.csv"))
-    assert packaging.interferences(plat, parts) == []
+    parts, geo = cad.build(st, opt, inputs.common, structural_summary(inputs, {}))
+    assert cad.interferences(parts) == []
+    bounds = [p.shape.val().BoundingBox() for p in parts]
+    bb = (min(b.xmin for b in bounds), min(b.ymin for b in bounds), min(b.zmin for b in bounds),
+          max(b.xmax for b in bounds), max(b.ymax for b in bounds), max(b.zmax for b in bounds))
+    layout = placement(load_modular(REPO / 'configs/modular.yaml'), bb,
+                       Drum(opt.architecture, inputs.common).width_m * 1000,
+                       (0, 0, geo['cable_exit_height_mm']), el.load_electronics(REPO / 'data/electronics.csv'))
+    assert layout['clashes'] == []

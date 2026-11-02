@@ -1,6 +1,6 @@
 # Request for quotation: frameless torque motor for a cable resistance trainer
 
-Draft, 2026-11-02. Numbers come from `reports/custom_motor.md`, `reports/components.md` and `reports/thermal.md`. Fill in the bracketed fields before sending.
+Historical iteration-2 draft, 2026-11-02. **Superseded sizing: do not send as the modular-unit specification.** Recalculate torque, speed, thermal duty and packaging for ADR-002 before requesting quotes. Numbers come from `reports/custom_motor.md`, `reports/components.md` and `reports/thermal.md`. Fill in the bracketed fields before sending.
 
 ---
 

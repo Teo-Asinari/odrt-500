@@ -1,4 +1,5 @@
-# R-14 floor platform (ADR-001). The mechanism sits at one end; the cable runs
+# LEGACY iteration-2 platform reference, superseded by configs/modular.yaml (ADR-002).
+# Retained for regression tests; not generated as the current product. The mechanism sits at one end; the cable runs
 # horizontally to a turning sheave under the deck port and leaves vertically
 # between the user's feet. Placeholders throughout (A-021).
 max_fleet_angle_deg: 4.0          # drum-to-sheave fleet angle limit; real limit depends on groove and sheave design

@@ -8,8 +8,8 @@ from odrt.project import load_inputs
 
 def test_shipped_inputs_load():
     inputs = load_inputs(REPO)
-    assert list(inputs.requirements) == [f"R-{i:02d}" for i in range(1, 15)]
-    assert inputs.envelope.peak_tension_lbf == 500
+    assert list(inputs.requirements) == [f"R-{i:02d}" for i in range(1, 16)]
+    assert inputs.envelope.peak_tension_lbf == 250
     assert {"reference", "limit"} == {s.kind for s in inputs.scenarios.values()}
     for s in inputs.scenarios.values():
         assert s.requirements, s.name
@@ -25,7 +25,7 @@ def _scenario(data):
 
 
 @pytest.mark.parametrize("mutate, message", [
-    (lambda d: _scenario(d).__setitem__("extension_tension_lbf", 501), "<= 500"),
+    (lambda d: _scenario(d).__setitem__("extension_tension_lbf", 251), "<= 250"),
     (lambda d: _scenario(d).__setitem__("retraction_tension_lbf", -1), ">= 0"),
     (lambda d: _scenario(d).__setitem__("extend_s", 0), "> 0"),
     (lambda d: _scenario(d).__setitem__("top_hold_s", -0.1), ">= 0"),
@@ -79,7 +79,7 @@ def test_envelope_must_be_positive(repo_copy):
     (lambda d: d["hazards"][0].__setitem__("severity", "S5"), "severity"),
     (lambda d: d["hazards"][0].__setitem__("channel", "hope"), "channel"),
     (lambda d: d["hazards"][0]["evidence"].append({"case": "nope", "metric": "peak_bus_v"}), "unknown dynamics case"),
-    (lambda d: d["hazards"][0]["evidence"].append({"case": "release_at_500lbf", "metric": "vibes"}), "unknown metric"),
+    (lambda d: d["hazards"][0]["evidence"].append({"case": "release_at_peak", "metric": "vibes"}), "unknown metric"),
     (lambda d: d["hazards"][1].__setitem__("id", "H-01"), "duplicate"),
     (lambda d: d["hazards"][0].__setitem__("requirements", ["R-77"]), "unknown ids"),
 ])

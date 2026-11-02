@@ -173,82 +173,25 @@ def platform_summary(inputs, sizes, mech_env_mm, mech_mass_kg, mech_back_mm=None
 
 
 def cmd_cad(args) -> int:
-    from odrt import cad
+    from odrt import cad, modular
     inputs = load_inputs(args.root)
-    st = inputs.structure
-    opt = inputs.options[st.design]
-    sim_metrics = Path("build/sim/metrics.json")
-    sizes = structural_summary(inputs, json.loads(sim_metrics.read_text()) if sim_metrics.exists() else {})
-    if sizes.get("observed_fault_peak_lbf") is None:
-        print("error: run `odrt simulate` first (platform checks need the dynamic snap load)", file=sys.stderr)
-        return 2
+    sim = Path(args.sim)
+    if not sim.exists():
+        raise ConfigError("run `odrt simulate` first (mount checks need fault loads)")
+    payload = json.loads(sim.read_text())
+    if payload['provenance']['input_hash'] != inputs.input_hash:
+        raise ConfigError("simulation results are stale: rerun `odrt simulate`")
+    missing = set(c.name for c in inputs.dynamics.cases) - set(payload.get("dynamics", {}).get(inputs.structure.design, {}))
+    if missing:
+        raise ConfigError("simulation results are incomplete: rerun `odrt simulate`")
     try:
-        parts, geo = cad.build(st, opt, inputs.common, sizes)
+        result = modular.build_and_report(inputs, structural_summary(inputs, payload), Path(args.out), Path(args.reports))
     except cad.CadUnavailable as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 3
-    import cadquery as cq
-    out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=True)
-    assy = cad.assemble(parts)
-    step = out / "odrt500_concept.step"
-    assy.save(str(step))
-    glb = out / "odrt500_concept.glb"  # for viewers without STEP import (e.g. Golemics)
-    assy.save(str(glb), exportType="GLTF")
-    cad.gltf_to_metres_y_up(glb)
-    clashes = cad.interferences(parts)
-    masses = cad.mass_kg(parts, st, opt.component.mass_kg or 0.0)
-    env = cad.envelope_mm(parts)
-    figs = Path(args.reports) / "figures"
-    figs.mkdir(parents=True, exist_ok=True)
-    compound = assy.toCompound().mirror("XY")  # the SVG exporter draws +Z downward
-    views = {"iso": (1, 1.2, -0.8), "plan": (0, 0, -1)}
-    for view, direction in views.items():
-        cq.exporters.export(cq.Workplane().add(compound), str(figs / f"cad_{view}.svg"), exportType="SVG",
-                            opt={"projectionDir": direction, "showAxes": False, "width": 520, "height": 400,
-                                 "marginLeft": 10, "marginTop": 10, "strokeWidth": 0.4, "showHidden": False})
-    from odrt.reporting import write_cad_report, write_platform_report
-    report = write_cad_report(inputs, sizes, geo, env, masses, clashes, step, Path(args.reports))
-    back = -min(p.shape.val().BoundingBox().ymin for p in parts)
-    plat = platform_summary(inputs, sizes, env, sum(masses.values()), back)
-    pparts, pgeo = cad.build_platform(st, opt, inputs.common, sizes, inputs.platform, plat)
-    pclash = cad.interferences(pparts)
-    passy = cad.assemble(pparts)
-    passy.save(str(out / "odrt500_platform.step"))
-    pglb = out / "odrt500_platform.glb"
-    passy.save(str(pglb), exportType="GLTF")
-    cad.gltf_to_metres_y_up(pglb)
-    cq.exporters.export(cq.Workplane().add(passy.toCompound().mirror("XY")), str(figs / "cad_platform_iso.svg"),
-                        exportType="SVG", opt={"projectionDir": (1.2, 1.0, -0.9), "showAxes": False, "width": 560,
-                                               "height": 420, "marginLeft": 10, "marginTop": 10, "strokeWidth": 0.4,
-                                               "showHidden": False})
-    plat["interferences"] = len(pclash)
-    plat["envelope_mm"] = cad.envelope_mm(pparts)
-    write_platform_report(inputs, plat, Path(args.reports))
-    clashes = clashes + pclash
-    # electronics packaging, heat/power budget and presentation GLBs (full, cutaway, exploded)
-    import yaml as _yaml
-    from odrt import electronics, packaging, visual
-    from odrt.reporting import write_electronics_report
-    el_parts = electronics.load_electronics(Path(args.root) / "data/electronics.csv")
-    el_cfg = _yaml.safe_load((Path(args.root) / "configs/electronics.yaml").read_text())
-    budget = electronics.budget(inputs, el_cfg)
-    from odrt import swivel
-    sw_cfg = swivel.load_swivel(Path(args.root) / "configs/swivel.yaml")
-    kplat, kparts, kgeo, bay = packaging.build(st, opt, inputs.common, sizes, inputs.platform, plat, el_parts, sw_cfg)
-    from odrt.reporting import write_swivel_report
-    write_swivel_report(inputs, sw_cfg, swivel.envelope(sw_cfg), Path(args.reports))
-    kclash = packaging.interferences(kplat, kparts)
-    vparts, pivots, vinfo = visual.build(st, opt, inputs.common, sizes)
-    glbs = []
-    for tag, kw in (("full", {}), ("cutaway", {"cutaway": True}), ("exploded", {"exploded": True})):
-        glbs.append(packaging.export_glb(vparts, pivots, vinfo, kplat, kparts, kgeo,
-                                         out / f"odrt500_platform_{tag}.glb", **kw))
-    write_electronics_report(inputs, el_parts, el_cfg, budget, kparts, kclash, bay, Path(args.reports))
-    clashes = clashes + kclash
-    print("wrote " + ", ".join(str(g) for g in glbs))
-    print(f"wrote {step}, {glb}, {report} and {len(views)} views; {len(clashes)} interferences")
-    return 1 if clashes else 0
+    if result == 0:
+        (Path(args.out) / 'modular_provenance.json').write_text(json.dumps({"input_hash": inputs.input_hash}) + "\n")
+    return result
 
 
 def cmd_fea(args) -> int:
@@ -278,29 +221,43 @@ def cmd_fea(args) -> int:
 
 
 def cmd_visual(args) -> int:
-    from odrt import animate, cad, visual
+    """Publish current modular views; the old exercise animations are superseded."""
+    import shutil
     inputs = load_inputs(args.root)
-    st = inputs.structure
-    opt = inputs.options[st.design]
-    try:
-        parts, pivots, info = visual.build(st, opt, inputs.common, structural_summary(inputs, {}))
-        handle = visual.handle()
-    except cad.CadUnavailable as exc:
-        print(f"error: {exc}", file=sys.stderr)
-        return 3
+    if args.legacy_platform:
+        from odrt import animate, cad, visual
+        st = inputs.structure
+        opt = inputs.options[st.design]
+        try:
+            parts, pivots, info = visual.build(st, opt, inputs.common, structural_summary(inputs, {}))
+            handle = visual.handle()
+        except cad.CadUnavailable as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 3
+        out = Path(args.out) / 'legacy'
+        out.mkdir(parents=True, exist_ok=True)
+        scene, _ = animate.build_scene(inputs, parts, pivots, info, handle)
+        (out / 'odrt500_detailed.glb').write_bytes(scene.to_glb())
+        for ex in animate.EXERCISES:
+            if args.only and ex.name not in args.only:
+                continue
+            scene, _ = animate.build_scene(inputs, parts, pivots, info, handle, ex)
+            (out / f'odrt500_{ex.name}.glb').write_bytes(scene.to_glb())
+        print(f"Historical presentation only: wrote legacy single-platform animations to {out}")
+        return 0
+    if args.only:
+        raise ConfigError("--only applies to --legacy-platform animations; modular exercise motion is not modeled")
+    source = Path(args.cad)
+    provenance = source / 'modular_provenance.json'
+    if not provenance.exists() or json.loads(provenance.read_text())['input_hash'] != inputs.input_hash:
+        raise ConfigError("current modular CAD is missing or stale: run `make cad` first")
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    scene, _ = animate.build_scene(inputs, parts, pivots, info, handle)
-    (out / "odrt500_detailed.glb").write_bytes(scene.to_glb())
-    print(f"wrote {out / 'odrt500_detailed.glb'}")
-    for ex in animate.EXERCISES:
-        if args.only and ex.name not in args.only:
-            continue
-        scene, rep = animate.build_scene(inputs, parts, pivots, info, handle, ex)
-        path = out / f"odrt500_{ex.name}.glb"
-        path.write_bytes(scene.to_glb())
-        print(f"wrote {path}: {rep['duration_s']:.1f} s, cable stroke {rep['stroke_m']:.2f} m, "
-              f"peak cable speed {rep['peak_cable_speed_m_s']:.2f} m/s ({rep['scenario']} timing)")
+    for name in ('odrt250_unit_full.glb', 'odrt250_unit_cutaway.glb', 'odrt250_unit_exploded.glb',
+                 'odrt500_modular_board.glb', 'odrt500_modular_board_exploded.glb'):
+        shutil.copyfile(source / name, out / name)
+        print(f"wrote {out / name}")
+    print("Modular static views only; legacy single-platform exercise animations are superseded.")
     return 0
 
 
@@ -350,8 +307,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("cad", help="build the parametric concept CAD (needs the [cad] extra)")
     p.add_argument("--out", default="build/cad")
     p.add_argument("--reports", default="reports")
-    p = sub.add_parser("visual", help="detailed model and animated exercise GLBs (needs the [cad] extra)")
+    p.add_argument("--sim", default="build/sim/metrics.json")
+    p = sub.add_parser("visual", help="copy current modular unit and board GLB views")
     p.add_argument("--out", default="build/visual")
+    p.add_argument("--cad", default="build/cad")
+    p.add_argument("--legacy-platform", action="store_true", help="export historical single-platform animations under legacy/")
     p.add_argument("--only", nargs="+", metavar="EXERCISE")
     p = sub.add_parser("motor", help="custom motor sizing study from the cited motor family")
     p.add_argument("--reports", default="reports")

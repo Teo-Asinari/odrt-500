@@ -11,7 +11,7 @@ hazards:
     cause: User lets go or the grip slips at high tension.
     effect: The cable's stored elastic energy (~F^2/2k) launches the handle toward the device. Separately, the controller can wind the drum hard into the end stop.
     severity: S4
-    evidence: [{case: release_at_500lbf, metric: handle_end_stop_speed_m_s}, {case: release_at_500lbf_speed_limit, metric: handle_end_stop_speed_m_s}, {case: release_at_500lbf, metric: peak_tension_lbf}]
+    evidence: [{case: release_at_peak, metric: handle_end_stop_speed_m_s}, {case: release_at_peak_speed_limit, metric: handle_end_stop_speed_m_s}, {case: release_at_peak, metric: peak_tension_lbf}]
     mitigations: [Release detection drops command to rest tension (firmware, simulated), Retraction speed limiter (firmware, simulated), Mechanical handle arrestor or damper at the cable exit (mechanical, not designed), Stiffer cable to cut stored energy (mechanical, trade study needed)]
     channel: mechanical
     validation_gap: Firmware measures cannot remove the stored cable energy, so a mechanical arrestor is required and unmodelled. The arm surrogate and cable stiffness are placeholders.
@@ -78,20 +78,20 @@ hazards:
     requirements: [R-09]
   - id: H-08
     title: Motor overtemperature
-    cause: Sustained high tension (500 lbf holds) or blocked cooling.
+    cause: Sustained high tension (250 lbf holds per unit) or blocked cooling.
     effect: Winding damage, demagnetisation, torque loss.
     severity: S2
     evidence: []
     mitigations: [Thermal model in firmware plus winding thermistor (firmware), Duty-cycle limits on peak tension (firmware)]
     channel: firmware
-    validation_gap: The thermal model uses placeholder thermal data (A-015); see thermal.md for time-at-500-lbf.
+    validation_gap: The thermal model uses placeholder thermal data (A-015); see thermal.md for time at the per-unit peak.
     requirements: [R-07]
   - id: H-09
     title: Cable or termination failure
     cause: Wear, fatigue, sharp bends at the fairlead, overload from snap loads.
     effect: Sudden release (as H-01, plus whipping cable).
     severity: S4
-    evidence: [{case: release_at_500lbf, metric: peak_tension_lbf}]
+    evidence: [{case: release_at_peak, metric: peak_tension_lbf}]
     mitigations: [Rope rated at 5x design tension (mechanical; see structure.md), Bend radius and wear inspection rules (mechanical, not defined), Cable guard (mechanical, not designed)]
     channel: mechanical
     validation_gap: The rope is not selected, and the fatigue and bend-radius analysis is not done.
@@ -156,3 +156,23 @@ hazards:
     channel: firmware
     validation_gap: The tilt sensor is not designed. Friction and the pull envelope are placeholders (A-025). See reports/swivel.md.
     requirements: [R-09, R-14]
+  - id: H-16
+    title: Asymmetric fault with two units on one bar
+    cause: One unit loses power, sensing or control while the other keeps pulling.
+    effect: Bar rotation and sudden unequal loading on the user or mounts.
+    severity: S4
+    evidence: []
+    mitigations: [Independent stop functions in each unit (proposal), Coordinated paired-mode fault response (not designed)]
+    channel: independent-hardware
+    validation_gap: The two-unit bar and its coupled dynamics are not simulated; peer communication must not be a single point of failure.
+    requirements: [R-04, R-09, R-15]
+  - id: H-17
+    title: Incorrect or unretained standalone mount
+    cause: Wrong adapter, incomplete retention, unsuitable substrate or incorrect mode detection.
+    effect: Unit detaches or pulls against an unqualified mount.
+    severity: S4
+    evidence: []
+    mitigations: [Captive mechanical retention (not designed), Local mount-state interlock independent of board presence (not designed)]
+    channel: mechanical
+    validation_gap: Interface load calculations are capacity requirements only. Wall, rack, door and board adapters are not qualified; no high-force door mode is established.
+    requirements: [R-08, R-09, R-14, R-15]

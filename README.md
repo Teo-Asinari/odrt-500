@@ -1,8 +1,8 @@
 # ODRT-500 — Open Digital Resistance Trainer
 
-Simulation-first research project for an open, wall-powered, digitally controlled cable resistance trainer. Targets: up to 500 lbf (2,224 N) of cable tension and a long-run $500 retail price. Both are **hypotheses to test, not demonstrated capabilities**.
+Simulation-first research project for an open, wall-powered, digitally controlled cable resistance trainer. Targets: 250 lbf (1,112 N) per modular unit, 500 lbf combined from two units, and a long-run $500 retail price per unit (ADR-002). Both are **hypotheses to test, not demonstrated capabilities**.
 
-**Status:** Concept. Simulation-only. No hardware build or human-load testing is authorized; see the safety gates in the design brief. Progress: [`reports/STATUS.md`](reports/STATUS.md).
+**Status:** Concept. Simulation-only. No hardware build or human-load testing is authorized; see the safety gates in the design brief. Progress: [`reports/STATUS.md`](reports/STATUS.md). Current integration: [`reports/modular.md`](reports/modular.md).
 
 - Design brief: [`docs/DESIGN.md`](docs/DESIGN.md)
 - Coding agents: start with §11 of the brief, then `reports/STATUS.md`.
@@ -16,9 +16,9 @@ make venv     # create .venv with pinned dependencies (constraints.txt)
 make check    # validate requirements, assumptions and scenarios
 make test     # unit and negative tests
 make report   # simulate all scenarios, regenerate reports/
-make cad      # parametric concept CAD: build/cad/*.step and *.glb, reports/cad.md
+make cad      # modular unit + paired-board CAD: build/cad/*.step and *.glb
 make fea      # side-plate FEA convergence study, reports/fea.md
-make visual   # detailed model + animated row/curl/deadlift GLBs in build/visual (glTF, metres, Y-up)
+make visual   # current unit/full/cutaway/exploded + paired-board GLBs in build/visual (metres, Y-up)
 make ci       # all of the above; fails if committed reports are stale
 ```
 

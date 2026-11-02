@@ -1,5 +1,5 @@
 id,item,role,qty,length_mm,width_mm,height_mm,mass_kg,dims_basis,source_url,accessed,notes
-psu,Mean Well RSP-1000-48,AC-DC supply 48 V 1 kW,1,295,127,41,,cited (listings disagree; check the official drawing),https://openelab.io/products/meanwell-rsp1000-48-switching-power,2026-11-02,~90% efficiency (distributors); built-in fan; operating -20 to 60 C with derating
+psu,48 V 500 W supply (candidate),per-unit AC-DC supply,1,230,110,45,,estimated envelope; no selected part,,,500 W simulated limit; efficiency 90% assumed; select and quote a real supply
 drive,ODrive S1,motor drive (FOC),1,66,50,20,,cited footprint; height estimated,https://docs.odriverobotics.com/v/latest/hardware/odrive-comparison.html,2026-11-02,40 A continuous with heat spreader; 80 A peak
 drive_heatsink,ODrive heatsink + 60 mm fan,drive cooling,1,70,70,25,,cited,https://odriverobotics.com/shop/heatsink-and-fan-for-odrive-pro,2026-11-02,fan needs a separate 12 V supply
 cap_cell,Wurth 850617022002 50 F 2.7 V,buffer cell (small-format reference),22,18,18,40,,cited (diameter x diameter x height),https://it.rs-online.com/web/p/supercondensatori/1855127,2026-11-02,ESR 20 mohm; -40 to 65 C; used to show why small cells do not work

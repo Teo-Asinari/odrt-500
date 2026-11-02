@@ -7,6 +7,7 @@
 #
 # Phase order per rep: extend -> top_hold -> retract -> bottom_hold.
 # Peak cable speed of a minimum-jerk stroke = 1.875 * stroke_m / duration (A-002).
+# Tensions are PER UNIT (ADR-002): cases that were above 250 lbf are combined two-unit loads, halved.
 defaults:
   sample_rate_hz: 1000
   tension_ramp_s: 0.2
@@ -79,11 +80,11 @@ scenarios:
     reps: 5
     sets: 3
     rest_s: 180
-    extension_tension_lbf: 400
-    retraction_tension_lbf: 400
+    extension_tension_lbf: 200
+    retraction_tension_lbf: 200
 
   peak_tension_hold_limit:
-    description: Heavy reps with 3 s pauses at the full 500 lbf target (ADR-001 seconds-per-rep). Sizes stall torque and short-term heating.
+    description: Heavy reps with 3 s pauses at the full 250 lbf per-unit target (500 combined; ADR-002). Sizes stall torque and short-term heating.
     kind: limit
     requirements: [R-01, R-02, R-07]
     assumptions: [A-001, A-002, A-003]
@@ -96,11 +97,11 @@ scenarios:
     reps: 5
     sets: 1
     rest_s: 0
-    extension_tension_lbf: 500
-    retraction_tension_lbf: 500
+    extension_tension_lbf: 250
+    retraction_tension_lbf: 250
 
   heavy_tempo_limit:
-    description: 500 lbf at the fast end of heavy-lift tempos (0.94 m/s peak concentric, A-007). Min-jerk fixes peak/mean at 1.875, so the mean (0.5 m/s) is higher than measured 1RM lifts; conservative for power and heat.
+    description: 250 lbf per unit (500 combined) at the fast end of heavy-lift tempos (0.94 m/s peak concentric, A-007). Min-jerk fixes peak/mean at 1.875, so the mean (0.5 m/s) is higher than measured 1RM lifts; conservative for power and heat.
     kind: limit
     requirements: [R-01, R-02, R-06]
     assumptions: [A-001, A-002, A-003, A-007]
@@ -113,8 +114,8 @@ scenarios:
     reps: 5
     sets: 1
     rest_s: 0
-    extension_tension_lbf: 500
-    retraction_tension_lbf: 500
+    extension_tension_lbf: 250
+    retraction_tension_lbf: 250
 
   full_stroke_limit:
     description: Full 2.0 m usable stroke from fully wound. Sizes drum capacity and winding-layer range.
@@ -164,8 +165,8 @@ scenarios:
     reps: 6
     sets: 3
     rest_s: 120
-    extension_tension_lbf: 200
-    retraction_tension_lbf: 300
+    extension_tension_lbf: 100
+    retraction_tension_lbf: 150
 
   endurance_session_limit:
     description: Long session with short rests at 250 lbf. Drives thermal soak.

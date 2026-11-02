@@ -37,3 +37,18 @@ def test_invalid_input_exits_nonzero(repo_copy, capsys):
               lambda d: d["envelope"].__setitem__("max_usable_stroke_m", -1))
     assert main(["--root", str(repo_copy), "check"]) == 2
     assert "error:" in capsys.readouterr().err
+
+
+def test_cad_requires_current_complete_simulation(tmp_path):
+    from odrt.project import load_inputs
+    missing = tmp_path / 'absent.json'
+    assert main(['--root', str(REPO), 'cad', '--sim', str(missing)]) == 2
+    sim = tmp_path / 'metrics.json'
+    sim.write_text(json.dumps({'provenance': {'input_hash': 'stale'}, 'dynamics': {}}))
+    assert main(['--root', str(REPO), 'cad', '--sim', str(sim)]) == 2
+    sim.write_text(json.dumps({'provenance': {'input_hash': load_inputs(REPO).input_hash}, 'dynamics': {}}))
+    assert main(['--root', str(REPO), 'cad', '--sim', str(sim)]) == 2
+
+
+def test_modular_visual_requires_current_cad(tmp_path):
+    assert main(['--root', str(REPO), 'visual', '--cad', str(tmp_path)]) == 2

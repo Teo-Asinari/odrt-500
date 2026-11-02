@@ -173,7 +173,8 @@ def assemble(parts):
     cq = _cq()
     assy = cq.Assembly(name="odrt500_concept")
     colors = {"plate": (0.75, 0.77, 0.8), "shaft": (0.45, 0.47, 0.5), "motor": (0.2, 0.25, 0.32),
-              "none": (0.85, 0.55, 0.3)}
+              "none": (0.85, 0.55, 0.3), "black": (0.08, 0.09, 0.1),
+              "electronics": (0.16, 0.25, 0.22), "board": (0.12, 0.12, 0.13)}
     for p in parts:
         assy.add(p.shape, name=p.name.replace(" ", "_").replace("(", "").replace(")", ""),
                  color=cq.Color(*colors.get(p.material, (0.6, 0.6, 0.6))))

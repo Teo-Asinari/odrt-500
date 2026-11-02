@@ -1,13 +1,13 @@
 # Open Digital Resistance Trainer — Engineering Design Brief
 
-**Status:** Concept / simulation-first research specification  
-**Revision:** 0.1 — 2026-11-02  
-**Audience:** Codex, Claude Code, mechanical/electrical engineers, reviewers  
+**Status:** Concept / simulation-first research specification
+**Revision:** 0.2 — 2026-11-02 (ADR-002 modular targets)
+**Audience:** Codex, Claude Code, mechanical/electrical engineers, reviewers
 **Working name:** ODRT-500
 
 ## 1. Mission
 
-Design and evaluate an **open, wall-powered, digitally controlled cable resistance trainer** that aims to provide **up to 500 lbf (2,224 N) of cable tension per unit**, smooth human-interactive resistance, and a **long-run target of $500 USD retail per unit**.
+Design and evaluate an **open, wall-powered, digitally controlled cable resistance trainer** that aims to provide **up to 250 lbf (1,112 N) of cable tension per unit, 500 lbf combined with two independent units**, smooth human-interactive resistance, and a **long-run target of $500 USD retail per unit**.
 
 **These are ambitious targets, not demonstrated capabilities.** The system must be developed and assessed in simulation before any hardware prototype. A $500 retail price is substantially harder than a $500 bill of materials (BOM); track both separately. Do not represent a simulation as certification or proof of human-use safety.
 
@@ -19,7 +19,7 @@ Initial objective: create an auditable, executable **digital engineering model**
 
 1. **Safety and controllability**, including safe response to loss of power, loss of sensing, or unexpected user motion.
 2. **Smooth, measurable resistance** across both slow and moderately fast repetitions.
-3. **Feasibility of 500 lbf peak** and explicitly defined sustained-force envelopes.
+3. **Feasibility of 250 lbf peak per unit (500 lbf combined)** and explicitly defined sustained-force envelopes.
 4. **Low total product cost** using readily sourced commodity components.
 5. **Quiet, apartment-compatible operation**; rigid, independently rated mounting.
 6. **Open, reproducible, headless engineering workflow** for autonomous coding agents.
@@ -37,9 +37,9 @@ Initial objective: create an auditable, executable **digital engineering model**
 
 | ID | Requirement | Target / acceptance method | Status |
 |---|---|---|---|
-| R-01 | Peak cable tension | **500 lbf / 2,224 N**, demonstrated in a bounded simulated operating region; duration TBD from thermal model | Hypothesis |
+| R-01 | Peak cable tension | **250 lbf / 1,112 N per unit; 500 lbf combined**, demonstrated in a bounded simulated operating region; duration TBD from thermal model | Hypothesis |
 | R-02 | Sustained tension | Derive force-versus-speed-versus-duration envelope; **no unsupported 500 lbf continuous claim** | Required analysis |
-| R-03 | Adjustable tension | Proposed nominal working range 5–500 lbf; assess whether fine low-force control is realistic | Stretch |
+| R-03 | Adjustable tension | Proposed nominal working range 5–250 lbf per unit; assess whether fine low-force control is realistic | Stretch |
 | R-04 | Dynamic behavior | Evaluate step responses, tracking error, overshoot, oscillation, and reversals across load cases | Simulation metric TBD |
 | R-05 | Cable stroke | Parametric target 1.5–2.0 m usable stroke; confirm through use cases and winding geometry | Provisional |
 | R-06 | Power | Wall-powered; model AC input, PSU, regeneration/braking/dump load, duty cycle, and circuit limits | Required analysis |
@@ -69,7 +69,7 @@ Optional alternative: capstan, belt, or alternative drive arrangements. Compare 
 
 Use SI units internally. Label **lbf (force)** separately from **lb (mass)**.
 
-- Cable force: `F = 500 lbf ≈ 2224 N`.
+- Per-unit cable force: `F = 250 lbf ≈ 1112 N`; combined two-unit force is 500 lbf. The 500 lbf calculations below remain useful combined-system reference values, not per-unit requirements.
 - Drum torque: `tau_drum = F * r_eff`, where `r_eff` changes with cable winding layer.
 - At `r_eff = 0.020 m`, target torque ≈ **44.5 N·m at the drum**.
 - Cable mechanical power magnitude: `P = F * v`.
@@ -179,7 +179,7 @@ Agent integration policy: all tool invocations must be made through versioned sc
 ## 9. Required validation cases (simulation phase)
 
 - Zero/low tension stability and fine tension control (especially <20 lbf).
-- 500 lbf peak at zero/low speed, with time limit and temperature explicitly stated.
+- 250 lbf per-unit peak (500 lbf combined) at zero/low speed, with time limit and temperature explicitly stated.
 - Force-versus-speed-versus-duration envelope; repeated sets with rest periods.
 - Sudden pull, sudden stop, cable reversal, and loss of external load.
 - Loss of encoder/load sensor; sensor disagreement; communication timeout.
@@ -215,8 +215,8 @@ For each case: record initial conditions, solver settings, tolerances, numerical
 
 ## 12. Open engineering questions
 
-- Is **500 lbf peak** valuable, or would two independently controlled 250 lbf units be more practical?
-- At what maximum cable speed must the unit produce 500 lbf, and for how long?
+- Decided in ADR-002: two independent 250 lbf units, common board accessory and a universal mount. Packaging, mounting and coordinated fault response remain open.
+- At what maximum cable speed must each unit produce 250 lbf, and for how long?
 - What household power source and electrical jurisdiction are assumed?
 - What noise, size, weight, and mounting limits are acceptable?
 - Is the product required to provide active cable retraction under load, or mainly resist extension?

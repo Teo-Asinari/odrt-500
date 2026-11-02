@@ -98,7 +98,7 @@ def test_speed_limiter_slows_drum_after_release(setup):
 def test_released_handle_bounded_by_stored_cable_energy(setup):
     inputs, plant = setup
     p = inputs.dynamics
-    f = lbf_to_n(500)
+    f = lbf_to_n(inputs.envelope.peak_tension_lbf)
     k = p.ea_n / (p.routing_length_m + 0.8)
     v_max = np.sqrt(f**2 / k / p.handle_mass_kg)  # all elastic energy into the handle
     m = run(Case("r", "x", 4.0, "handle_release", 2.6, True), _traj_pull(), plant, p)["metrics"]
@@ -109,7 +109,7 @@ def test_released_handle_bounded_by_stored_cable_energy(setup):
     (lambda d: d.__setitem__("designs", ["nope"]), "unknown option"),
     (lambda d: d.__setitem__("designs", ["myactuator_rmd_x10_p7_40@7:1 (built-in)"]), "lacks motor data"),
     (lambda d: d["cases"][0].__setitem__("fault", "meteor"), "not in"),
-    (lambda d: d["cases"][3].pop("fault_time_s"), "fault_time_s required"),
+    (lambda d: next(c for c in d["cases"] if c["fault"] == "handle_release").pop("fault_time_s"), "fault_time_s required"),
     (lambda d: d["bus"].__setitem__("dump_on_v", 70), "nominal_v < dump_on_v < overvoltage_v"),
     (lambda d: d["cases"][1].__setitem__("name", d["cases"][0]["name"]), "duplicate"),
 ])
@@ -155,8 +155,17 @@ def test_presence_sensing_keeps_empty_platform_down(setup):
 
 def test_no_false_trips_in_normal_tracking(setup):
     inputs, plant = setup
-    for name in ("tracking_heavy_tempo", "tracking_low_force"):
+    for name in ("tracking_heavy_tempo", "tracking_low_force", "tracking_heavy_full_set"):
         case = [c for c in inputs.dynamics.cases if c.name == name][0]
         from odrt.scenarios import generate
         m = run(case, generate(inputs.scenarios[case.scenario], inputs.defaults), plant, inputs.dynamics)["metrics"]
         assert not (m["sto_tripped"] or m["release_detected"] or m["sensor_fault_detected"]), name
+
+
+def test_full_heavy_set_stays_within_ideal_bus_limits(setup):
+    inputs, plant = setup
+    case = next(c for c in inputs.dynamics.cases if c.name == 'tracking_heavy_full_set')
+    from odrt.scenarios import generate
+    m = run(case, generate(inputs.scenarios[case.scenario], inputs.defaults), plant, inputs.dynamics)['metrics']
+    assert m['min_bus_v'] > inputs.dynamics.undervoltage_v
+    assert m['peak_bus_v'] < inputs.dynamics.overvoltage_v

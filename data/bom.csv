@@ -1,14 +1,14 @@
 item,qty,unit_price,currency,price_basis,source_url,accessed,notes
 CubeMars RO100 KV55 motor,1,171.90,USD,single unit retail,https://www.cubemars.com/goods-1159-RO100.html,2026-11-02,Lead design motor (data/components.csv)
 ODrive S1 motor driver,1,149.00,USD,single unit list; 143.00 at 100 units,https://shop.odriverobotics.com/products/odrive-s1,2026-11-02,Shown sold out when crawled
-Mean Well RSP-1000-48 power supply (48 V 1 kW),1,267.90,USD,single unit distributor,https://www.bravoelectro.com/rsp-1000-48.html,2026-11-02,Jameco lists the same price
+48 V 500 W supply (per-unit candidate),1,,,,,,"Not selected or priced. Replaces the iteration-2 RSP-1000-48; 500 W is a simulation input, not a vendor rating."
 HTD-5M 90T 15 mm pulley (taper-lock),1,32.47,GBP,single unit incl. VAT,https://beltingonline.com/taper-lock-c-272_285_482_494/90-tooth-htd5-tl-pulley-905m15-p-8280.html,2026-11-02,Taper-lock bush not included
 HTD-5M 15T pinion,1,11.55,USD,single unit,https://www.york-ind.com/buy-online/timing-belt-pulleys/5mm-htd-pitch-timing-belt-pulleys/timing-belt-pulley-5mm-htd-pitch-15-grooves-for-15mm-wide-belt-025-bore-aluminum.html,2026-11-02,0.25 in pilot bore; needs re-boring/keying for the motor shaft
 HTD-5M 15 mm belt,1,,,,,,Not yet sourced; length from CAD centre distance
 Bearing 25 mm bore (62xx class),2,,,,,,Not yet sourced
 Shaft 25 mm steel (machined),1,,,,,,Not yet sourced
 Drum (machined aluminium),1,,,,,,Not yet sourced
-Frame plates 6061 (side plates; base; brackets; fairlead post),1,,,,,,Not yet sourced; about 7 kg of plate from CAD
+Frame plates 6061 (side plates; base; brackets; fairlead post),1,,,,,,Reference mechanism structure retained; current CAD material estimate in cad.md; fabrication unpriced
 Fairlead roller and bearings,1,,,,,,Not yet sourced
 Rope 6 mm HMPE 12-strand 40 kN MBS (per metre); terminations not included,4,3.07,USD-unverified,per metre; currency shown as $ on a Czech retailer,https://www.skyman.cz/en/p/dyneema-rope-cousin-trestec-dynalight-hmpe-6-mm-40-kn-yardage,2026-11-02,Models assume 4 mm rope; a 6 mm rope changes drum and sheave sizing. Required MBS is in structure.md
 Load cell 500 kg S-type (Phidgets); amplifier not included,1,71.46,CAD,single unit sale price (Robotshop Canada),https://ca.robotshop.com/products/500kg-s-type-load-cell,2026-11-02,Amplifier/ADC not included or priced
@@ -17,4 +17,5 @@ Phase-short relay and independent safety controller,1,,,,,,Not yet sourced; haza
 Enclosure and guards,1,,,,,,Not designed
 Handle and attachment,1,,,,,,Not yet sourced
 Wiring; connectors; fuses; mains inlet; switch,1,,,,,,Not yet sourced
-Supercapacitor bank >= 2 F at >= 60 V with balancing and pre-charge,1,,,,,,Not yet sourced; sized in dynamics (1 kW supply + 2 F)
+Supercapacitor bank >= 2 F at >= 60 V with balancing and pre-charge,1,,,,,,"Not selected; 2 F model, 22s low-ESR large-cell packaging reference; balancing, pre-charge and discharge still required"
+Universal unit mounting plate and captive retention,1,,,,,,Unpriced; interface loads in modular.md; bracket and substrate qualification pending

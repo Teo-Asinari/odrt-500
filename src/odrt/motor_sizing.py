@@ -188,12 +188,12 @@ def evaluate(inputs, cand: Candidate, ratio: float, efficiency: float, limit_c: 
                       c_h=mount_c_j_per_k + 460 * cand.mass_kg)
     tp = dataclasses.replace(inputs.thermal, winding_max_c=limit_c)
     r_drum = drum.drum_core_radius_m + inputs.common.cable_diameter_m / 2
-    tau500 = lbf_to_n(inputs.envelope.peak_tension_lbf) * r_drum / (ratio * efficiency)
-    out = {"torque_500lbf_nm": tau500, "copper_500lbf_w": (tau500 / cand.km) ** 2,
-           "peak_ok": cand.peak_nm >= tau500, "felt_inertia_kg": arch.inertia_at_drum() / r_drum**2, "temps": {}}
+    tau_peak = lbf_to_n(inputs.envelope.peak_tension_lbf) * r_drum / (ratio * efficiency)
+    out = {"torque_peak_nm": tau_peak, "copper_peak_w": (tau_peak / cand.km) ** 2,
+           "peak_ok": cand.peak_nm >= tau_peak, "felt_inertia_kg": arch.inertia_at_drum() / r_drum**2, "temps": {}}
     n = int(3600 / tp.step_s)
-    tw, _ = simulate(np.full(n, tau500**2), mt, tp, stop_at_limit=True)
-    out["hold_500lbf_s"] = len(tw) * tp.step_s if tw[-1] >= limit_c else None
+    tw, _ = simulate(np.full(n, tau_peak**2), mt, tp, stop_at_limit=True)
+    out["hold_peak_s"] = len(tw) * tp.step_s if tw[-1] >= limit_c else None
     worst_need = 0.0
     for scen in SCENARIOS:
         traj = generate(inputs.scenarios[scen], inputs.defaults)
