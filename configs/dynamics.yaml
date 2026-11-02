@@ -1,0 +1,56 @@
+# Time-domain cable/drum/controller/bus model with fault injection (R-04, R-06, R-09).
+# Every number here is a placeholder (A-016). Safety values are PROPOSALS to be
+# reviewed (A-017): the brief forbids inventing validated safety thresholds.
+designs: ["2x cubemars_ro100_kv55@6:1", "2x cubemars_ro100_kv55@8:1"]
+dt_s: 0.0002
+cable:
+  axial_stiffness_ea_n: 500000   # EA of a ~4 mm synthetic rope, placeholder
+  routing_length_m: 1.0          # cable between drum and the handle exit at zero payout
+  damping_ratio: 0.05
+friction_at_cable_n: 10          # Coulomb friction (drum bearings, seals, pulleys), placeholder
+friction_smoothing_m_s: 0.005
+current_loop_time_constant_s: 0.001
+handle_mass_kg: 0.5              # handle mass once the user lets go
+user:                            # arm surrogate: anticipates the set tension, impedance around the planned path
+  mass_kg: 3.0
+  stiffness_n_per_m: 2000
+  damping_n_s_per_m: 100
+handle_end_stop_m: 0.0           # payout at which the handle hits the device
+sensors:
+  load_cell_delay_s: 0.002
+  load_cell_noise_n: 5
+  encoder_delay_s: 0.001
+  seed: 1
+controller:
+  kp: 0.2                        # N of correction per N of tension error (from gain sweep)
+  ki_per_s: 5
+  integral_limit_n: 500
+  friction_feedforward: true
+  inertia_compensation: 0.9      # fraction of m_eq * a_measured fed forward
+  accel_filter_s: 0.005          # low-pass on differentiated encoder speed
+  accel_clip_m_s2: 20            # inertia feedforward ignores accelerations beyond this (snap spikes)
+safety:
+  max_retract_speed_m_s: 1.0
+  retract_speed_gain_n_per_m_s: 3000
+  disagreement_n: 600
+  disagreement_time_s: 0.02
+bus:
+  nominal_v: 48
+  capacitance_f: 0.002
+  supply_max_w: 600
+  overvoltage_v: 60
+  dump_on_v: 56
+  dump_resistor_ohm: 0.5
+
+cases:
+  - {name: tracking_heavy_tempo, scenario: heavy_tempo_limit, window_s: 11.0, fault: none}
+  - {name: tracking_low_force, scenario: low_force_limit, window_s: 7.0, fault: none}
+  - {name: tracking_fast_reversal, scenario: fast_reversal_limit, window_s: 4.0, fault: none}
+  - {name: release_at_500lbf, scenario: heavy_tempo_limit, window_s: 4.0, fault: handle_release, fault_time_s: 2.6, safety: false}
+  - {name: release_at_500lbf_speed_limit, scenario: heavy_tempo_limit, window_s: 4.0, fault: handle_release, fault_time_s: 2.6, safety: true}
+  - {name: load_cell_stuck_zero, scenario: heavy_tempo_limit, window_s: 3.5, fault: load_cell_zero, fault_time_s: 2.6, safety: false}
+  - {name: load_cell_stuck_zero_monitored, scenario: heavy_tempo_limit, window_s: 3.5, fault: load_cell_zero, fault_time_s: 2.6, safety: true}
+  - {name: power_loss_open_mid_pull, scenario: heavy_tempo_limit, window_s: 3.0, fault: power_loss_open, fault_time_s: 1.8}
+  - {name: power_loss_shorted_mid_pull, scenario: heavy_tempo_limit, window_s: 3.0, fault: power_loss_shorted, fault_time_s: 1.8}
+  - {name: regen_no_dump_resistor, scenario: heavy_tempo_limit, window_s: 3.0, fault: no_dump_resistor, fault_time_s: 1.2}
+  - {name: regen_with_dump_resistor, scenario: heavy_tempo_limit, window_s: 3.0, fault: none}

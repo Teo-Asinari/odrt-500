@@ -85,6 +85,7 @@ def cmd_simulate(args) -> int:
         m = results[name]
         print(f"{name:28s} {m['duration_s']:7.1f} s  peak {m['peak_tension_lbf']:5.0f} lbf  "
               f"peak P {m['peak_power_absorbed_w']:6.0f} W  TUT {m['time_under_tension_s']:6.1f} s")
+    dyn = run_dynamics(inputs, out)
     payload = {
         "provenance": {
             "odrt_version": odrt.__version__,
@@ -96,10 +97,30 @@ def cmd_simulate(args) -> int:
         "drivetrain": drive,
         "components": comp,
         "thermal": therm,
+        "dynamics": dyn,
     }
     (out / METRICS_FILE).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
     print(f"wrote {len(results)} scenarios to {out}")
     return 0
+
+
+def run_dynamics(inputs, out: Path) -> dict:
+    from odrt.dynamics import Plant, run
+    trajs = {c.scenario: generate(inputs.scenarios[c.scenario], inputs.defaults) for c in inputs.dynamics.cases}
+    result = {}
+    for design in inputs.dynamics.designs:
+        plant = Plant.from_option(inputs.options[design], inputs.common)
+        result[design] = {}
+        for case in inputs.dynamics.cases:
+            res = run(case, trajs[case.scenario], plant, inputs.dynamics)
+            result[design][case.name] = res["metrics"]
+            np.savez_compressed(out / f"dyn__{_slug(design)}__{case.name}.npz", **res["signals"])
+        print(f"dynamics {design}: {len(inputs.dynamics.cases)} cases")
+    return result
+
+
+def _slug(text: str) -> str:
+    return "".join(ch if ch.isalnum() else "_" for ch in text)
 
 
 def cmd_report(args) -> int:
@@ -116,6 +137,8 @@ def cmd_report(args) -> int:
     missing = sorted(set(inputs.scenarios) - set(payload["scenarios"]))
     missing += sorted(f"{a}/{s}" for a in inputs.architectures for s in inputs.scenarios
                       if s not in payload.get("drivetrain", {}).get(a, {}))
+    missing += sorted(f"{d}/{c.name}" for d in inputs.dynamics.designs for c in inputs.dynamics.cases
+                      if c.name not in payload.get("dynamics", {}).get(d, {}))
     missing += sorted(f"{o}/{s}" for o in inputs.options for s in inputs.scenarios
                       if s not in payload.get("components", {}).get(o, {}))
     if missing:

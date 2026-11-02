@@ -14,7 +14,7 @@ from odrt.scenarios import Defaults, Envelope, load_envelope, load_scenarios
 INPUT_FILES = ("requirements/requirements.yaml", "requirements/assumptions.yaml",
                "configs/baseline.yaml", "configs/scenarios.yaml", "configs/architectures.yaml",
                "data/components.csv", "configs/component_study.yaml",
-               "configs/thermal.yaml")
+               "configs/thermal.yaml", "configs/dynamics.yaml")
 
 
 @dataclass(frozen=True)
@@ -31,13 +31,14 @@ class Inputs:
     study: Study
     options: dict
     thermal: ThermalParams
+    dynamics: object
     input_hash: str
 
 
 def load_inputs(root: Path = Path(".")) -> Inputs:
     root = Path(root)
     (req_path, asm_path, base_path, scen_path, arch_path, comp_path, study_path,
-     thermal_path) = (root / p for p in INPUT_FILES)
+     thermal_path, dyn_path) = (root / p for p in INPUT_FILES)
     requirements = load_requirements(req_path)
     assumptions = load_assumptions(asm_path, requirements)
     envelope = load_envelope(base_path)
@@ -45,9 +46,11 @@ def load_inputs(root: Path = Path(".")) -> Inputs:
     common, architectures = load_architectures(arch_path, envelope.max_usable_stroke_m)
     components = load_components(comp_path)
     study = load_study(study_path, architectures)
+    opts = options(components, study, architectures)
+    from odrt.dynamics import load_dynamics
+    dynamics = load_dynamics(dyn_path, opts, scenarios)
     return Inputs(root, requirements, assumptions, envelope, defaults, scenarios, common, architectures,
-                  components, study, options(components, study, architectures), load_thermal(thermal_path),
-                  input_hash(root))
+                  components, study, opts, load_thermal(thermal_path), dynamics, input_hash(root))
 
 
 def thermal_models(inputs: Inputs) -> dict:

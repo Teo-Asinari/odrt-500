@@ -91,3 +91,15 @@ assumptions:
     confidence: low
     status: open
     affects: [R-01, R-02, R-07]
+  - id: A-016
+    statement: The dynamic model is 1-D with placeholder cable stiffness (EA 500 kN, 1 m routing), Coulomb friction (10 N), a 1 ms current loop, sensor delays and noise, and an arm surrogate (3 kg, 2000 N/m, 100 N*s/m) that anticipates the set tension. Shorted-phase braking neglects winding inductance, so it is an upper bound.
+    basis: No measured cable, friction or human-arm data yet. The arm surrogate drives every user-side result (hand lurch, tracking) and is the least certain part.
+    confidence: low
+    status: open
+    affects: [R-03, R-04, R-06, R-09]
+  - id: A-017
+    statement: The controller gains, retraction speed limit (1 m/s), load-cell disagreement monitor (600 N for 20 ms), braking resistor (0.5 ohm from 56 V) and 60 V overvoltage line are simulation-only proposals, not validated safety thresholds.
+    basis: Gains come from a sweep over three tracking cases; the rest are round numbers. All need independent review (R-09, Gate D).
+    confidence: low
+    status: open
+    affects: [R-04, R-06, R-09]
