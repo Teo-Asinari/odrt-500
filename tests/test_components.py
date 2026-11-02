@@ -100,8 +100,9 @@ def test_tension_capability_hand_calc():
 def test_bom_floor_counts_only_cited_usd():
     from odrt.costing import load_bom, summary
     z = summary(load_bom(REPO / "data/bom.csv"))
-    assert z["known_usd"] == pytest.approx(171.90 + 149.00 + 267.90)
-    assert z["known_other"] == {"GBP": pytest.approx(32.47)}
+    assert z["known_usd"] == pytest.approx(171.90 + 149.00 + 267.90 + 11.55)
+    assert z["known_other"]["GBP"] == pytest.approx(32.47)
+    assert z["known_other"]["CAD"] == pytest.approx(71.46)
     assert z["unpriced_lines"] > 0
 
 
