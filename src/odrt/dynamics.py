@@ -71,9 +71,13 @@ class DynParams:
     retract_gain: float
     disagreement_n: float
     disagreement_time_s: float
+    release_fraction: float
+    release_time_s: float
+    rest_tension_n: float
     bus_v: float
     bus_c: float
     supply_max_w: float
+    undervoltage_v: float
     overvoltage_v: float
     dump_on_v: float
     dump_r: float
@@ -100,8 +104,8 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
     check_keys(k, f"{w}.controller", ["kp", "ki_per_s", "integral_limit_n", "friction_feedforward",
                                        "inertia_compensation", "accel_filter_s", "accel_clip_m_s2"])
     check_keys(sf, f"{w}.safety", ["max_retract_speed_m_s", "retract_speed_gain_n_per_m_s", "disagreement_n",
-                                   "disagreement_time_s"])
-    check_keys(b, f"{w}.bus", ["nominal_v", "capacitance_f", "supply_max_w", "overvoltage_v", "dump_on_v",
+                                   "disagreement_time_s", "release_fraction", "release_time_s", "rest_tension_n"])
+    check_keys(b, f"{w}.bus", ["nominal_v", "capacitance_f", "supply_max_w", "undervoltage_v", "overvoltage_v", "dump_on_v",
                                "dump_resistor_ohm"])
     pos = dict(minimum=0, exclusive_minimum=True)
     nonneg = dict(minimum=0)
@@ -160,16 +164,20 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
                             **nonneg),
         disagreement_n=number(sf["disagreement_n"], f"{w}.safety.disagreement_n", **pos),
         disagreement_time_s=number(sf["disagreement_time_s"], f"{w}.safety.disagreement_time_s", **nonneg),
+        release_fraction=number(sf["release_fraction"], f"{w}.safety.release_fraction", minimum=0, maximum=1),
+        release_time_s=number(sf["release_time_s"], f"{w}.safety.release_time_s", **nonneg),
+        rest_tension_n=number(sf["rest_tension_n"], f"{w}.safety.rest_tension_n", **nonneg),
         bus_v=number(b["nominal_v"], f"{w}.bus.nominal_v", **pos),
         bus_c=number(b["capacitance_f"], f"{w}.bus.capacitance_f", **pos),
         supply_max_w=number(b["supply_max_w"], f"{w}.bus.supply_max_w", **pos),
+        undervoltage_v=number(b["undervoltage_v"], f"{w}.bus.undervoltage_v", **pos),
         overvoltage_v=number(b["overvoltage_v"], f"{w}.bus.overvoltage_v", **pos),
         dump_on_v=number(b["dump_on_v"], f"{w}.bus.dump_on_v", **pos),
         dump_r=number(b["dump_resistor_ohm"], f"{w}.bus.dump_resistor_ohm", **pos),
         cases=tuple(cases),
     )
-    if not p.bus_v < p.dump_on_v < p.overvoltage_v:
-        raise ConfigError(f"{w}.bus: need nominal_v < dump_on_v < overvoltage_v")
+    if not p.undervoltage_v < p.bus_v < p.dump_on_v < p.overvoltage_v:
+        raise ConfigError(f"{w}.bus: need undervoltage_v < nominal_v < dump_on_v < overvoltage_v")
     return p
 
 
@@ -230,6 +238,8 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
     e_bus = 0.5 * p.bus_c * p.bus_v**2
     hit_speed = None
     v_meas_prev = 0.0
+    release_latched = False
+    low_t = 0.0
     a_meas = 0.0
 
     F_hist = np.zeros(n)
@@ -266,6 +276,16 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
 
         # --- controller: drum force command
         target = f_cmd[i]
+        if case.safety:
+            if f_meas < p.release_fraction * target and target > 4 * p.rest_tension_n:
+                low_t += dt
+                if low_t >= p.release_time_s:
+                    release_latched = True
+            else:
+                low_t = 0.0
+            if release_latched:
+                target = p.rest_tension_n
+                integ = 0.0
         err = target - f_meas
         f_drive_cmd = target
         if not fallback:
@@ -289,6 +309,8 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
             else:
                 disagree_t = 0.0
         tau_cmd = min(max(f_drive_cmd / torque_to_force, -tau_max), tau_max)
+        if math.sqrt(2 * e_bus / p.bus_c) < p.undervoltage_v:
+            tau_cmd = 0.0  # drive undervoltage lockout
 
         # --- actuator
         if fault_on and case.fault == "power_loss_open" and i >= fault_idx:
@@ -361,6 +383,8 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
         "time_to_overvoltage_ms": (float((t[over_v[0]] - case.fault_time_s) * 1e3) if over_v.size else None),
         "torque_saturated_fraction": float(np.mean(np.abs(tau_hist) >= tau_max * 0.999)),
         "fell_back_to_feedforward": fallback,
+        "release_detected": release_latched,
+        "min_bus_v": float(np.min(vbus_hist)),
         "peak_hand_deviation_after_fault_m": (float(np.max(np.abs(xh_hist[after] - x_ref[after])))
                                               if fault_on and case.fault != "handle_release" else None),
         "tension_below_10pct_ms": _time_below(F_hist, f_cmd, after, t, case.fault_time_s) if fault_on else None,

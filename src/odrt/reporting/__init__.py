@@ -365,7 +365,9 @@ def _dynamics_md(inputs, payload) -> str:
               "", "Columns: tracking error is RMS tension error before any fault (after 1 s for fault-free "
               "cases), as % of the mean command. *Hand lurch* is the largest gap between the arm surrogate's "
               "hand and its planned path after the fault. *End-stop speed* is how fast a released handle "
-              f"hits the device. Overvoltage line {dp.overvoltage_v:g} V.", ""]
+              f"hits the device. Overvoltage line {dp.overvoltage_v:g} V; the drive locks out torque below "
+              f"{dp.undervoltage_v:g} V; the supply delivers at most {dp.supply_max_w:g} W and cannot absorb "
+              "regeneration.", ""]
     cols = [("peak_tension_lbf", "Peak tension lbf", ".0f"),
             ("tracking_rms_error_pct", "Tracking error %", ".1f"),
             ("peak_hand_deviation_after_fault_m", "Hand lurch m", ".2f"),
@@ -373,6 +375,8 @@ def _dynamics_md(inputs, payload) -> str:
             ("peak_retract_speed_m_s", "Peak retract m/s", ".1f"),
             ("peak_bus_v", "Peak bus V", ".0f"),
             ("time_to_overvoltage_ms", "To overvoltage ms", ".0f"),
+            ("min_bus_v", "Min bus V", ".0f"),
+            ("release_detected", "Release latched", ""),
             ("fell_back_to_feedforward", "Monitor tripped", "")]
     for design in dp.designs:
         lines += [f"## {design}", "", "| Case | Fault (at s) | Safety layer | " +

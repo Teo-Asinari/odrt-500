@@ -34,10 +34,14 @@ safety:
   retract_speed_gain_n_per_m_s: 3000
   disagreement_n: 600
   disagreement_time_s: 0.02
+  release_fraction: 0.2           # tension below this fraction of command ...
+  release_time_s: 0.02           # ... for this long latches release: command drops to rest tension
+  rest_tension_n: 22
 bus:
   nominal_v: 48
   capacitance_f: 0.002
-  supply_max_w: 600
+  supply_max_w: 1000
+  undervoltage_v: 40             # drive inhibits torque below this
   overvoltage_v: 60
   dump_on_v: 56
   dump_resistor_ohm: 0.5
