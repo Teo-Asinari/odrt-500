@@ -12,7 +12,8 @@ CHANNELS = ("mechanical", "independent-hardware", "firmware", "not-yet-defined")
 DYNAMIC_METRICS = ("peak_tension_lbf", "peak_tension_after_fault_lbf", "tracking_rms_error_n",
                    "tracking_rms_error_pct", "peak_retract_speed_m_s", "handle_end_stop_speed_m_s", "peak_bus_v",
                    "time_to_overvoltage_ms", "torque_saturated_fraction", "fell_back_to_feedforward",
-                   "release_detected", "min_bus_v", "tension_below_10pct_ms", "peak_hand_deviation_after_fault_m")
+                   "release_detected", "min_bus_v", "tension_below_10pct_ms", "peak_hand_deviation_after_fault_m",
+                   "sensor_fault_detected", "sto_tripped", "sto_after_fault_ms")
 
 
 @dataclass(frozen=True)

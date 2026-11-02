@@ -117,3 +117,46 @@ def test_invalid_dynamics_config_fails(repo_copy, mutate, message):
     edit_yaml(repo_copy / "configs/dynamics.yaml", mutate)
     with pytest.raises(ConfigError, match=message):
         load_inputs(repo_copy)
+
+
+def test_stuck_load_cell_is_a_sensor_fault_not_a_release(setup):
+    inputs, plant = setup
+    m = run(Case("lc", "x", 3.5, "load_cell_zero", 2.6, True), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    assert m["sensor_fault_detected"] and not m["release_detected"]
+
+
+def test_release_is_still_classified_as_release(setup):
+    inputs, plant = setup
+    m = run(Case("r", "x", 4.0, "handle_release", 2.6, True), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    assert m["release_detected"] and not m["sensor_fault_detected"]
+
+
+def test_watchdog_trips_on_frozen_controller(setup):
+    inputs, plant = setup
+    m = run(Case("f", "x", 3.0, "torque_frozen", 2.0, True), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    assert m["sto_tripped"]
+    assert m["sto_after_fault_ms"] == pytest.approx(inputs.dynamics.watchdog_s * 1e3, abs=1.0)
+
+
+def test_wrong_sign_check_trips_and_reduces_lurch(setup):
+    inputs, plant = setup
+    off = run(Case("a", "x", 3.5, "torque_inverted", 1.8, True, False), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    on = run(Case("b", "x", 3.5, "torque_inverted", 1.8, True, True), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    assert on["sto_tripped"] and not off["sto_tripped"]
+    assert on["peak_hand_deviation_after_fault_m"] < off["peak_hand_deviation_after_fault_m"]
+
+
+def test_presence_sensing_keeps_empty_platform_down(setup):
+    inputs, plant = setup
+    m = run(Case("d", "x", 4.0, "deck_empty", 0.0, True), _traj_pull(), plant, inputs.dynamics)["metrics"]
+    lift_off_lbf = (inputs.platform.frame_mass_kg + 6.7) * 9.80665 / 4.4482216152605
+    assert m["peak_tension_lbf"] < lift_off_lbf
+
+
+def test_no_false_trips_in_normal_tracking(setup):
+    inputs, plant = setup
+    for name in ("tracking_heavy_tempo", "tracking_low_force"):
+        case = [c for c in inputs.dynamics.cases if c.name == name][0]
+        from odrt.scenarios import generate
+        m = run(case, generate(inputs.scenarios[case.scenario], inputs.defaults), plant, inputs.dynamics)["metrics"]
+        assert not (m["sto_tripped"] or m["release_detected"] or m["sensor_fault_detected"]), name

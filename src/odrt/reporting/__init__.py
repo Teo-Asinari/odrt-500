@@ -381,9 +381,11 @@ def _dynamics_md(inputs, payload) -> str:
             ("time_to_overvoltage_ms", "To overvoltage ms", ".0f"),
             ("min_bus_v", "Min bus V", ".0f"),
             ("release_detected", "Release latched", ""),
+            ("sensor_fault_detected", "Sensor fault", ""),
+            ("sto_after_fault_ms", "STO after ms", ".0f"),
             ("fell_back_to_feedforward", "Monitor tripped", "")]
     for design in dp.designs:
-        lines += [f"## {design}", "", "| Case | Fault (at s) | Safety layer | " +
+        lines += [f"## {design}", "", "| Case | Fault (at s) | Safety layer / independent | " +
                   " | ".join(h for _, h, _ in cols) + " |", "|---|---|---|" + "---:|" * len(cols)]
         for case in dp.cases:
             m = payload["dynamics"][design][case.name]
@@ -392,7 +394,8 @@ def _dynamics_md(inputs, payload) -> str:
             for key, _, spec in cols:
                 v = m[key]
                 cells.append("—" if v is None else ("yes" if v is True else "no" if v is False else format(v, spec)))
-            lines.append(f"| {case.name} | {fault} | {'on' if case.safety else 'off'} | " + " | ".join(cells) + " |")
+            lines.append(f"| {case.name} | {fault} | {'on' if case.safety else 'off'} / "
+                         f"{'on' if case.independent else 'off'} | " + " | ".join(cells) + " |")
         lines.append("")
     lines += [f"Figures below are for `{dp.designs[0]}`.", ""]
     lines += [f"![{c}](figures/dyn_{c}.png)" for c in DYN_FIGURE_CASES]

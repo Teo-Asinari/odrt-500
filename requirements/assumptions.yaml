@@ -98,7 +98,7 @@ assumptions:
     status: open
     affects: [R-03, R-04, R-06, R-09]
   - id: A-017
-    statement: The controller gains, retraction speed limit (1 m/s), load-cell disagreement monitor (600 N for 20 ms), braking resistor (0.5 ohm from 56 V) and 60 V overvoltage line are simulation-only proposals, not validated safety thresholds.
+    statement: The controller gains, retraction speed limit (1 m/s), load-cell disagreement monitor (600 N for 20 ms), release-vs-sensor-fault rule (inward acceleration > 0.5 x target/m_eq), 2 s sensor-fault ramp-down, independent watchdog (50 ms), wrong-sign check (100 N reverse drive at > 0.5 m/s for 30 ms), resistive STO and power-loss braking (2500 N*s/m), presence sensing, braking resistor (0.5 ohm from 56 V) and 60 V overvoltage line are simulation-only proposals, not validated safety thresholds.
     basis: Gains come from a sweep over three tracking cases; the rest are round numbers. All need independent review (R-09, Gate D).
     confidence: low
     status: open

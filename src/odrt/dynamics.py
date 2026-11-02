@@ -28,7 +28,8 @@ from odrt.drivetrain import km_hot
 from odrt.scenarios import Trajectory
 
 FAULTS = ("none", "handle_release", "load_cell_zero", "power_loss_open", "power_loss_shorted",
-          "no_dump_resistor")
+          "no_dump_resistor", "torque_frozen", "torque_inverted", "encoder_loss", "deck_empty",
+          "power_loss_braked")
 
 
 @dataclass(frozen=True)
@@ -39,6 +40,7 @@ class Case:
     fault: str
     fault_time_s: float
     safety: bool
+    independent: bool = True   # independent safety channel: watchdog + plausibility -> STO with phase short
 
 
 @dataclass(frozen=True)
@@ -74,6 +76,13 @@ class DynParams:
     release_fraction: float
     release_time_s: float
     rest_tension_n: float
+    release_accel_fraction: float
+    sto_brake_n_s_per_m: float
+    reverse_drive_n: float
+    sensor_fault_ramp_s: float
+    watchdog_s: float
+    payout_fault_speed: float
+    payout_fault_time_s: float
     bus_v: float
     bus_c: float
     supply_max_w: float
@@ -89,7 +98,7 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
     w = str(path)
     check_keys(d, w, ["designs", "dt_s", "cable", "friction_at_cable_n", "friction_smoothing_m_s",
                       "current_loop_time_constant_s", "handle_mass_kg", "user", "handle_end_stop_m", "sensors",
-                      "controller", "safety", "bus", "cases"])
+                      "controller", "safety", "independent", "bus", "cases"])
     if not isinstance(d["designs"], list) or not d["designs"]:
         raise ConfigError(f"{w}.designs: must be a non-empty list")
     for name in d["designs"]:
@@ -104,7 +113,11 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
     check_keys(k, f"{w}.controller", ["kp", "ki_per_s", "integral_limit_n", "friction_feedforward",
                                        "inertia_compensation", "accel_filter_s", "accel_clip_m_s2"])
     check_keys(sf, f"{w}.safety", ["max_retract_speed_m_s", "retract_speed_gain_n_per_m_s", "disagreement_n",
-                                   "disagreement_time_s", "release_fraction", "release_time_s", "rest_tension_n"])
+                                   "disagreement_time_s", "release_fraction", "release_time_s", "rest_tension_n",
+                                   "release_accel_fraction", "sensor_fault_ramp_s"])
+    ind = d["independent"]
+    check_keys(ind, f"{w}.independent", ["watchdog_s", "payout_fault_speed_m_s", "payout_fault_time_s",
+                                         "reverse_drive_n", "brake_n_s_per_m"])
     check_keys(b, f"{w}.bus", ["nominal_v", "capacitance_f", "supply_max_w", "undervoltage_v", "overvoltage_v", "dump_on_v",
                                "dump_resistor_ohm"])
     pos = dict(minimum=0, exclusive_minimum=True)
@@ -117,7 +130,7 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
     names = set()
     for i, raw in enumerate(d["cases"]):
         cw = f"{w}.cases[{i}]"
-        check_keys(raw, cw, ["name", "scenario", "window_s", "fault"], ["fault_time_s", "safety"])
+        check_keys(raw, cw, ["name", "scenario", "window_s", "fault"], ["fault_time_s", "safety", "independent"])
         name = string(raw["name"], f"{cw}.name")
         if name in names:
             raise ConfigError(f"{cw}.name: duplicate {name!r}")
@@ -129,12 +142,13 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
         if raw["fault"] != "none" and "fault_time_s" not in raw:
             raise ConfigError(f"{cw}: fault_time_s required for fault {raw['fault']!r}")
         safety = raw.get("safety", True)
-        if not isinstance(safety, bool):
-            raise ConfigError(f"{cw}.safety: expected true/false")
+        independent = raw.get("independent", True)
+        if not isinstance(safety, bool) or not isinstance(independent, bool):
+            raise ConfigError(f"{cw}: safety and independent must be true/false")
         window = number(raw["window_s"], f"{cw}.window_s", **pos)
         cases.append(Case(name, raw["scenario"], window, raw["fault"],
                           number(raw.get("fault_time_s", 0.0), f"{cw}.fault_time_s", minimum=0, maximum=window),
-                          safety))
+                          safety, independent))
     p = DynParams(
         designs=tuple(d["designs"]), dt_s=number(d["dt_s"], f"{w}.dt_s", **pos),
         ea_n=number(c["axial_stiffness_ea_n"], f"{w}.cable.axial_stiffness_ea_n", **pos),
@@ -167,6 +181,14 @@ def load_dynamics(path: Path, options: dict, scenarios: dict) -> DynParams:
         release_fraction=number(sf["release_fraction"], f"{w}.safety.release_fraction", minimum=0, maximum=1),
         release_time_s=number(sf["release_time_s"], f"{w}.safety.release_time_s", **nonneg),
         rest_tension_n=number(sf["rest_tension_n"], f"{w}.safety.rest_tension_n", **nonneg),
+        release_accel_fraction=number(sf["release_accel_fraction"], f"{w}.safety.release_accel_fraction",
+                                      minimum=0, exclusive_minimum=True, maximum=1),
+        reverse_drive_n=number(ind["reverse_drive_n"], f"{w}.independent.reverse_drive_n", **pos),
+        sto_brake_n_s_per_m=number(ind["brake_n_s_per_m"], f"{w}.independent.brake_n_s_per_m", **pos),
+        sensor_fault_ramp_s=number(sf["sensor_fault_ramp_s"], f"{w}.safety.sensor_fault_ramp_s", **pos),
+        watchdog_s=number(ind["watchdog_s"], f"{w}.independent.watchdog_s", **pos),
+        payout_fault_speed=number(ind["payout_fault_speed_m_s"], f"{w}.independent.payout_fault_speed_m_s", **pos),
+        payout_fault_time_s=number(ind["payout_fault_time_s"], f"{w}.independent.payout_fault_time_s", **pos),
         bus_v=number(b["nominal_v"], f"{w}.bus.nominal_v", **pos),
         bus_c=number(b["capacitance_f"], f"{w}.bus.capacitance_f", **pos),
         supply_max_w=number(b["supply_max_w"], f"{w}.bus.supply_max_w", **pos),
@@ -240,6 +262,13 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
     v_meas_prev = 0.0
     release_latched = False
     low_t = 0.0
+    sensor_fault = False
+    sensor_fault_t0 = 0.0
+    sensor_fault_f0 = 0.0
+    sto = False
+    sto_t = None
+    frozen_tau = None
+    payout_t = 0.0
     a_meas = 0.0
 
     F_hist = np.zeros(n)
@@ -271,21 +300,38 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
         fmeas_hist[i] = f_meas
         je = i - enc_lag
         v_meas = v_hist[je] if je >= 0 else 0.0
+        if fault_on and case.fault == "encoder_loss" and i >= fault_idx:
+            v_meas = 0.0  # encoder stuck: speed reads zero
         a_meas += ((v_meas - v_meas_prev) / dt - a_meas) * dt / p.accel_filter_s
         v_meas_prev = v_meas
 
         # --- controller: drum force command
         target = f_cmd[i]
+        deck_empty = fault_on and case.fault == "deck_empty" and i >= fault_idx
         if case.safety:
-            if f_meas < p.release_fraction * target and target > 4 * p.rest_tension_n:
+            if deck_empty:  # presence sensing: only rest tension with nobody on the deck (H-14)
+                target = p.rest_tension_n
+            # Fault policy (A-017): low measured tension WITH the drum accelerating inward is a release
+            # (the motor torque is suddenly unopposed); low tension WITHOUT that is a sensor fault.
+            if (not release_latched and not sensor_fault and f_meas < p.release_fraction * target
+                    and target > 4 * p.rest_tension_n):
                 low_t += dt
                 if low_t >= p.release_time_s:
-                    release_latched = True
-            else:
+                    # unopposed drive accelerates the drum inward at ~ target / m_eq after a release
+                    if a_meas < -p.release_accel_fraction * target / m_eq:
+                        release_latched = True
+                    else:
+                        sensor_fault, sensor_fault_t0, sensor_fault_f0 = True, t[i], target
+                        fallback = True
+                        integ = 0.0
+            elif not release_latched and not sensor_fault:
                 low_t = 0.0
             if release_latched:
                 target = p.rest_tension_n
                 integ = 0.0
+            elif sensor_fault:  # keep the load on feedforward and ramp it down instead of dropping it
+                frac = max(0.0, 1.0 - (t[i] - sensor_fault_t0) / p.sensor_fault_ramp_s)
+                target = p.rest_tension_n + (sensor_fault_f0 - p.rest_tension_n) * frac
         err = target - f_meas
         f_drive_cmd = target
         if not fallback:
@@ -311,6 +357,30 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
         tau_cmd = min(max(f_drive_cmd / torque_to_force, -tau_max), tau_max)
         if math.sqrt(2 * e_bus / p.bus_c) < p.undervoltage_v:
             tau_cmd = 0.0  # drive undervoltage lockout
+        if fault_on and i >= fault_idx:
+            if case.fault == "torque_frozen":  # controller hang: the drive keeps the last current command
+                if frozen_tau is None:
+                    frozen_tau = tau_cmd
+                tau_cmd = frozen_tau
+            elif case.fault == "torque_inverted":  # sign error: drive pushes the cable out
+                tau_cmd = -tau_cmd
+        # Independent channel (separate MCU, own sensing; proposal A-017): a watchdog on a hung controller
+        # and a payout-with-low-tension plausibility check both trip STO with the phases shorted.
+        if case.independent and not sto:
+            if fault_on and case.fault == "torque_frozen" and i >= fault_idx and t[i] - case.fault_time_s >= p.watchdog_s:
+                sto = True
+            # wrong-sign check: the motor is driving cable OUT (measured current) while the drum pays out fast
+            # AND tension well below the target (inertia compensation also drives outward, but keeps tension
+            # near target). Needs independent tension sensing plus the target from the main controller.
+            if (v_s > p.payout_fault_speed and tau * torque_to_force < -p.reverse_drive_n
+                    and F < 0.5 * f_cmd[i] and f_cmd[i] > 4 * p.rest_tension_n):
+                payout_t += dt
+                if payout_t >= p.payout_fault_time_s:
+                    sto = True
+            else:
+                payout_t = 0.0
+            if sto:
+                sto_t = t[i]
 
         # --- actuator
         if fault_on and case.fault == "power_loss_open" and i >= fault_idx:
@@ -318,6 +388,11 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
         elif fault_on and case.fault == "power_loss_shorted" and i >= fault_idx:
             # phases shorted: braking torque Km^2 * omega per motor (inductance neglected: upper bound)
             tau = plant.count * km2 * (G * v_s / r)
+        elif sto or (fault_on and case.fault == "power_loss_braked" and i >= fault_idx):
+            # STO / power-loss relay shorts the phases through braking resistors: drum force = c * v,
+            # capped at the shorted-phase value (resistors can only weaken the short).
+            c_short = plant.count * km2 * (G / r) ** 2
+            tau = min(p.sto_brake_n_s_per_m, c_short) * v_s / torque_to_force
         else:
             tau += (tau_cmd - tau) * dt / p.current_tc_s
         tau_hist[i] = tau
@@ -328,7 +403,7 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
 
         # --- bus energy (per-motor copper loss; supply cannot sink)
         omega_m = G * v_s / r
-        powered = not (fault_on and case.fault.startswith("power_loss") and i >= fault_idx)
+        powered = not (fault_on and case.fault.startswith("power_loss") and i >= fault_idx) and not sto
         if powered:
             p_motor = plant.count * (tau / plant.count) ** 2 / km2 - tau * omega_m
             dump = not (fault_on and case.fault == "no_dump_resistor" and i >= fault_idx)
@@ -356,7 +431,8 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
         if released:
             f_user = 0.0
         else:  # user anticipates the set tension and tracks the planned path through arm impedance
-            f_user = (f_cmd[i] + p.user_k * (x_ref[i] - x_h) + p.user_b * (v_ref[i] - v_h)
+            expected = p.rest_tension_n if (fault_on and case.fault == "deck_empty") else f_cmd[i]  # casual pull
+            f_user = (expected + p.user_k * (x_ref[i] - x_h) + p.user_b * (v_ref[i] - v_h)
                       + (p.user_mass_kg + p.handle_mass_kg) * a_ref[i])
         if x_h > p.handle_end_stop_m or v_h > 0 or not released:
             v_h += (f_user - F) / m_hand * dt
@@ -384,9 +460,13 @@ def run(case: Case, traj: Trajectory, plant: Plant, p: DynParams) -> dict:
         "torque_saturated_fraction": float(np.mean(np.abs(tau_hist) >= tau_max * 0.999)),
         "fell_back_to_feedforward": fallback,
         "release_detected": release_latched,
+        "sensor_fault_detected": sensor_fault,
+        "sto_tripped": sto,
+        "sto_after_fault_ms": (float((sto_t - case.fault_time_s) * 1e3) if sto_t is not None and fault_on else None),
         "min_bus_v": float(np.min(vbus_hist)),
         "peak_hand_deviation_after_fault_m": (float(np.max(np.abs(xh_hist[after] - x_ref[after])))
-                                              if fault_on and case.fault != "handle_release" else None),
+                                              if fault_on and case.fault not in ("handle_release", "deck_empty")
+                                              else None),
         "tension_below_10pct_ms": _time_below(F_hist, f_cmd, after, t, case.fault_time_s) if fault_on else None,
     }
     step = max(1, int(round(0.002 / dt)))

@@ -19,20 +19,20 @@ hazards:
   - id: H-02
     title: Load cell fails low (stuck at zero)
     cause: Sensor, wiring or ADC fault.
-    effect: Unmonitored, the PI loop drives tension above the command. Monitored, the fault also looks like a handle release, so the load drops and the user lurches.
+    effect: Unmonitored, the PI loop drives tension above the command. A naive monitor mistakes it for a handle release and drops the load.
     severity: S3
     evidence: [{case: load_cell_stuck_zero, metric: peak_tension_after_fault_lbf}, {case: load_cell_stuck_zero, metric: peak_hand_deviation_after_fault_m}, {case: load_cell_stuck_zero_monitored, metric: peak_hand_deviation_after_fault_m}]
-    mitigations: [Load-cell vs motor-model disagreement monitor (firmware, simulated), Redundant tension sensing (independent-hardware, not designed), Ramp-down instead of drop on detected faults (firmware, not simulated)]
-    channel: independent-hardware
-    validation_gap: The disagreement monitor and the release detector conflict. A fault-handling policy that tells a sensor fault from a release is not yet defined.
+    mitigations: [Fault policy - low tension with the drum accelerating inward at > 0.5 x target/m_eq is a release; otherwise it is a sensor fault, so the load is held on feedforward and ramped down over 2 s (firmware, simulated), Redundant tension sensing (independent-hardware, not designed)]
+    channel: firmware
+    validation_gap: The classification threshold is a proposal. It relies on the encoder (see H-07) and has not been tested at low tensions or against sensor drift.
     requirements: [R-09]
   - id: H-03
     title: Loss of mains power mid-pull
     cause: Outage, unplugging, PSU failure.
     effect: With the phases left open, resistance disappears within tens of ms (only drum inertia remains) and the user lurches. With the phases shorted, braking is proportional to speed.
     severity: S3
-    evidence: [{case: power_loss_open_mid_pull, metric: peak_hand_deviation_after_fault_m}, {case: power_loss_shorted_mid_pull, metric: peak_hand_deviation_after_fault_m}, {case: power_loss_shorted_mid_pull, metric: peak_tension_after_fault_lbf}]
-    mitigations: [Normally-closed phase-short relay on power loss (independent-hardware, simulated as upper bound), Hold-up energy for a controlled ramp-down (independent-hardware, not designed)]
+    evidence: [{case: power_loss_open_mid_pull, metric: peak_hand_deviation_after_fault_m}, {case: power_loss_braked_mid_pull, metric: peak_hand_deviation_after_fault_m}, {case: power_loss_shorted_mid_pull, metric: peak_hand_deviation_after_fault_m}, {case: power_loss_shorted_mid_pull, metric: peak_tension_after_fault_lbf}]
+    mitigations: [Normally-closed relay that shorts the phases through braking resistors on power loss (independent-hardware, simulated), Hold-up energy from the supercapacitor buffer for a controlled ramp-down (independent-hardware, not designed)]
     channel: independent-hardware
     validation_gap: Shorted-phase braking ignores winding inductance (upper bound). Relay timing and contact ratings are unknown.
     requirements: [R-06, R-09]
@@ -61,20 +61,20 @@ hazards:
     cause: Firmware hang, a wrong torque sign after a configuration error, or a drive fault.
     effect: Up to full stall tension, which is far above the commanded load, or the cable reels in toward the device.
     severity: S4
-    evidence: []
-    mitigations: [Independent watchdog that removes drive enable (independent-hardware, not designed), Independent tension and speed limits in a separate safety MCU or hardware comparator (independent-hardware, not designed), Torque-limited motor and gearing choice (mechanical; stall tension in structure.md)]
+    evidence: [{case: torque_frozen_end_of_set, metric: peak_hand_deviation_after_fault_m}, {case: torque_frozen_watchdog, metric: peak_hand_deviation_after_fault_m}, {case: torque_inverted_mid_pull, metric: peak_hand_deviation_after_fault_m}, {case: torque_inverted_sto, metric: peak_hand_deviation_after_fault_m}, {case: torque_inverted_sto, metric: sto_after_fault_ms}]
+    mitigations: [Independent watchdog (50 ms) tripping STO with resistive phase braking (independent-hardware, simulated), Independent wrong-sign check (motor current driving cable out during fast payout) tripping STO (independent-hardware, simulated; needs independent tension sensing and the target from the main controller), Torque-limited motor and gearing choice (mechanical; stall tension in structure.md)]
     channel: independent-hardware
-    validation_gap: Not simulated yet. Needs a fault-injection case with frozen or inverted torque.
+    validation_gap: Lurch remains about 0.8-1.1 m because resistance is lost while the user is pulling. The safety MCU, its sensing and STO hardware are not designed.
     requirements: [R-09]
   - id: H-07
     title: Encoder or speed-sensor failure
     cause: Encoder loss or a bad reading.
     effect: Friction and inertia compensation, the speed limiter and release detection all degrade or misbehave.
     severity: S3
-    evidence: []
-    mitigations: [Encoder plausibility checks against motor back-EMF (firmware, not designed)]
+    evidence: [{case: encoder_loss_mid_set, metric: peak_hand_deviation_after_fault_m}, {case: encoder_loss_mid_set, metric: peak_tension_lbf}]
+    mitigations: [Encoder plausibility check against motor back-EMF (firmware, not designed), Degraded mode without inertia compensation (firmware)]
     channel: firmware
-    validation_gap: Not simulated yet.
+    validation_gap: Mid-set encoder loss is benign in simulation, but release classification and the speed limiter are blind without the encoder. Not simulated in combination with a release.
     requirements: [R-09]
   - id: H-08
     title: Motor overtemperature
@@ -141,8 +141,8 @@ hazards:
     cause: Someone pulls the cable while standing beside the platform, or steps off during a set.
     effect: The pull is no longer reacted by body weight. The platform lifts or tips at low tension (see the platform report) and can strike the user.
     severity: S3
-    evidence: []
-    mitigations: [Deck presence sensing (load cells or mat switch) that enables tension above rest only when someone is on the deck (independent-hardware, not designed), Release detection drops tension when a user steps off (firmware, simulated for handle release only)]
+    evidence: [{case: deck_empty_pull, metric: peak_tension_lbf}, {case: deck_empty_pull_presence, metric: peak_tension_lbf}]
+    mitigations: [Deck presence sensing (load cells or mat switch) that allows only rest tension with nobody on the deck (independent-hardware, simulated as an ideal sensor), Release detection when a user steps off (firmware)]
     channel: independent-hardware
-    validation_gap: Not simulated. Presence sensing and its threshold are undefined.
+    validation_gap: The presence sensor is idealised. Thresholds for light users and a partial stance (one foot on the deck) are undefined.
     requirements: [R-09, R-14]
