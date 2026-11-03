@@ -1,5 +1,5 @@
 {
-  "candidate_fingerprint": "ac40ec6c176d00be8d17ed7867e816d3bf9330977cff8f86f64f86a1616d3b47",
+  "candidate_fingerprint": "2237f34c849e4eb02151d7ff76cf4182edd4e20179daa07e2d087658f6e9867a",
   "plot_source_sha256": "3d5a8a8cd1065ac8849fd7933369ff7151ab177c3ba7bd6bf84f80df92a75ffc",
   "traces": {
     "build/engineering/compact_candidate/compact_nominal__paired_heavy_full.npz": "2a739baa75672b79d9d797d215829967640b2b8b02d8b6183e518797e9330096",

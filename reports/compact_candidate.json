@@ -1,5 +1,5 @@
 {
-  "fingerprint": "ac40ec6c176d00be8d17ed7867e816d3bf9330977cff8f86f64f86a1616d3b47",
+  "fingerprint": "2237f34c849e4eb02151d7ff76cf4182edd4e20179daa07e2d087658f6e9867a",
   "scope": "all configured normal/fault cases for each stated bank variant",
   "configured_cases_per_variant": 27,
   "specification": {
