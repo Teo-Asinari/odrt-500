@@ -33,7 +33,6 @@ def test_r2_candidate_uses_r2_ratio_bank_and_cad_inertia():
     assert cfg['upstream_buffer']['input_capacitance_f'] > 0
 
 
-@pytest.mark.slow
 def test_r2_cad_fits_owner_body_without_clashes_and_places_every_cell():
     pytest.importorskip('cadquery')
     from odrt.r2_package import build, check
@@ -52,7 +51,6 @@ def test_r2_cad_fits_owner_body_without_clashes_and_places_every_cell():
     assert (deck.zmin+deck.zmax)/2 == pytest.approx(p['shaft_support_z_mm'][1])
 
 
-@pytest.mark.slow
 def test_frame_heat_path_keeps_energy_ledger_closed_and_cools_long_duty():
     pytest.importorskip('casadi')
     from odrt.engineering import load_engineering

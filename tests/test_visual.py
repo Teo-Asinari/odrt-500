@@ -79,6 +79,7 @@ def test_deadlift_bar_clears_shins():
     assert bottom_clearance(dl) > 0.0
 
 
+@pytest.mark.slow
 def test_static_pose_matches_first_frame():
     pytest.importorskip("cadquery")
     from conftest import REPO

@@ -1,3 +1,4 @@
+import pytest
 import json
 
 from conftest import REPO, edit_yaml
@@ -8,6 +9,7 @@ def test_check_passes_on_repo():
     assert main(["--root", str(REPO), "check"]) == 0
 
 
+@pytest.mark.slow
 def test_simulate_and_report_end_to_end(repo_copy, tmp_path):
     sim, out = tmp_path / "sim", tmp_path / "reports"
     root = str(repo_copy)
@@ -23,6 +25,7 @@ def test_simulate_and_report_end_to_end(repo_copy, tmp_path):
     assert "R-13" in (out / "traceability.md").read_text()
 
 
+@pytest.mark.slow
 def test_report_refuses_stale_results(repo_copy, tmp_path):
     sim = tmp_path / "sim"
     root = str(repo_copy)

@@ -1,6 +1,6 @@
 # R2 candidate simulation
 
-Fingerprint: `78ad12890c3a1d58dc9fdf929b0146b361eaedc4affc7444dcfc8042c45801d1`
+Fingerprint: `6f0f72bb60a2af4def6f9cc2ba620c11953aebc75bcd8d159393646a93f0a933`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller gains are unchanged from the reference.
 
@@ -70,7 +70,7 @@ Fingerprint: `78ad12890c3a1d58dc9fdf929b0146b361eaedc4affc7444dcfc8042c45801d1`
 | r2_fresh__paired_release_asymmetric | 0.002% | pass |
 | r2_aged__left_power_loss_buffered_coordinated | 0.001% | pass |
 
-## Uncertainties (paired heavy set, fresh bank)
+## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull)
 
 | Perturbation | Tracking % | Winding °C | Minimum bus V | Trip | Failed comparisons |
 |---|---:|---:|---:|---|---|

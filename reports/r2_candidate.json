@@ -1,5 +1,7 @@
 {
-  "fingerprint": "78ad12890c3a1d58dc9fdf929b0146b361eaedc4affc7444dcfc8042c45801d1",
+  "fingerprint": "6f0f72bb60a2af4def6f9cc2ba620c11953aebc75bcd8d159393646a93f0a933",
+  "study": "r2",
+  "title": "R2 candidate simulation",
   "assessment": "REVISE",
   "hardware_qualified": false,
   "scope": "all configured normal/fault cases for fresh and aged TV banks, four 3-resolution studies, seven paired-heavy uncertainties, support screen at simulated loads",

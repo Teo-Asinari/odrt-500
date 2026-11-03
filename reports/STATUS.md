@@ -2,7 +2,13 @@
 
 ## Active engineering goal — 2026-11-02
 
-**Current decision: REVISE R2.** [R2 review](../docs/engineering/r2-review.md).
+**Current decision: REVISE R3.** [R3 review](../docs/engineering/r3-review.md).
+R3 = R2 + a conducted motor-to-frame heat path (aluminium base/skin) + a 30 V undervoltage trip (ODrive Pro: 15–58 V). [Results](r3_candidate.md):
+slow heavy pull 128.5 → 104.7 °C; aged paired heavy 17% with trip → 0.18%, no trip; aged power-loss, aged endurance and fresh fast reversal no longer trip.
+Remaining: endurance is motor-Km-limited (winding ~127 °C in derate all session; owner decision needed: derated envelope, 6:1, or a better motor);
+fast reversal and full stroke need a controller study; aged asymmetric set and aged fast reversal still trip; 1% release imbalance still rotates the bar ~48°.
+
+**Previous decision: REVISE R2.** [R2 review](../docs/engineering/r2-review.md).
 R2 integrates the support and power revisions into one [CAD](r2_package.md) (56 parts, no clashes inside 323 × 139 × 100 mm) and one
 [full-suite simulation](r2_candidate.md) (54 scenarios, refinements pass). Bearings and shafts now pass at the simulated loads with 850–1000 N belt preload,
 and fresh paired heavy tracking improves to 0.18%. But 5:1 raises winding heat (slow heavy pull 128.5 °C, past derate), the aged bank still trips
