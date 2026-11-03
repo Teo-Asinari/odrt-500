@@ -1,0 +1,23 @@
+# R3 proposal: conduct motor housing heat into the stator carrier, base and skin.
+# Engineering estimates, not measurements. Requires a metallic (aluminium) skin and
+# base, consistent with the owner's black metallic finish; a plastic skin voids this.
+summary: >-
+  The motor housing conducts through the stator carrier/pedestal into a 2 mm aluminium base
+  and skin acting as one lumped frame node. The frame loses heat to the room through its
+  exposed outer faces and to the internal forced airflow through its inner faces. The R2 CAD
+  geometry is unchanged; only the interface and the material choice are new.
+nominal:
+  housing_to_frame_k_w: 0.3
+  frame_capacity_j_k: 800
+  frame_to_room_w_k: 1.4
+  frame_to_air_w_k: 1.5
+bounds:
+  housing_to_frame_k_w: [0.15, 0.8]
+  frame_capacity_j_k: [400, 1200]
+  frame_to_room_w_k: [0.7, 2.0]
+  frame_to_air_w_k: [0.5, 3.0]
+basis:
+  housing_to_frame_k_w: About 0.05 K/W greased/padded interface over the ~9200 mm² motor face (2000-5000 W/m²K) plus ~0.2 K/W spreading in a 2 mm base, ln(r2/r1)/(2πkt). The RO100 case-to-stator path is unknown and not potted; that is why the upper bound is high.
+  frame_capacity_j_k: About 0.9 kg of aluminium base and 2 mm skin at 900 J/kg/K.
+  frame_to_room_w_k: About 0.137 m² of exposed outer area (mounted base face excluded) at ~10 W/m²K natural convection plus black-finish radiation for a 30-40 K rise. Conduction into the board/wall mount is ignored.
+  frame_to_air_w_k: About 0.15 m² of inner skin at ~10 W/m²K under the conditional 25 CFM internal flow; flow distribution is not demonstrated.

@@ -1,0 +1,16 @@
+# Candidate experiment: complete named reference scenarios with CAD-derived inertia.
+# No claim of complete electronics, cooling or hardware qualification.
+bank_variants: [compact_nominal, compact_aged]
+routing_length_m: 0.148
+routing_basis: Nominal straight takeoff-to-guide 90 mm plus guide-to-body-exit 58 mm. Guide contact curvature and exit motion are unresolved; not a measured complete cable path.
+air_density_kg_m3: 1.2
+air_specific_heat_j_kg_k: 1005
+airflow_cfm: 25
+airflow_basis: Conditional EPP-500 forced-air requirement, not a selected fan or demonstrated installed flow.
+air_capacity_basis: Gross owner body volume times assumed air density and specific heat; upper bound on air-only storage before displaced volume. Structure has not been added to this node.
+solver_work_bound: 10000
+notes:
+  - CAD and catalog rotor inertia are included; rope mass and rotating bearing details remain additional uncertainty.
+  - Electrical and motor thermal resistances/capacities remain reference proposals. Enclosure geometry does not validate those paths.
+  - The smaller bank thermal capacity remains an assumption from data/compact_buffer.yaml.
+  - No controller gains are retuned to make this candidate pass. Inertia feedforward uses the candidate plant parameters as in the reference controller.

@@ -1,6 +1,6 @@
 # Iteration 3 integration assumptions (A-026), not manufacturing dimensions.
 units: 2
-compact_target_l: 20
+compact_target_l: 4.4897          # owner: VOLTRA-sized or smaller (ADR-003); check axes in engineering study
 shell_mm: 3
 clearance_mm: 12
 tray_gap_mm: 15

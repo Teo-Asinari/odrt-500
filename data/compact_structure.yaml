@@ -1,0 +1,15 @@
+# Primary facts and explicitly provisional analytical screens, not qualified parts.
+motor_bearing:
+  source: https://www.nsk.com/engineering/products/bearings/ball-bearings/deep-groove-ball-bearings/single-row-deep-groove-ball-bearings/6000-apn.html
+  accessed: '2026-11-02'
+  dynamic_n: 5050
+  static_n: 1970
+  mass_kg: 0.018
+  notes: Open NSK 6000. Static radial comparison only; seals lubrication fits axial load and life unqualified.
+assumptions:
+  steel_allowable_mpa: 175
+  aluminium_allowable_mpa: 120
+  bearing_static_factor_min: 2
+  belt_pretension_per_span_n: [300, 700, 1000]
+  material_basis: Generic preliminary allowable stresses, not a selected alloy or certified material condition. Bearing factor and belt pretensions are proposed comparison values, not vendor recommendations.
+  bridge_basis: Full-width beam surrogate under a central couple; each half carries half the applied moment. Two-dimensional plate action joints bosses and local contact require FEA and review.

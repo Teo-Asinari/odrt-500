@@ -1,0 +1,22 @@
+# Supplemental measurable criteria. Proposals are design screens, not approved safety thresholds.
+criteria:
+  force_peak_lbf: {value: 250, origin: owner, basis: ADR-002, method: bounded coupled scenario with ratings and thermal limits}
+  units: {value: 2, origin: owner, basis: ADR-002, method: independent supplies and asymmetric fault simulation}
+  usable_stroke_m: {value: 2.0, origin: provisional, basis: R-05 upper-end target, method: winding capacity with dead turns and travel limits}
+  peak_heavy_speed_m_s: {value: 0.95, origin: provisional, basis: A-007, method: torque-speed-voltage envelope and heavy-tempo scenario}
+  unit_volume_l_max: {value: 4.4897, origin: owner, basis: ADR-003 VOLTRA-sized body envelope, method: actual packaged enclosure bounding volume plus all three dimensional limits}
+  unit_length_mm_max: {value: 323, origin: owner, basis: ADR-003, method: packaged body bounding box including all internal systems}
+  unit_width_mm_max: {value: 139, origin: owner, basis: ADR-003, method: packaged body bounding box; orientation may be changed}
+  unit_height_mm_max: {value: 100, origin: owner, basis: ADR-003, method: packaged body bounding box; report external cord and connector clearances separately}
+  unit_mass_kg_max: {value: 5.8, origin: provisional, basis: VOLTRA published comparison benchmark not an owner-approved limit, method: full parts and structure mass with unknowns explicit}
+  tracking_rms_fraction_max: {value: 0.05, origin: provisional, basis: engineering comparison metric pending human-factors review, method: settled RMS error normalized by max(command RMS and absolute floor)}
+  tracking_absolute_floor_n: {value: 2, origin: provisional, basis: avoid misleading relative errors near zero; not a safety limit, method: report absolute and relative errors separately}
+  normal_overshoot_fraction_max: {value: 0.10, origin: provisional, basis: comparative engineering criterion; specialist review required, method: maximum settled normal-operation force above command}
+  rope_design_factor: {value: 5, origin: provisional, basis: retained A-018 screen; dynamic/human-interactive use requires specialist factor review, method: compare documented spliced strength with maximum modeled transient}
+  fatigue_cycles_target: {value: 1000000, origin: provisional, basis: lifetime comparison target pending duty/retirement review, method: rope supplier bend-fatigue data or controlled test; strength alone cannot satisfy}
+  energy_residual_fraction_max: {value: 0.005, origin: verification, basis: numerical acceptance proposal, method: independent full-system input minus storage/loss/work ledger}
+  convergence_normal_fraction_max: {value: 0.02, origin: verification, basis: numerical acceptance proposal, method: dt dt/2 dt/4 refinement of force motion voltage temperature and energy}
+  convergence_fault_fraction_max: {value: 0.05, origin: verification, basis: numerical acceptance proposal for transient peaks, method: dt dt/2 dt/4 including fault event alignment}
+  retail_per_unit_usd: {value: 500, origin: owner, basis: R-12 aspirational hypothesis, method: complete preliminary BOM assembly test overhead warranty and channel model}
+  mount_deflection_mm_max: {value: 2, origin: provisional, basis: existing board criterion A-026, method: symmetric and asymmetric mount/board load cases including joints}
+  acoustic_db_a_at_1m_max: {value: 55, origin: provisional, basis: apartment-compatible comparison target; no measured source available, method: later calibrated acoustic test; simulation alone cannot close}

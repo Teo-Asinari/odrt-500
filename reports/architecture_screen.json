@@ -1,0 +1,21 @@
+{
+  "input_hash": "35846e129647a9a5e8a83db06e0eb4c9ef95b347b5b1e27bc151fb441ca738ab",
+  "failure_counts": {
+    "40 A current screen": 1936,
+    "conservative speed ceiling": 4608,
+    "mechanism-only envelope": 6690,
+    "motor peak torque": 1256,
+    "reference transient rope strength": 2304,
+    "stroke capacity": 3360
+  },
+  "screen_checks_pass_count": 0,
+  "legacy_bus_issues": [
+    "dump_on_v 56 V reaches/exceeds drive maximum 50.5 V",
+    "overvoltage_v 60 V reaches/exceeds drive maximum 50.5 V"
+  ],
+  "assessment": "REVISE",
+  "physical_qualification": false,
+  "candidate_count": 6912,
+  "sufficient_capacity_count": 3552,
+  "full_results": "build/engineering/architecture_screen.json"
+}

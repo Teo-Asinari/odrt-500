@@ -296,11 +296,35 @@ def cmd_motor(args) -> int:
     return 0
 
 
+def cmd_coupled(args) -> int:
+    from odrt.coupled import run_study
+    result = run_study(Path(args.root),Path(args.reports),args.only,args.verify)
+    case_failure = any('solver_failure' in m or not m['numerical_valid'] for m in result['cases'].values())
+    verification_failure = args.verify and not result['verification']['pass']
+    return 1 if case_failure or verification_failure else 0
+
+
+def cmd_architecture(args) -> int:
+    from odrt.engineering import run_architecture_study
+    result = run_architecture_study(Path(args.root), Path(args.reports))
+    print(f"Architecture screen: {len(result['candidates'])} candidates; "
+          f"{result['screen_checks_pass_count']} pass comparison checks; assessment REVISE")
+    for issue in result['legacy_bus_issues']:
+        print(f"Legacy component conflict: {issue}")
+    return 0  # Successful analysis can and must report rejected designs.
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="odrt", description=__doc__)
     parser.add_argument("--root", default=".", help="repository root (default: .)")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("check", help="validate requirements, assumptions and scenarios")
+    p = sub.add_parser("coupled", help="run coupled electromechanical one/two-unit reference cases")
+    p.add_argument("--reports", default="reports")
+    p.add_argument("--only", nargs="+", metavar="CASE")
+    p.add_argument("--verify", action="store_true")
+    p = sub.add_parser("architecture", help="screen compact architectures and review component ratings")
+    p.add_argument("--reports", default="reports")
     p = sub.add_parser("simulate", help="generate scenario trajectories and duty-cycle metrics")
     p.add_argument("--out", default="build/sim")
     p.add_argument("--only", nargs="+", metavar="SCENARIO")
@@ -327,7 +351,7 @@ def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     handler = {"check": cmd_check, "simulate": cmd_simulate, "report": cmd_report, "cad": cmd_cad,
                "fea": cmd_fea, "visual": cmd_visual,
-               "motor": cmd_motor}[args.command]
+               "motor": cmd_motor, "architecture": cmd_architecture, "coupled": cmd_coupled}[args.command]
     try:
         return handler(args)
     except ConfigError as exc:

@@ -1,0 +1,19 @@
+# R3 proposal: use more of the bank by lowering the protective undervoltage trip.
+odrive_pro_dc_voltage:
+  source: https://docs.odriverobotics.com/v/latest/hardware/pro-datasheet.html
+  section: Electromechanical Specifications > Electrical
+  accessed: '2026-11-02'
+  min_v: 15
+  max_v: 58
+  note: Extracted table drops empty cells; 15/58 read as min/max. No undervoltage lockout or low-voltage derating is stated.
+proposal:
+  undervoltage_v: 30
+  basis: >-
+    The 40 V trip was a reference choice, not a drive limit. 30 V keeps 2x margin above the documented
+    15 V minimum. Whether the motor can still be controlled at the reached speed is judged by the existing
+    voltage-controllability and modulation screens, which stay unchanged. Usable aged-bank energy from
+    52 V rises from about 0.5*3.15*(52^2-40^2) = 1.74 kJ to 0.5*3.15*(52^2-30^2) = 2.84 kJ, before ESR losses.
+  open_items:
+    - Supply constant-current limiting means delivered power falls with bus voltage; a constant-power supply mode is not assumed.
+    - Auxiliary/logic rails, sensors and the supervisor must be specified to ride through 30 V.
+    - Low-voltage operation raises bank and wiring currents for the same power; ESR heating is captured, connector/wiring ratings are not.

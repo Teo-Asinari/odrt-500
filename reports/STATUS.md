@@ -1,5 +1,72 @@
 # Status
 
+## Active engineering goal — 2026-11-02
+
+**Current decision: REVISE R2.** [R2 review](../docs/engineering/r2-review.md).
+R2 integrates the support and power revisions into one [CAD](r2_package.md) (56 parts, no clashes inside 323 × 139 × 100 mm) and one
+[full-suite simulation](r2_candidate.md) (54 scenarios, refinements pass). Bearings and shafts now pass at the simulated loads with 850–1000 N belt preload,
+and fresh paired heavy tracking improves to 0.18%. But 5:1 raises winding heat (slow heavy pull 128.5 °C, past derate), the aged bank still trips
+in every hard case, and fast reversal, full stroke, endurance and asymmetric release still fail. Next: motor thermal path, bank energy, then fast-reversal control.
+`make quick` / `make t` iterate without the full suite; `make ci` skips studies whose input fingerprint is unchanged.
+
+**Previous decision (R1): REVISE the compact candidate.** [R1 review and original-goal audit](../docs/engineering/compact-candidate-r1-review.md).
+The [CAD-derived candidate](compact_candidate.md) completes 54/54 scenarios with selected numerical verification passing; 207 full-suite tests pass.
+The [current mechanical screen](compact_structure.md) rejects the spindle/bearing/bridge arrangement under its proposed analytical criteria.
+Paired aged-bank operation trips; fast reversal and endurance remain failed design cases. A [compact FMEA](../docs/engineering/compact-fmea.md)
+tracks outstanding circuit, wiring, cooling, retention, mounting and model-validation work. The goal is active and incomplete.
+The next action is a combined support/transmission and power/buffer revision, preserving owner force and size requirements.
+
+**Latest evidence:** [latched-trip and compact-layout review](../docs/engineering/latched-trip-and-layout-review.md).
+Voltage/thermal trips now latch; recovery cannot restart a unit. The reference completes 27 cases with passing numerical verification;
+the alternative-buffer experiment completes 48 selected combinations and four refinement studies. The full software run passes 198 tests;
+three additional targeted CAD checks pass. [Compact CAD experiment](compact_package.md): 64 parts inside the owner body target with no modeled
+unintended solid or rope/guide swept collisions. Missing wiring, sensors, retention, cooling and electrical clearances still prevent a complete package claim.
+CAD-derived inertia differs from the reference: the next action is a full candidate simulation with consistent inertia/bank/routing/thermal assumptions.
+Electrical/cost allocation now covers guide actuation too: 25 functions / 92 ports. Earlier checkpoints below are historical where superseded.
+
+Latest checkpoint: [compact-buffer review](../docs/engineering/compact-buffer-review.md).
+The separate [compact capacitor experiment](compact_buffer.md) evaluates 36 variant/case combinations:
+20 integrate and 16 retain explicit solver failures at voltage-switching events. The smaller bank is not selected or qualified.
+[Functional electrical schematic/netlist and preliminary harness](electrical_definition.md) now define 24 functions / 84 semantic ports;
+physical wiring and circuit ratings remain open. [Full-function preliminary cost allowances](preliminary_costs.md)
+include mechanics, protection, harness, board, mounts and production/commercial assumptions; they are unquoted estimates.
+The next simulation action is explicit voltage-trip latching/reset and event handling, followed by reference and alternative re-verification.
+The complete compact assembly is still outstanding. Thirty-three targeted tests pass; the earlier 190-test full run remains baseline evidence.
+
+The full eight-item goal is in [goal.md](../docs/engineering/goal.md), with evidence tracked in [plan.md](../docs/engineering/plan.md). **The goal is active and incomplete.**
+
+The owner rejected the 20 L placeholder and chose a **323 × 139 × 100 mm (4.4897 L) envelope or smaller per unit**: [ADR-003](../docs/architecture-decisions/ADR-003-voltra-sized-envelope.md). The published VOLTRA mass of 5.8 kg is a provisional comparison benchmark, not an adopted owner mass limit.
+
+New reproducible evidence (`make architecture`):
+
+- [Measurable criteria](engineering_requirements.md), with owner/provisional/verification origins.
+- [Primary-source component review](component_review.md). The legacy 56 V dump and 60 V trip conflict with the S1's 50.5 V maximum; the historical 53 V bus result **does not pass component compatibility**.
+- [Compact architecture screen](architecture_screen.md): 6,912 combinations, including direct drive, legacy and folded belt layouts, winding layers and guided/unguided paths. Zero pass all current comparison screens. This is assumption-dependent screening, not proof that the product is impossible; no full electrical package or coupled candidate model has yet been qualified.
+- 49 targeted engineering/input/structural tests pass (3.63 s); input validation and architecture generation pass. The complete legacy test suite and all exports have not been rerun for this goal turn.
+
+The coupled reference core is now implemented: [coupled report](coupled.md), [machine-readable results](coupled.json), [model interface](../docs/engineering/model-interface.md) and [platform charter](../docs/engineering/platform-charter.md). The owner wants a reusable open resistance-control foundation with a trainer as its reference implementation. The original eight-item engineering goal remains intact.
+
+Current verified evidence:
+
+- **190 tests pass** in the complete test run (107.91 s).
+- **25/25 coupled cases** complete, including all 11 full reference/limit duty cycles, paired asymmetry, independent/peer power-loss response, stuck sensing, inverted/frozen command, communication loss, release, emergency stop and dump failure.
+- **Five solver-resolution refinements pass**, including symmetric and explicitly 1%-imbalanced paired release. Mean/difference coordinates corrected a numerical symmetry problem without suppressing physical asymmetry or loosening criteria.
+- **13 parameter-uncertainty cases** complete. Low Km and low user damping materially degrade tracking; this is retained as failed performance evidence.
+- Maximum full-suite energy residual fraction is **2.32e-6**. This validates bookkeeping consistency, not physical fidelity.
+- The source/configuration fingerprint in `reports/coupled.json` matches the current implementation. Three plots were generated from the saved traces; heavy-set and paired-fault plots were visually inspected.
+
+Under the current assumptions, the single heavy set tracks at about 0.14% RMS error, winds to about 78.5 °C and keeps the bus around 46.3–49.0 V. Fast reversal, full-stroke motion and endurance fail proposed tracking/overshoot criteria; high-speed cases also exceed electrical-frequency/voltage-control screens. A 1% paired release imbalance predicts large bar rotation in the simplified model. No hardware operating envelope is qualified.
+
+The selected **simulation reference** is RO100 Lite / 6:1 / 30 mm drum core / six turns and two layers / 5 mm rope. It uses the documented 22-series 350 F cell bank (15.91 F, 0.0704 Ω), a separate 3 mF drive bus and a sourced EPP-500-48 supply candidate with its forced-air assumption. This is not yet a complete package inside the owner envelope, and its DC-equivalent motor current conventions need calibration.
+
+The controlled measurement and independent-review requirements are documented in [validation-plan.md](../docs/engineering/validation-plan.md), with a future measurement provenance/uncertainty schema. No measurements, physical output or hardware tests were performed.
+
+**Next work:** carry the reference and rejection evidence into mechanically connected CAD/load paths, preliminary electrical schematic/placement/harness, complete per-unit/paired/accessory cost estimates, and a requirement-by-requirement final package audit. Preserve the remaining model limitations, particularly real fault detection, latching/rearm, switching/inductance, cable-break/contact/fatigue behavior and hardware parameter validation. The engineering goal is active and incomplete.
+
+The iteration-3 results below are a **historical reference**, with the superseded volume target and incompatible bus assumptions. They have not been regenerated for the changed engineering inputs. Do not treat their earlier pass statements as a current integrated feasibility result.
+
+## Historical iteration-3 reference
+
 Last updated: 2026-11-02 (iteration 3). Hand-written; other reports are generated by the CLI.
 
 ## Current decision and implementation

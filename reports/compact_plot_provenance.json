@@ -1,0 +1,12 @@
+{
+  "candidate_fingerprint": "ac40ec6c176d00be8d17ed7867e816d3bf9330977cff8f86f64f86a1616d3b47",
+  "plot_source_sha256": "3d5a8a8cd1065ac8849fd7933369ff7151ab177c3ba7bd6bf84f80df92a75ffc",
+  "traces": {
+    "build/engineering/compact_candidate/compact_nominal__paired_heavy_full.npz": "2a739baa75672b79d9d797d215829967640b2b8b02d8b6183e518797e9330096",
+    "build/engineering/compact_candidate/compact_aged__paired_heavy_full.npz": "6d847a877798d04c43ae06c18bfb740e2bcf213ce134b58b6f8007b567dccbd3",
+    "build/engineering/compact_candidate/compact_nominal__left_power_loss_buffered.npz": "5f5baa6afdb83d15816f03768e3b4b8899ecb9f24ee82165aa93bb5a190ecaf6",
+    "build/engineering/compact_candidate/compact_nominal__left_power_loss_buffered_coordinated.npz": "5bb93a6ba652fb869e9397d221a7377da5b2b7c32e5d3c170a88d4a2e1c36433",
+    "build/engineering/compact_candidate/compact_nominal__paired_release_asymmetric.npz": "3ee2d25f2061b0cd4fa3a40d18a988eb4efe93b5ebea3b4dc8221dfe8d760d33",
+    "build/engineering/compact_candidate/compact_aged__paired_release_asymmetric.npz": "913955a127d9c9243c00ee9743e8e5686c650b904cc612bcfa366544f59af2d6"
+  }
+}

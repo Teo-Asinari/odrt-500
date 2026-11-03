@@ -1,0 +1,39 @@
+net,domain,semantic_endpoints,conductor_count,wire_gauge,length_mm,connector_and_pinout,route,shield_and_separation,rating_evidence
+mains_line,mains,inlet.line; input_protection.line_in,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+mains_neutral,mains,inlet.neutral; input_protection.neutral_in,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+filtered_line,mains,input_protection.line_out; supply.line,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+filtered_neutral,mains,input_protection.neutral_out; supply.neutral,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+protective_earth,pe,inlet.earth; input_protection.chassis; supply.frame; enclosure.earth; peer_connector.shield,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+source_positive,dc48,supply.positive; source_block.source,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+bank_positive,dc48,capacitor.positive; bank_protection.bank,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+bus_positive,dc48,source_block.bus; bank_protection.bus; bus_storage.positive; aux_power.positive; drive.positive,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+bus_return,dc48,supply.return; capacitor.return; bus_storage.return; aux_power.return; drive.return; dump.return,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+cell_tap_bundle,balance,capacitor.cell_taps; balancing.cell_taps,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+logic_rails_bundle,logic,aux_power.logic; balancing.logic_power; encoder.logic_power; force_sensor.logic_power; controller.logic_power; supervisor.logic_power,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+inverter_phases,phase,drive.phases; phase_transfer.inverter,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+motor_phases,phase,phase_transfer.motor; motor.phases,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+brake_phases,phase,phase_transfer.brake; phase_brake.phases,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+dump_chopper,brake,drive.dump; dump.chopper,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+encoder_bundle,encoder,encoder.position; drive.encoder,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+encoder_health,signal,encoder.health; supervisor.encoder_health,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+force_measurement,signal,force_sensor.force; controller.force,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+force_plausibility,signal,force_sensor.plausibility; supervisor.force_check,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+drive_command,signal,controller.drive; drive.command,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+drive_inhibit,signal,supervisor.drive_inhibit; drive.inhibit,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+watchdog_bundle,signal,controller.supervisor; supervisor.app,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+temperature_bundle,signal,motor.temperature; dump.temperature; phase_brake.temperature; supervisor.temperatures,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+bank_monitor,signal,balancing.status; supervisor.bank,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+bank_command,signal,supervisor.bank_command; bank_protection.command,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+bank_feedback,signal,bank_protection.status; supervisor.bank_status,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+phase_transfer_command,signal,supervisor.transfer; phase_transfer.command,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+phase_transfer_feedback,signal,phase_transfer.feedback; supervisor.transfer_feedback,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+stop_contacts,signal,stop.contacts; supervisor.stop,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+mount_state,signal,mount.state; supervisor.mount,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+peer_local,signal,controller.peer; peer.local,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+peer_external,peer_external,peer.external; peer_connector.data,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+fan_supply,auxiliary,aux_power.fan_power; fan.power,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+fan_feedback,signal,fan.tach; supervisor.fan,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+guide_supply,auxiliary,aux_power.guide_power; guide_actuator.power,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+guide_command,signal,controller.guide; guide_actuator.command,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+guide_feedback,signal,guide_actuator.health; supervisor.guide_health,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+guide_inhibit,signal,supervisor.guide_inhibit; guide_actuator.inhibit,TBD,TBD,TBD,TBD,TBD,TBD,TBD

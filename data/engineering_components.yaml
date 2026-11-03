@@ -1,0 +1,124 @@
+# Manufacturer-authored specifications rechecked 2026-11-02. Blank/null is unknown.
+# Facts only; datasheet limits do not establish system safety or availability.
+components:
+  ro100_standard:
+    role: motor
+    source: https://www.cubemars.com/product/ro100-kv55-standard-with-hall-frameless-torque-motor.html
+    accessed: '2026-11-02'
+    values:
+      diameter_mm: 113.5
+      length_mm: 36.2
+      mass_kg: 0.710
+      inertia_kg_m2: 0.000870
+      torque_peak_nm: 12
+      torque_cont_nm: 4
+      rated_rpm: 2000
+      no_load_rpm_at_48v: 2550
+      kv_rpm_per_v: 55
+      kt_nm_per_a: 0.2
+      km_nm_per_sqrt_w: 0.53
+      phase_phase_resistance_ohm: 0.143
+      phase_phase_inductance_h: 0.000137
+      pole_pairs: 21
+    availability: Manufacturer product listed; variant stock and ship date not verified
+    price_usd: null
+    notes: Comparison table explicitly includes Standard resistance/torque. Marketing paragraph contradicts it with RO80 values; retain measurement/convention uncertainty.
+  ro100_lite:
+    role: motor
+    source: https://img.cubemars.com/products/cubemars-product-parameter/RO100-LITE-KV55.pdf
+    accessed: '2026-11-02'
+    values:
+      diameter_mm: 108.3
+      length_mm: 28
+      mass_kg: 0.525
+      inertia_kg_m2: 0.000529
+      torque_peak_nm: 12
+      torque_cont_nm: 4
+      rated_rpm: 2000
+      no_load_rpm_at_48v: 2550
+      kv_rpm_per_v: 53
+      kt_nm_per_a: 0.2
+      km_nm_per_sqrt_w: 0.53
+      phase_phase_resistance_ohm: 0.143
+      phase_phase_inductance_h: 0.000137
+      pole_pairs: 21
+    availability: Manufacturer datasheet available; current stock and price unknown
+    price_usd: null
+    notes: Variant-specific motor candidate; no integrated Hall/temperature sensing assumed. Thermal paths and current conventions need confirmation.
+  odrive_s1:
+    role: drive
+    source: https://docs.odriverobotics.com/v/latest/hardware/s1-datasheet.html
+    accessed: '2026-11-02'
+    values:
+      voltage_absolute_max_v: 50.5
+      modulation_utilization: 0.78
+      current_cont_free_air_a: 20
+      current_cont_spreader_a: 40
+      current_peak_max_a: 80
+      recommended_electrical_frequency_hz: 700
+      length_mm: 66
+      width_mm: 50
+      ambient_max_c_for_ratings: 40
+    availability: Listed; current stock not verified
+    price_usd: null
+    notes: Peak current is voltage/temperature dependent; 80 A is not a guaranteed limit at 48 V. No certified STO function inferred from enable input.
+  epp500_48:
+    role: supply
+    source: https://www.meanwell.com/Upload/PDF/EPP-500/EPP-500-SPEC.PDF
+    accessed: '2026-11-02'
+    values:
+      nominal_voltage_v: 48
+      power_forced_air_w: 499.2
+      power_convection_w: 321.6
+      required_airflow_cfm: 25
+      efficiency_nominal: 0.94
+      length_mm: 127
+      width_mm: 76.2
+      height_mm: 40
+    availability: Manufacturer datasheet available; current stock unknown
+    price_usd: null
+    notes: Power is subject to input/temperature derating. Open-frame mains module requires enclosure and isolation design; reverse current must be blocked unless vendor approves.
+  bcap0350_e270_t11:
+    role: capacitor_cell
+    source: https://www.mouser.com/datasheet/2/257/Maxwell_BCSeries_DS_1017105-4-1179684.pdf
+    accessed: '2026-11-02'
+    values:
+      capacitance_f: 350
+      voltage_rated_v: 2.7
+      esr_initial_max_ohm: 0.0032
+      capacitance_end_life_fraction: 0.8
+      esr_end_life_multiplier: 2
+      diameter_mm: 33.3
+      length_mm: 61.5
+      mass_kg: 0.060
+      thermal_resistance_k_per_w: 10.9
+      thermal_capacity_j_per_k: 60
+      current_rms_15k_rise_a: 21
+      case_max_c: 65
+    availability: Historical manufacturer-authored datasheet; lifecycle stock and replacement approval must be checked
+    price_usd: null
+    notes: Manufacturer datasheet mirrored by distributor; 22-series bank is 15.9 F not 2 F. Cell voltage balance and protection are additional requirements.
+  dynaone_hs_4:
+    role: rope
+    source: https://gleistein.com/en/applications/stringing/single-product/dynaone-hs/pdf//
+    accessed: '2026-11-02'
+    values: {diameter_mm: 4, spliced_breaking_n: 18900, linear_breaking_n: 21000, mass_kg_per_m: 0.010}
+    availability: Manufacturer catalog; current supplier stock and price unknown
+    price_usd: null
+    notes: Spliced strength is not a cyclic bend or shock rating; fatigue life and termination geometry unqualified.
+  dynaone_hs_5:
+    role: rope
+    source: https://gleistein.com/en/applications/stringing/single-product/dynaone-hs/pdf//
+    accessed: '2026-11-02'
+    values: {diameter_mm: 5, spliced_breaking_n: 30000, linear_breaking_n: 33300, mass_kg_per_m: 0.016}
+    availability: Manufacturer catalog; current supplier stock and price unknown
+    price_usd: null
+    notes: Bend-fatigue life unknown for the proposed drums; supplier review required.
+  dynaone_hs_6:
+    role: rope
+    source: https://gleistein.com/en/applications/stringing/single-product/dynaone-hs/pdf//
+    accessed: '2026-11-02'
+    values: {diameter_mm: 6, spliced_breaking_n: 38000, linear_breaking_n: 42200, mass_kg_per_m: 0.021}
+    availability: Manufacturer catalog; current supplier stock and price unknown
+    price_usd: null
+    notes: Bend-fatigue life unknown for the proposed drums; supplier review required.

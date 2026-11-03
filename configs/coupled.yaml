@@ -1,0 +1,116 @@
+# Coupled platform reference. Simulation proposals, not approved hardware limits.
+# Physical package is still unqualified against ADR-003.
+reference:
+  motor: ro100_lite
+  drive: odrive_s1
+  supply: epp500_48
+  rope: dynaone_hs_5
+  capacitor: bcap0350_e270_t11
+  ratio: 6
+  efficiency: 0.95
+  gear_transition_w: 1
+  core_radius_mm: 30
+  turns_per_layer: 6
+  layers: 2
+  dead_turns: 3
+  drum_inertia_kg_m2: 0.0003
+mechanics:
+  routing_length_m: 0.35
+  cable_ea_n: 500000
+  cable_damping_ratio: 0.05
+  friction_n: 10
+  friction_speed_m_s: 0.005
+  single_handle_mass_kg: 0.5
+  paired_bar_mass_kg: 2
+  bar_half_span_m: 0.5
+  bar_inertia_kg_m2: 0.18
+  user_stiffness_n_m: 2000
+  user_damping_n_s_m: 100
+  user_rot_stiffness_nm_rad: 100
+  user_rot_damping_nm_s_rad: 12
+  stop_stiffness_n_m: 200000
+  stop_damping_n_s_m: 200
+control:
+  kp: 0.2
+  ki_s: 5
+  integral_limit_n: 500
+  current_loop_s: 0.001
+  force_filter_s: 0.002
+  encoder_filter_s: 0.001
+  inertia_feedforward: 0.9
+  current_limit_a: 40
+  retract_speed_limit_m_s: 1
+  retract_gain_n_s_m: 3000
+  local_detection_s: 0.02
+  peer_stop_delay_s: 0.03
+  watchdog_s: 0.05
+  rest_tension_n: 22
+  winding_derate_c: 120
+  winding_stop_c: 140
+  drive_derate_c: 60
+  drive_stop_c: 80
+power:
+  nominal_v: 48
+  undervoltage_v: 40
+  trip_v: 50
+  dump_start_v: 49
+  dump_full_v: 49.25
+  dump_resistance_ohm: 1
+  bus_capacitance_f: 0.003
+  cell_series: 22
+  cell_parallel: 1
+  supply_droop_ohm: 0.2
+  drive_loss_fraction: 0.03
+  drive_idle_w: 3
+  bleed_resistance_ohm: 10000
+  phase_brake_resistance_ohm: 0.6
+thermal:
+  ambient_c: 25
+  winding_to_housing_k_w: 0.28
+  housing_to_air_k_w: 1.12
+  winding_capacity_j_k: 48.3
+  housing_capacity_j_k: 193.2
+  drive_to_air_k_w: 2
+  drive_capacity_j_k: 40
+  supply_to_air_k_w: 1
+  supply_capacity_j_k: 180
+  dump_to_air_k_w: 2
+  dump_capacity_j_k: 200
+  air_capacity_j_k: 50
+  air_to_room_w_k: 15
+  supply_derate_start_c: 50
+  supply_stop_c: 70
+solver:
+  relative_tolerance: 0.000001
+  absolute_tolerance: 0.00000001
+  maximum_step_s: 0.002
+  output_step_s: 0.005
+  max_steps: 2000000
+cases:
+  - {name: single_curl_full, scenario: curl_reference, units: 1, fault: none}
+  - {name: single_row_full, scenario: row_reference, units: 1, fault: none}
+  - {name: single_press_full, scenario: press_reference, units: 1, fault: none}
+  - {name: single_slow_full, scenario: slow_heavy_pull_reference, units: 1, fault: none}
+  - {name: single_eccentric_full, scenario: eccentric_overload_limit, units: 1, fault: none}
+  - {name: single_heavy_full, scenario: heavy_tempo_limit, units: 1, fault: none}
+  - {name: single_hold_full, scenario: peak_tension_hold_limit, units: 1, fault: none}
+  - {name: single_low_full, scenario: low_force_limit, units: 1, fault: none}
+  - {name: single_fast_full, scenario: fast_reversal_limit, units: 1, fault: none}
+  - {name: single_stroke_full, scenario: full_stroke_limit, units: 1, fault: none}
+  - {name: single_endurance_full, scenario: endurance_session_limit, units: 1, fault: none}
+  - {name: paired_heavy_full, scenario: heavy_tempo_limit, units: 2, fault: none}
+  - {name: paired_asymmetric, scenario: heavy_tempo_limit, units: 2, fault: none, command_scales: [1, 0.7]}
+  - {name: left_power_loss_uncoordinated, scenario: heavy_tempo_limit, units: 2, fault: mains_loss_braked, fault_time_s: 2.6, window_s: 6, peer_stop: false}
+  - {name: left_power_loss_coordinated, scenario: heavy_tempo_limit, units: 2, fault: mains_loss_braked, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: left_power_loss_buffered, scenario: heavy_tempo_limit, units: 2, fault: mains_loss_buffered, fault_time_s: 2.6, window_s: 6}
+  - {name: left_power_loss_buffered_coordinated, scenario: heavy_tempo_limit, units: 2, fault: mains_loss_buffered, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: left_sensor_loss, scenario: heavy_tempo_limit, units: 2, fault: load_cell_zero, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: left_encoder_loss, scenario: heavy_tempo_limit, units: 2, fault: encoder_loss, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: left_torque_inverted, scenario: heavy_tempo_limit, units: 2, fault: torque_inverted, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: left_torque_frozen, scenario: heavy_tempo_limit, units: 2, fault: torque_frozen, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: paired_communication_loss, scenario: heavy_tempo_limit, units: 2, fault: communication_loss, fault_time_s: 2.6, window_s: 6}
+  - {name: paired_release, scenario: heavy_tempo_limit, units: 2, fault: handle_release, fault_time_s: 2.6, window_s: 6, peer_stop: true}
+  - {name: paired_release_asymmetric, scenario: heavy_tempo_limit, units: 2, fault: handle_release, fault_time_s: 2.6, window_s: 6, peer_stop: true, command_scales: [1, 0.99]}
+  - {name: paired_emergency_stop, scenario: heavy_tempo_limit, units: 2, fault: emergency_stop, fault_time_s: 2.6, window_s: 6}
+  - {name: paired_dump_failure, scenario: heavy_tempo_limit, units: 2, fault: dump_failure, fault_time_s: 1.2, window_s: 6}
+  - {name: paired_dump_failure_coordinated, scenario: heavy_tempo_limit, units: 2, fault: dump_failure, fault_time_s: 1.2, window_s: 6, peer_stop: true}

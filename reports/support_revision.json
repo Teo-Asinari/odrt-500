@@ -1,0 +1,497 @@
+{
+  "fingerprint": "0e60fb50a834460674564a0b53b9d92379748851fd2d4c3f452556f04eee43fb",
+  "assessment": "REVISE; support comparison only",
+  "sources": {
+    "motor_bearing": {
+      "part": "SKF NJ 202 ECP",
+      "source": "https://cdn.skfmediahub.skf.com/api/public/0901d196802809de/pdf_preview_medium/0901d196802809de_pdf_preview_medium.pdf",
+      "accessed": "2026-11-02",
+      "dimensions_mm": [
+        15,
+        35,
+        11
+      ],
+      "dynamic_n": 12500,
+      "static_n": 10200,
+      "mass_kg": 0.048,
+      "notes": "Opposed NJ pair is proposed; axial location, clearance, preload, minimum load, lubrication and sealing need manufacturer review."
+    },
+    "drum_floating": {
+      "part": "NSK NU205EM",
+      "source": "https://www.nsk.com/engineering/products/bearings/roller-bearings/cylindrical-roller-bearings/single-row-cylindrical-roller-bearings/nu205em-crb-sr.html",
+      "accessed": "2026-11-02",
+      "dimensions_mm": [
+        25,
+        52,
+        15
+      ],
+      "dynamic_n": 36000,
+      "static_n": 27700,
+      "mass_kg": 0.153
+    },
+    "drum_locating": {
+      "part": "NSK NUP205EM",
+      "source": "https://www.nsk.com/au-en/engineering/nup205em-crb-sr.html",
+      "accessed": "2026-11-02",
+      "dimensions_mm": [
+        25,
+        52,
+        15
+      ],
+      "dynamic_n": 36000,
+      "static_n": 27700,
+      "mass_kg": 0.162
+    },
+    "cell": {
+      "part": "Eaton TV1860-3R0107-R",
+      "source": "https://www.eaton.com/us/en-us/skuPage.TV1860-3R0107-R.html",
+      "datasheet": "https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-tv-supercapacitors-cylindrical-cells-data-sheet.pdf",
+      "accessed": "2026-11-02",
+      "values": {
+        "capacitance_f": 100,
+        "voltage_rated_v": 3,
+        "esr_initial_max_ohm": 0.011,
+        "capacitance_initial_min_fraction": 0.9,
+        "capacitance_end_life_fraction": 0.7,
+        "esr_end_life_multiplier": 2,
+        "diameter_mm": 18.5,
+        "length_mm": 60.5,
+        "mass_kg": 0.02,
+        "thermal_resistance_k_per_w": 10,
+        "current_rms_15k_rise_a": 11.7,
+        "case_max_c": 65
+      },
+      "assumptions": {
+        "thermal_capacity_j_per_k": 20
+      },
+      "availability": "Manufacturer listed; supplier availability not yet rechecked directly",
+      "price_usd": null
+    },
+    "revision_proposal": {
+      "ratio": 5,
+      "pinion_teeth": 24,
+      "wheel_teeth": 120,
+      "pitch_mm": 3,
+      "pulley_face_mm": 15,
+      "motor_bearing_centres_mm": [
+        41.5,
+        52.5
+      ],
+      "drum_bearing_centres_mm": [
+        33.5,
+        48.5
+      ],
+      "belt_centre_z_mm": 67.5,
+      "rope_height_range_mm": [
+        28.5,
+        53.5
+      ],
+      "shaft_support_z_mm": [
+        5,
+        77
+      ],
+      "frame_deck_z_mm": [
+        75.5,
+        78.5
+      ],
+      "cells_series": 20,
+      "supply_setpoint_v": 52,
+      "motor_current_limit_a": 50,
+      "rope_force_comparison_n": 3000,
+      "motor_torque_comparison_nm": 18,
+      "pretension_per_span_n": [
+        700,
+        850,
+        1000,
+        1150
+      ],
+      "notes": [
+        "This is a revision proposal; the R1 CAD and candidate remain unchanged and rejected.",
+        "Force and torque comparisons deliberately exceed R1 observed maxima. Actual R2 load histories must replace them before adoption.",
+        "Shaft support at both ends requires an engineered base flange and deck/sidewall load path, not the old slender posts alone.",
+        "Supply moves beside the mechanism; guide/exit turn toward the side wall to avoid crossing the supply volume.",
+        "Deck and sidewall compliance, positive retention, bolts, pinion profile/belt rating, sealing and fatigue remain unqualified.",
+        "Twenty 3 V cells provide 60 V pack rating with 52 V nominal upstream storage. Individual-cell balance/protection is still required."
+      ]
+    }
+  },
+  "belt_tension_difference_n": 1570.7963267948965,
+  "wheel_outer_diameter_claim_mm": 116.59155902616465,
+  "checks_passed": 8,
+  "cases": [
+    {
+      "preload_n": 700,
+      "rope_z_mm": 28.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 3712.7913178788467,
+      "drum_bearing_peak_n": 5128.6602357374995,
+      "motor_bearing_static_factor": 2.7472591715247163,
+      "drum_bearing_static_factor": 5.401020681187072,
+      "motor_shaft_stress_mpa": 85.26538074653476,
+      "drum_shaft_stress_mpa": 29.83531088396375,
+      "base_reaction_n": [
+        190.0831903134956,
+        -1938.2246376811595
+      ],
+      "deck_reaction_n": [
+        1250.54730469405,
+        -435.68840579710144
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": [
+        "nonpositive nominal slack tension"
+      ]
+    },
+    {
+      "preload_n": 700,
+      "rope_z_mm": 28.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 3712.7913178788467,
+      "drum_bearing_peak_n": 3689.7777929654662,
+      "motor_bearing_static_factor": 2.7472591715247163,
+      "drum_bearing_static_factor": 7.5072271432740045,
+      "motor_shaft_stress_mpa": 85.26538074653476,
+      "drum_shaft_stress_mpa": 32.35523670196666,
+      "base_reaction_n": [
+        190.0831903134956,
+        -2103.442028985507
+      ],
+      "deck_reaction_n": [
+        1250.54730469405,
+        -1522.644927536232
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": [
+        "nonpositive nominal slack tension"
+      ]
+    },
+    {
+      "preload_n": 700,
+      "rope_z_mm": 53.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 3712.7913178788467,
+      "drum_bearing_peak_n": 4162.200747631329,
+      "motor_bearing_static_factor": 2.7472591715247163,
+      "drum_bearing_static_factor": 6.655133108551724,
+      "motor_shaft_stress_mpa": 85.26538074653476,
+      "drum_shaft_stress_mpa": 28.976636345223472,
+      "base_reaction_n": [
+        190.0831903134956,
+        -896.557971014493
+      ],
+      "deck_reaction_n": [
+        1250.54730469405,
+        -1477.355072463768
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": [
+        "nonpositive nominal slack tension"
+      ]
+    },
+    {
+      "preload_n": 700,
+      "rope_z_mm": 53.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 3712.7913178788467,
+      "drum_bearing_peak_n": 6326.9267436967,
+      "motor_bearing_static_factor": 2.7472591715247163,
+      "drum_bearing_static_factor": 4.3781129641806835,
+      "motor_shaft_stress_mpa": 85.26538074653476,
+      "drum_shaft_stress_mpa": 34.10395443558087,
+      "base_reaction_n": [
+        190.0831903134956,
+        -1061.7753623188405
+      ],
+      "deck_reaction_n": [
+        1250.54730469405,
+        -2564.3115942028985
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": [
+        "nonpositive nominal slack tension"
+      ]
+    },
+    {
+      "preload_n": 850,
+      "rope_z_mm": 28.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 3971.23521715486,
+      "drum_bearing_peak_n": 5183.963317644442,
+      "motor_bearing_static_factor": 2.568470373131828,
+      "drum_bearing_static_factor": 5.343402007826454,
+      "motor_shaft_stress_mpa": 89.43536327728536,
+      "drum_shaft_stress_mpa": 29.859640447290165,
+      "base_reaction_n": [
+        205.7182194920781,
+        -1938.2246376811595
+      ],
+      "deck_reaction_n": [
+        1353.4093387636713,
+        -435.68840579710144
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 850,
+      "rope_z_mm": 28.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 3971.23521715486,
+      "drum_bearing_peak_n": 3766.268714060277,
+      "motor_bearing_static_factor": 2.568470373131828,
+      "drum_bearing_static_factor": 7.354759339552711,
+      "motor_shaft_stress_mpa": 89.43536327728536,
+      "drum_shaft_stress_mpa": 32.37767277212758,
+      "base_reaction_n": [
+        205.7182194920781,
+        -2103.442028985507
+      ],
+      "deck_reaction_n": [
+        1353.4093387636713,
+        -1522.644927536232
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 850,
+      "rope_z_mm": 53.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 3971.23521715486,
+      "drum_bearing_peak_n": 4376.094434364255,
+      "motor_bearing_static_factor": 2.568470373131828,
+      "drum_bearing_static_factor": 6.329845119995489,
+      "motor_shaft_stress_mpa": 89.43536327728536,
+      "drum_shaft_stress_mpa": 29.08318402124122,
+      "base_reaction_n": [
+        205.7182194920781,
+        -896.557971014493
+      ],
+      "deck_reaction_n": [
+        1353.4093387636713,
+        -1477.355072463768
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 850,
+      "rope_z_mm": 53.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 3971.23521715486,
+      "drum_bearing_peak_n": 6469.643688410943,
+      "motor_bearing_static_factor": 2.568470373131828,
+      "drum_bearing_static_factor": 4.281534089677758,
+      "motor_shaft_stress_mpa": 89.43536327728536,
+      "drum_shaft_stress_mpa": 34.19452949046427,
+      "base_reaction_n": [
+        205.7182194920781,
+        -1061.7753623188405
+      ],
+      "deck_reaction_n": [
+        1353.4093387636713,
+        -2564.3115942028985
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 1.8189894035458565e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 1000,
+      "rope_z_mm": 28.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 4581.141274321297,
+      "drum_bearing_peak_n": 5326.488540390663,
+      "motor_bearing_static_factor": 2.2265194171535665,
+      "drum_bearing_static_factor": 5.200424217559358,
+      "motor_shaft_stress_mpa": 99.55984528565833,
+      "drum_shaft_stress_mpa": 29.923450362705093,
+      "base_reaction_n": [
+        242.02143469656244,
+        -1938.2246376811595
+      ],
+      "deck_reaction_n": [
+        1592.246280898437,
+        -435.68840579710144
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 1000,
+      "rope_z_mm": 28.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 4581.141274321297,
+      "drum_bearing_peak_n": 4178.7461229237415,
+      "motor_bearing_static_factor": 2.2265194171535665,
+      "drum_bearing_static_factor": 6.628782698246131,
+      "motor_shaft_stress_mpa": 99.55984528565833,
+      "drum_shaft_stress_mpa": 32.43652953240837,
+      "base_reaction_n": [
+        242.02143469656244,
+        -2103.442028985507
+      ],
+      "deck_reaction_n": [
+        1592.246280898437,
+        -1522.644927536232
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 1000,
+      "rope_z_mm": 53.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 4581.141274321297,
+      "drum_bearing_peak_n": 4893.58115812485,
+      "motor_bearing_static_factor": 2.2265194171535665,
+      "drum_bearing_static_factor": 5.660476265732199,
+      "motor_shaft_stress_mpa": 99.55984528565833,
+      "drum_shaft_stress_mpa": 29.361201110496125,
+      "base_reaction_n": [
+        242.02143469656244,
+        -896.557971014493
+      ],
+      "deck_reaction_n": [
+        1592.246280898437,
+        -1477.355072463768
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 1000,
+      "rope_z_mm": 53.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 4581.141274321297,
+      "drum_bearing_peak_n": 6830.316501281349,
+      "motor_bearing_static_factor": 2.2265194171535665,
+      "drum_bearing_static_factor": 4.055448967087185,
+      "motor_shaft_stress_mpa": 99.55984528565833,
+      "drum_shaft_stress_mpa": 34.431299494963135,
+      "base_reaction_n": [
+        242.02143469656244,
+        -1061.7753623188405
+      ],
+      "deck_reaction_n": [
+        1592.246280898437,
+        -2564.3115942028985
+      ],
+      "max_force_residual_n": 2.2737367544323206e-13,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": []
+    },
+    {
+      "preload_n": 1150,
+      "rope_z_mm": 28.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 5200.852156201043,
+      "drum_bearing_peak_n": 5487.4770441917635,
+      "motor_bearing_static_factor": 1.9612170647532077,
+      "drum_bearing_static_factor": 5.047857107542554,
+      "motor_shaft_stress_mpa": 110.16322075571975,
+      "drum_shaft_stress_mpa": 29.997437296019868,
+      "base_reaction_n": [
+        278.32464990104654,
+        -1938.2246376811595
+      ],
+      "deck_reaction_n": [
+        1831.0832230332026,
+        -435.68840579710144
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": [
+        "motor bearing static factor"
+      ]
+    },
+    {
+      "preload_n": 1150,
+      "rope_z_mm": 28.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 5200.852156201043,
+      "drum_bearing_peak_n": 4799.659822348137,
+      "motor_bearing_static_factor": 1.9612170647532077,
+      "drum_bearing_static_factor": 5.771242343264305,
+      "motor_shaft_stress_mpa": 110.16322075571975,
+      "drum_shaft_stress_mpa": 32.504796735653784,
+      "base_reaction_n": [
+        278.32464990104654,
+        -2103.442028985507
+      ],
+      "deck_reaction_n": [
+        1831.0832230332026,
+        -1522.644927536232
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": [
+        "motor bearing static factor"
+      ]
+    },
+    {
+      "preload_n": 1150,
+      "rope_z_mm": 53.5,
+      "torque_direction": -1,
+      "motor_bearing_peak_n": 5200.852156201043,
+      "drum_bearing_peak_n": 5433.410696934965,
+      "motor_bearing_static_factor": 1.9612170647532077,
+      "drum_bearing_static_factor": 5.098086919073836,
+      "motor_shaft_stress_mpa": 110.16322075571975,
+      "drum_shaft_stress_mpa": 29.681030415340018,
+      "base_reaction_n": [
+        278.32464990104654,
+        -896.557971014493
+      ],
+      "deck_reaction_n": [
+        1831.0832230332026,
+        -1477.355072463768
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": [
+        "motor bearing static factor"
+      ]
+    },
+    {
+      "preload_n": 1150,
+      "rope_z_mm": 53.5,
+      "torque_direction": 1,
+      "motor_bearing_peak_n": 5200.852156201043,
+      "drum_bearing_peak_n": 7226.896896876905,
+      "motor_bearing_static_factor": 1.9612170647532077,
+      "drum_bearing_static_factor": 3.832903719986724,
+      "motor_shaft_stress_mpa": 110.16322075571975,
+      "drum_shaft_stress_mpa": 34.70443517444404,
+      "base_reaction_n": [
+        278.32464990104654,
+        -1061.7753623188405
+      ],
+      "deck_reaction_n": [
+        1831.0832230332026,
+        -2564.3115942028985
+      ],
+      "max_force_residual_n": 0.0,
+      "max_moment_residual_nmm": 7.499885442698834e-12,
+      "failed_checks": [
+        "motor bearing static factor"
+      ]
+    }
+  ],
+  "limits": [
+    "Ideal radial supports; deck/base/sidewall stiffness and joints are not verified.",
+    "Shaft shoulders, fit stress, axial load, cage/lubrication/minimum load, sealing and fatigue remain open.",
+    "24/120 pulleys are proposed custom envelopes; no rated belt/teeth/hub design is established.",
+    "The R2 CAD and simulated R2 loads are in r2_package.md and r2_candidate.md; controller calibration is unchanged."
+  ]
+}

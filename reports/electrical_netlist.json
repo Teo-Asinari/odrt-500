@@ -1,0 +1,418 @@
+{
+  "fingerprint": "655dca75b6c170eddf0d6d1e18c7232ad8decc4b1f1d1f70a045e8f26aaceb3c",
+  "fidelity": "functional semantic bundles; unqualified",
+  "nodes": {
+    "inlet": {
+      "description": "Mains inlet, strain relief and protective earth terminal",
+      "selection": "unselected",
+      "ports": {
+        "line": "mains",
+        "neutral": "mains",
+        "earth": "pe"
+      }
+    },
+    "input_protection": {
+      "description": "Mains fuse, two-pole switch and EMI/surge filter",
+      "selection": "unselected",
+      "ports": {
+        "line_in": "mains",
+        "neutral_in": "mains",
+        "line_out": "mains",
+        "neutral_out": "mains",
+        "chassis": "pe"
+      }
+    },
+    "supply": {
+      "description": "Open-frame isolated AC/DC source; forced-air rating is conditional",
+      "selection": "epp500_48",
+      "ports": {
+        "line": "mains",
+        "neutral": "mains",
+        "frame": "pe",
+        "positive": "dc48",
+        "return": "dc48"
+      }
+    },
+    "enclosure": {
+      "description": "Bonded conductive chassis, structural base and accessible metal",
+      "selection": "custom; bond joints and continuity unqualified",
+      "ports": {
+        "earth": "pe"
+      }
+    },
+    "source_block": {
+      "description": "Source branch DC fuse and reverse-current blocking stage",
+      "selection": "unselected",
+      "ports": {
+        "source": "dc48",
+        "bus": "dc48"
+      }
+    },
+    "capacitor": {
+      "description": "Series capacitor bank; current reference 22s350F, compact alternative under study",
+      "selection": "bcap0350_e270_t11",
+      "ports": {
+        "positive": "dc48",
+        "return": "dc48",
+        "cell_taps": "balance"
+      }
+    },
+    "bank_protection": {
+      "description": "Bank fuse, precharge path and bidirectional main disconnect",
+      "selection": "unselected; interrupt rating and welded-switch detection unresolved",
+      "ports": {
+        "bank": "dc48",
+        "bus": "dc48",
+        "command": "signal",
+        "status": "signal"
+      }
+    },
+    "balancing": {
+      "description": "Per-cell balancing, voltage monitoring and bank temperature sensing",
+      "selection": "unselected",
+      "ports": {
+        "cell_taps": "balance",
+        "logic_power": "logic",
+        "status": "signal"
+      }
+    },
+    "bus_storage": {
+      "description": "3mF DC-link capacitance and permanent bleed; ratings/layout unresolved",
+      "selection": "unselected",
+      "ports": {
+        "positive": "dc48",
+        "return": "dc48"
+      }
+    },
+    "aux_power": {
+      "description": "Fused DC/DC logic rails and fan supply",
+      "selection": "unselected; rail voltages and isolation boundaries unresolved",
+      "ports": {
+        "positive": "dc48",
+        "return": "dc48",
+        "logic": "logic",
+        "fan_power": "auxiliary",
+        "guide_power": "auxiliary"
+      }
+    },
+    "drive": {
+      "description": "Motor inverter and braking chopper; exact revision must be selected",
+      "selection": "odrive_s1",
+      "ports": {
+        "positive": "dc48",
+        "return": "dc48",
+        "phases": "phase",
+        "encoder": "encoder",
+        "command": "signal",
+        "inhibit": "signal",
+        "dump": "brake"
+      }
+    },
+    "dump": {
+      "description": "Braking resistor assembly, thermal cutoff and temperature monitor",
+      "selection": "unselected; model uses 1 ohm, pulse energy and chopper duty unqualified",
+      "ports": {
+        "chopper": "brake",
+        "return": "dc48",
+        "temperature": "signal"
+      }
+    },
+    "phase_transfer": {
+      "description": "Break-before-make transfer between inverter and passive phase brake",
+      "selection": "unselected; fail states, timing, arcing and interlock must be engineered",
+      "ports": {
+        "inverter": "phase",
+        "motor": "phase",
+        "brake": "phase",
+        "command": "signal",
+        "feedback": "signal"
+      }
+    },
+    "motor": {
+      "description": "Frameless motor; external rotor support, encoder and winding sensor required",
+      "selection": "ro100_lite",
+      "ports": {
+        "phases": "phase",
+        "temperature": "signal"
+      }
+    },
+    "phase_brake": {
+      "description": "Passive phase-brake resistor network; DC-equivalent simulation is not a circuit rating",
+      "selection": "unselected",
+      "ports": {
+        "phases": "phase",
+        "temperature": "signal"
+      }
+    },
+    "encoder": {
+      "description": "Rotor position sensor; protocol, resolution and mechanical coupling unresolved",
+      "selection": "unselected",
+      "ports": {
+        "logic_power": "logic",
+        "position": "encoder",
+        "health": "signal"
+      }
+    },
+    "force_sensor": {
+      "description": "Cable-force bridge, overload path and independent plausibility channel",
+      "selection": "unselected",
+      "ports": {
+        "logic_power": "logic",
+        "force": "signal",
+        "plausibility": "signal"
+      }
+    },
+    "controller": {
+      "description": "Application controller, force ADC and drive communications",
+      "selection": "unselected",
+      "ports": {
+        "logic_power": "logic",
+        "drive": "signal",
+        "force": "signal",
+        "peer": "signal",
+        "supervisor": "signal",
+        "guide": "signal"
+      }
+    },
+    "supervisor": {
+      "description": "Independent watchdog and fault supervisor; no safety integrity level claimed",
+      "selection": "unselected",
+      "ports": {
+        "logic_power": "logic",
+        "app": "signal",
+        "force_check": "signal",
+        "encoder_health": "signal",
+        "temperatures": "signal",
+        "bank": "signal",
+        "stop": "signal",
+        "mount": "signal",
+        "drive_inhibit": "signal",
+        "transfer": "signal",
+        "transfer_feedback": "signal",
+        "bank_command": "signal",
+        "bank_status": "signal",
+        "fan": "signal",
+        "guide_health": "signal",
+        "guide_inhibit": "signal"
+      }
+    },
+    "guide_actuator": {
+      "description": "Synchronized cable-guide actuator with position/end-stop monitoring and local inhibit",
+      "selection": "unselected; screw geometry is a concept and actuator/feedback are not placed",
+      "ports": {
+        "power": "auxiliary",
+        "command": "signal",
+        "health": "signal",
+        "inhibit": "signal"
+      }
+    },
+    "stop": {
+      "description": "Local stop actuator and hardware stop path; contacts and reset policy unresolved",
+      "selection": "unselected",
+      "ports": {
+        "contacts": "signal"
+      }
+    },
+    "mount": {
+      "description": "Mount retention and board-mode sensing",
+      "selection": "unselected",
+      "ports": {
+        "state": "signal"
+      }
+    },
+    "peer": {
+      "description": "Isolated inter-unit communications and peer-stop transport",
+      "selection": "unselected; isolation, protocol and fault latency unresolved",
+      "ports": {
+        "local": "signal",
+        "external": "peer_external"
+      }
+    },
+    "peer_connector": {
+      "description": "External peer connector and shield termination",
+      "selection": "unselected",
+      "ports": {
+        "data": "peer_external",
+        "shield": "pe"
+      }
+    },
+    "fan": {
+      "description": "Fan, ducting and airflow feedback; actual supply airflow must be demonstrated",
+      "selection": "unselected",
+      "ports": {
+        "power": "auxiliary",
+        "tach": "signal"
+      }
+    }
+  },
+  "nets": {
+    "mains_line": [
+      "inlet.line",
+      "input_protection.line_in"
+    ],
+    "mains_neutral": [
+      "inlet.neutral",
+      "input_protection.neutral_in"
+    ],
+    "filtered_line": [
+      "input_protection.line_out",
+      "supply.line"
+    ],
+    "filtered_neutral": [
+      "input_protection.neutral_out",
+      "supply.neutral"
+    ],
+    "protective_earth": [
+      "inlet.earth",
+      "input_protection.chassis",
+      "supply.frame",
+      "enclosure.earth",
+      "peer_connector.shield"
+    ],
+    "source_positive": [
+      "supply.positive",
+      "source_block.source"
+    ],
+    "bank_positive": [
+      "capacitor.positive",
+      "bank_protection.bank"
+    ],
+    "bus_positive": [
+      "source_block.bus",
+      "bank_protection.bus",
+      "bus_storage.positive",
+      "aux_power.positive",
+      "drive.positive"
+    ],
+    "bus_return": [
+      "supply.return",
+      "capacitor.return",
+      "bus_storage.return",
+      "aux_power.return",
+      "drive.return",
+      "dump.return"
+    ],
+    "cell_tap_bundle": [
+      "capacitor.cell_taps",
+      "balancing.cell_taps"
+    ],
+    "logic_rails_bundle": [
+      "aux_power.logic",
+      "balancing.logic_power",
+      "encoder.logic_power",
+      "force_sensor.logic_power",
+      "controller.logic_power",
+      "supervisor.logic_power"
+    ],
+    "inverter_phases": [
+      "drive.phases",
+      "phase_transfer.inverter"
+    ],
+    "motor_phases": [
+      "phase_transfer.motor",
+      "motor.phases"
+    ],
+    "brake_phases": [
+      "phase_transfer.brake",
+      "phase_brake.phases"
+    ],
+    "dump_chopper": [
+      "drive.dump",
+      "dump.chopper"
+    ],
+    "encoder_bundle": [
+      "encoder.position",
+      "drive.encoder"
+    ],
+    "encoder_health": [
+      "encoder.health",
+      "supervisor.encoder_health"
+    ],
+    "force_measurement": [
+      "force_sensor.force",
+      "controller.force"
+    ],
+    "force_plausibility": [
+      "force_sensor.plausibility",
+      "supervisor.force_check"
+    ],
+    "drive_command": [
+      "controller.drive",
+      "drive.command"
+    ],
+    "drive_inhibit": [
+      "supervisor.drive_inhibit",
+      "drive.inhibit"
+    ],
+    "watchdog_bundle": [
+      "controller.supervisor",
+      "supervisor.app"
+    ],
+    "temperature_bundle": [
+      "motor.temperature",
+      "dump.temperature",
+      "phase_brake.temperature",
+      "supervisor.temperatures"
+    ],
+    "bank_monitor": [
+      "balancing.status",
+      "supervisor.bank"
+    ],
+    "bank_command": [
+      "supervisor.bank_command",
+      "bank_protection.command"
+    ],
+    "bank_feedback": [
+      "bank_protection.status",
+      "supervisor.bank_status"
+    ],
+    "phase_transfer_command": [
+      "supervisor.transfer",
+      "phase_transfer.command"
+    ],
+    "phase_transfer_feedback": [
+      "phase_transfer.feedback",
+      "supervisor.transfer_feedback"
+    ],
+    "stop_contacts": [
+      "stop.contacts",
+      "supervisor.stop"
+    ],
+    "mount_state": [
+      "mount.state",
+      "supervisor.mount"
+    ],
+    "peer_local": [
+      "controller.peer",
+      "peer.local"
+    ],
+    "peer_external": [
+      "peer.external",
+      "peer_connector.data"
+    ],
+    "fan_supply": [
+      "aux_power.fan_power",
+      "fan.power"
+    ],
+    "fan_feedback": [
+      "fan.tach",
+      "supervisor.fan"
+    ],
+    "guide_supply": [
+      "aux_power.guide_power",
+      "guide_actuator.power"
+    ],
+    "guide_command": [
+      "controller.guide",
+      "guide_actuator.command"
+    ],
+    "guide_feedback": [
+      "guide_actuator.health",
+      "supervisor.guide_health"
+    ],
+    "guide_inhibit": [
+      "supervisor.guide_inhibit",
+      "guide_actuator.inhibit"
+    ]
+  }
+}

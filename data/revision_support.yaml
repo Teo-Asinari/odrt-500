@@ -1,0 +1,60 @@
+# Source-backed candidates for the next mechanical layout. Not adopted hardware.
+motor_bearing:
+  part: SKF NJ 202 ECP
+  source: https://cdn.skfmediahub.skf.com/api/public/0901d196802809de/pdf_preview_medium/0901d196802809de_pdf_preview_medium.pdf
+  accessed: '2026-11-02'
+  dimensions_mm: [15, 35, 11]
+  dynamic_n: 12500
+  static_n: 10200
+  mass_kg: 0.048
+  notes: Opposed NJ pair is proposed; axial location, clearance, preload, minimum load, lubrication and sealing need manufacturer review.
+drum_floating:
+  part: NSK NU205EM
+  source: https://www.nsk.com/engineering/products/bearings/roller-bearings/cylindrical-roller-bearings/single-row-cylindrical-roller-bearings/nu205em-crb-sr.html
+  accessed: '2026-11-02'
+  dimensions_mm: [25, 52, 15]
+  dynamic_n: 36000
+  static_n: 27700
+  mass_kg: 0.153
+drum_locating:
+  part: NSK NUP205EM
+  source: https://www.nsk.com/au-en/engineering/nup205em-crb-sr.html
+  accessed: '2026-11-02'
+  dimensions_mm: [25, 52, 15]
+  dynamic_n: 36000
+  static_n: 27700
+  mass_kg: 0.162
+cell:
+  part: Eaton TV1860-3R0107-R
+  source: https://www.eaton.com/us/en-us/skuPage.TV1860-3R0107-R.html
+  datasheet: https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-tv-supercapacitors-cylindrical-cells-data-sheet.pdf
+  accessed: '2026-11-02'
+  values: {capacitance_f: 100, voltage_rated_v: 3, esr_initial_max_ohm: 0.011, capacitance_initial_min_fraction: 0.9, capacitance_end_life_fraction: 0.7, esr_end_life_multiplier: 2, diameter_mm: 18.5, length_mm: 60.5, mass_kg: 0.020, thermal_resistance_k_per_w: 10, current_rms_15k_rise_a: 11.7, case_max_c: 65}
+  assumptions: {thermal_capacity_j_per_k: 20}
+  availability: Manufacturer listed; supplier availability not yet rechecked directly
+  price_usd: null
+revision_proposal:
+  ratio: 5
+  pinion_teeth: 24
+  wheel_teeth: 120
+  pitch_mm: 3
+  pulley_face_mm: 15
+  motor_bearing_centres_mm: [41.5, 52.5]
+  drum_bearing_centres_mm: [33.5, 48.5]
+  belt_centre_z_mm: 67.5
+  rope_height_range_mm: [28.5, 53.5]
+  shaft_support_z_mm: [5, 77]
+  frame_deck_z_mm: [75.5, 78.5]
+  cells_series: 20
+  supply_setpoint_v: 52
+  motor_current_limit_a: 50
+  rope_force_comparison_n: 3000
+  motor_torque_comparison_nm: 18
+  pretension_per_span_n: [700, 850, 1000, 1150]
+  notes:
+    - This is a revision proposal; the R1 CAD and candidate remain unchanged and rejected.
+    - Force and torque comparisons deliberately exceed R1 observed maxima. Actual R2 load histories must replace them before adoption.
+    - Shaft support at both ends requires an engineered base flange and deck/sidewall load path, not the old slender posts alone.
+    - Supply moves beside the mechanism; guide/exit turn toward the side wall to avoid crossing the supply volume.
+    - Deck and sidewall compliance, positive retention, bolts, pinion profile/belt rating, sealing and fatigue remain unqualified.
+    - Twenty 3 V cells provide 60 V pack rating with 52 V nominal upstream storage. Individual-cell balance/protection is still required.

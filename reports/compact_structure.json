@@ -1,0 +1,327 @@
+{
+  "fingerprint": "92013ab8502f606a07ef9f41520ed732e7b61e4326cf74f975dbec5590ba1f96",
+  "candidate_fingerprint": "ac40ec6c176d00be8d17ed7867e816d3bf9330977cff8f86f64f86a1616d3b47",
+  "assessment": "REVISE",
+  "load_envelope": {
+    "observed_peak_n": 2374.571493586608,
+    "peak_bank": "compact_nominal",
+    "peak_case": "single_fast_full",
+    "stall_force_screen_n": 2104.6153846153843,
+    "selected_rope_force_n": 2374.571493586608,
+    "selected_motor_torque_nm": 15.171538794328056,
+    "observed_max_current_a": 75.85769397164027,
+    "belt_tension_difference_n": 1588.759827330452
+  },
+  "geometry": {
+    "motor_bearing_centres_mm": [
+      63.99999999999999,
+      72.0
+    ],
+    "drum_bearing_centres_mm": [
+      51.99999999999999,
+      70.0
+    ],
+    "belt_height_mm": 86.5,
+    "rope_height_range_mm": [
+      48.5,
+      73.5
+    ],
+    "motor_spindle_diameter_mm": 10.0,
+    "drum_shaft_diameter_mm": 25.0
+  },
+  "assumptions": {
+    "steel_allowable_mpa": 175,
+    "aluminium_allowable_mpa": 120,
+    "bearing_static_factor_min": 2,
+    "belt_pretension_per_span_n": [
+      300,
+      700,
+      1000
+    ],
+    "material_basis": "Generic preliminary allowable stresses, not a selected alloy or certified material condition. Bearing factor and belt pretensions are proposed comparison values, not vendor recommendations.",
+    "bridge_basis": "Full-width beam surrogate under a central couple; each half carries half the applied moment. Two-dimensional plate action joints bosses and local contact require FEA and review."
+  },
+  "motor_bearing_source": {
+    "source": "https://www.nsk.com/engineering/products/bearings/ball-bearings/deep-groove-ball-bearings/single-row-deep-groove-ball-bearings/6000-apn.html",
+    "accessed": "2026-11-02",
+    "dynamic_n": 5050,
+    "static_n": 1970,
+    "mass_kg": 0.018,
+    "notes": "Open NSK 6000. Static radial comparison only; seals lubrication fits axial load and life unqualified."
+  },
+  "cases": [
+    {
+      "pretension_per_span_n": 300,
+      "rope_height_mm": 48.5,
+      "nominal_slack_side_positive": false,
+      "belt_tension_difference_n": 1588.759827330452,
+      "belt_total_tension_n": 1588.759827330452,
+      "motor_bearing_reactions_n": [
+        [
+          2619.70103253848,
+          -1195.5832202051988
+        ],
+        [
+          -4065.0533263528146,
+          1855.215341697723
+        ]
+      ],
+      "drum_bearing_reactions_n": [
+        [
+          -4161.199997780476,
+          604.6627780348136
+        ],
+        [
+          3231.980798008203,
+          -1264.2948995273377
+        ]
+      ],
+      "motor_bearing_peak_n": 4468.387014366894,
+      "drum_bearing_peak_n": 4204.902198228755,
+      "motor_bearing_static_factor": 0.44087497203487436,
+      "drum_bearing_static_factor": 1.3912333091752325,
+      "motor_spindle_stress_mpa": 270.1353925362629,
+      "drum_shaft_stress_mpa": 64.7070080928874,
+      "motor_bridge_surrogate_stress_mpa": 164.0567213004271,
+      "drum_bridge_surrogate_stress_mpa": 610.200659360963,
+      "minimum_drum_bridge_surrogate_thickness_mm": 4.509991350180039,
+      "max_force_residual_n": 2.5421149729252077e-13,
+      "max_moment_residual_nmm": 0.0,
+      "failed_checks": [
+        "nominal belt preload loses slack-side tension",
+        "motor spindle equivalent stress",
+        "motor bridge beam surrogate",
+        "drum bridge beam surrogate",
+        "motor bearing static factor",
+        "drum bearing static factor"
+      ]
+    },
+    {
+      "pretension_per_span_n": 300,
+      "rope_height_mm": 73.5,
+      "nominal_slack_side_positive": false,
+      "belt_tension_difference_n": 1588.759827330452,
+      "belt_total_tension_n": 1588.759827330452,
+      "motor_bearing_reactions_n": [
+        [
+          2619.70103253848,
+          -1195.5832202051988
+        ],
+        [
+          -4065.0533263528146,
+          1855.215341697723
+        ]
+      ],
+      "drum_bearing_reactions_n": [
+        [
+          -863.184034465744,
+          604.6627780348136
+        ],
+        [
+          -66.03516530652912,
+          -1264.2948995273377
+        ]
+      ],
+      "motor_bearing_peak_n": 4468.387014366894,
+      "drum_bearing_peak_n": 1266.0182605428336,
+      "motor_bearing_static_factor": 0.44087497203487436,
+      "drum_bearing_static_factor": 4.620786431225472,
+      "motor_spindle_stress_mpa": 270.1353925362629,
+      "drum_shaft_stress_mpa": 26.198879880230912,
+      "motor_bridge_surrogate_stress_mpa": 164.0567213004271,
+      "drum_bridge_surrogate_stress_mpa": 247.06093278933128,
+      "minimum_drum_bridge_surrogate_thickness_mm": 2.8697324659819845,
+      "max_force_residual_n": 2.5421149729252077e-13,
+      "max_moment_residual_nmm": 0.0,
+      "failed_checks": [
+        "nominal belt preload loses slack-side tension",
+        "motor spindle equivalent stress",
+        "motor bridge beam surrogate",
+        "drum bridge beam surrogate",
+        "motor bearing static factor"
+      ]
+    },
+    {
+      "pretension_per_span_n": 700,
+      "rope_height_mm": 48.5,
+      "nominal_slack_side_positive": false,
+      "belt_tension_difference_n": 1588.759827330452,
+      "belt_total_tension_n": 1588.759827330452,
+      "motor_bearing_reactions_n": [
+        [
+          2619.70103253848,
+          -1195.5832202051988
+        ],
+        [
+          -4065.0533263528146,
+          1855.215341697723
+        ]
+      ],
+      "drum_bearing_reactions_n": [
+        [
+          -4161.199997780476,
+          604.6627780348136
+        ],
+        [
+          3231.980798008203,
+          -1264.2948995273377
+        ]
+      ],
+      "motor_bearing_peak_n": 4468.387014366894,
+      "drum_bearing_peak_n": 4204.902198228755,
+      "motor_bearing_static_factor": 0.44087497203487436,
+      "drum_bearing_static_factor": 1.3912333091752325,
+      "motor_spindle_stress_mpa": 270.1353925362629,
+      "drum_shaft_stress_mpa": 64.7070080928874,
+      "motor_bridge_surrogate_stress_mpa": 164.0567213004271,
+      "drum_bridge_surrogate_stress_mpa": 610.200659360963,
+      "minimum_drum_bridge_surrogate_thickness_mm": 4.509991350180039,
+      "max_force_residual_n": 2.5421149729252077e-13,
+      "max_moment_residual_nmm": 0.0,
+      "failed_checks": [
+        "nominal belt preload loses slack-side tension",
+        "motor spindle equivalent stress",
+        "motor bridge beam surrogate",
+        "drum bridge beam surrogate",
+        "motor bearing static factor",
+        "drum bearing static factor"
+      ]
+    },
+    {
+      "pretension_per_span_n": 700,
+      "rope_height_mm": 73.5,
+      "nominal_slack_side_positive": false,
+      "belt_tension_difference_n": 1588.759827330452,
+      "belt_total_tension_n": 1588.759827330452,
+      "motor_bearing_reactions_n": [
+        [
+          2619.70103253848,
+          -1195.5832202051988
+        ],
+        [
+          -4065.0533263528146,
+          1855.215341697723
+        ]
+      ],
+      "drum_bearing_reactions_n": [
+        [
+          -863.184034465744,
+          604.6627780348136
+        ],
+        [
+          -66.03516530652912,
+          -1264.2948995273377
+        ]
+      ],
+      "motor_bearing_peak_n": 4468.387014366894,
+      "drum_bearing_peak_n": 1266.0182605428336,
+      "motor_bearing_static_factor": 0.44087497203487436,
+      "drum_bearing_static_factor": 4.620786431225472,
+      "motor_spindle_stress_mpa": 270.1353925362629,
+      "drum_shaft_stress_mpa": 26.198879880230912,
+      "motor_bridge_surrogate_stress_mpa": 164.0567213004271,
+      "drum_bridge_surrogate_stress_mpa": 247.06093278933128,
+      "minimum_drum_bridge_surrogate_thickness_mm": 2.8697324659819845,
+      "max_force_residual_n": 2.5421149729252077e-13,
+      "max_moment_residual_nmm": 0.0,
+      "failed_checks": [
+        "nominal belt preload loses slack-side tension",
+        "motor spindle equivalent stress",
+        "motor bridge beam surrogate",
+        "drum bridge beam surrogate",
+        "motor bearing static factor"
+      ]
+    },
+    {
+      "pretension_per_span_n": 1000,
+      "rope_height_mm": 48.5,
+      "nominal_slack_side_positive": true,
+      "belt_tension_difference_n": 1588.759827330452,
+      "belt_total_tension_n": 2000,
+      "motor_bearing_reactions_n": [
+        [
+          3297.793646935659,
+          -1195.5832202051988
+        ],
+        [
+          -5117.2660038656795,
+          1855.215341697723
+        ]
+      ],
+      "drum_bearing_reactions_n": [
+        [
+          -4504.143388969855,
+          604.6627780348136
+        ],
+        [
+          3949.044252313267,
+          -1264.2948995273377
+        ]
+      ],
+      "motor_bearing_peak_n": 5443.182462345904,
+      "drum_bearing_peak_n": 4544.548904296402,
+      "motor_bearing_static_factor": 0.36192062522757484,
+      "drum_bearing_static_factor": 1.2872564743377344,
+      "motor_spindle_stress_mpa": 315.62255886884384,
+      "drum_shaft_stress_mpa": 62.39486206613857,
+      "motor_bridge_surrogate_stress_mpa": 199.84631262719273,
+      "drum_bridge_surrogate_stress_mpa": 588.3966373292899,
+      "minimum_drum_bridge_surrogate_thickness_mm": 4.428681659852022,
+      "max_force_residual_n": 1.1368683772161603e-13,
+      "max_moment_residual_nmm": 0.0,
+      "failed_checks": [
+        "motor spindle equivalent stress",
+        "motor bridge beam surrogate",
+        "drum bridge beam surrogate",
+        "motor bearing static factor",
+        "drum bearing static factor"
+      ]
+    },
+    {
+      "pretension_per_span_n": 1000,
+      "rope_height_mm": 73.5,
+      "nominal_slack_side_positive": true,
+      "belt_tension_difference_n": 1588.759827330452,
+      "belt_total_tension_n": 2000,
+      "motor_bearing_reactions_n": [
+        [
+          3297.793646935659,
+          -1195.5832202051988
+        ],
+        [
+          -5117.2660038656795,
+          1855.215341697723
+        ]
+      ],
+      "drum_bearing_reactions_n": [
+        [
+          -1206.1274256551224,
+          604.6627780348136
+        ],
+        [
+          651.0282889985345,
+          -1264.2948995273377
+        ]
+      ],
+      "motor_bearing_peak_n": 5443.182462345904,
+      "drum_bearing_peak_n": 1422.0687135462902,
+      "motor_bearing_static_factor": 0.36192062522757484,
+      "drum_bearing_static_factor": 4.113725268177468,
+      "motor_spindle_stress_mpa": 315.62255886884384,
+      "drum_shaft_stress_mpa": 23.913009277151367,
+      "motor_bridge_surrogate_stress_mpa": 199.84631262719273,
+      "drum_bridge_surrogate_stress_mpa": 225.50469351443422,
+      "minimum_drum_bridge_surrogate_thickness_mm": 2.741682533983066,
+      "max_force_residual_n": 1.1368683772161603e-13,
+      "max_moment_residual_nmm": 0.0,
+      "failed_checks": [
+        "motor spindle equivalent stress",
+        "motor bridge beam surrogate",
+        "drum bridge beam surrogate",
+        "motor bearing static factor"
+      ]
+    }
+  ],
+  "load_scope": "Uncorrelated maxima and winding-height corners; not a correlated transient structural solution",
+  "qualified": false
+}

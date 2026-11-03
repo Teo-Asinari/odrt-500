@@ -46,6 +46,8 @@ class Inputs:
 
 def load_inputs(root: Path = Path(".")) -> Inputs:
     root = Path(root)
+    from odrt.engineering import load_engineering
+    load_engineering(root)
     (req_path, asm_path, base_path, scen_path, arch_path, comp_path, study_path,
      thermal_path, dyn_path, struct_path, haz_path, bom_path, plat_path, _motor_cfg, _family, _el_cfg, _el, _sw, _modular) = (
         root / p for p in INPUT_FILES)
@@ -61,6 +63,8 @@ def load_inputs(root: Path = Path(".")) -> Inputs:
     opts = options(components, study, architectures)
     from odrt.dynamics import load_dynamics
     dynamics = load_dynamics(dyn_path, opts, scenarios)
+    from odrt.coupled import load_coupled
+    load_coupled(root, scenarios)
     from odrt.structural import load_structure
     structure = load_structure(struct_path, opts)
     from odrt.hazards import load_hazards
@@ -79,6 +83,7 @@ def thermal_models(inputs: Inputs) -> dict:
 def input_hash(root: Path) -> str:
     """SHA-256 over repo-relative input paths and contents, independent of checkout location."""
     digest = hashlib.sha256()
-    for rel in INPUT_FILES:
+    from odrt.engineering import FILES
+    for rel in INPUT_FILES + FILES + ("configs/coupled.yaml",):
         digest.update(rel.encode() + b"\0" + (Path(root) / rel).read_bytes() + b"\0")
     return digest.hexdigest()

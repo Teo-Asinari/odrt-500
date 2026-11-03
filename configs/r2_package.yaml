@@ -1,0 +1,56 @@
+# R2 integration proposal: 5:1 belt, roller bearings, two-ended drum shaft,
+# supply beside the mechanism, 20-cell TV bank, ODrive Pro + Regen Clamp.
+# Bearing/belt/rope heights come from data/revision_support.yaml so the support
+# screen and the CAD cannot silently disagree. Space claims are not designs.
+envelope_mm: [323, 139, 100]
+wall_mm: 2
+motor_axis_xy_mm: [60, 69.5]
+drum_axis_xy_mm: [175, 69.5]
+motor_z_mm: [3, 31]            # stator/rotor envelope on a 1 mm pedestal
+rotor_adapter_z_mm: [31, 35]
+drum_flange_thickness_mm: 2
+drum_flange_radius_mm: 50
+base_boss_radius_mm: 16
+spacer_radius_mm: 16
+hub_bore_radius_mm: 17
+motor_bridge:                  # side-wall-attached plate carrying the motor bearing housing
+  x_mm: [36, 84]
+  z_mm: [56, 59]
+  housing_radius_mm: 21.5
+deck:                          # side-wall-attached deck: drum shaft top support and electronics tray
+  x_mm: [2, 235]
+  z_mm: [75.5, 78.5]
+rope_exit:                     # side exit toward +Y; rope centre leaves the pack tangentially
+  x_mm: [204, 216]
+  slot_x_mm: [203, 217]
+guide:
+  carriage_x_mm: [204, 224]
+  carriage_y_mm: [116, 128]
+  carriage_height_mm: 6
+  screw_xy_mm: [227, 122]
+  screw_z_mm: [22, 74]
+routing_length_m: 0.062
+routing_basis: Takeoff tangent at about 37 mm pack radius to guide (~50 mm) plus guide to +Y body exit (~12 mm). Guide contact curvature and exit motion unresolved.
+supply_corner_mm: [239, 5, 3]  # EPP-500-54 lying flat in the end bay
+cell_groups:                   # 20 cells, axis direction, first-cell centre, pitch, counts
+  - {name: under_drum, axis: x, length_start_mm: [116.5, 177.5], centres_yz_mm: [[107.5, 12.25], [126.5, 12.25]]}
+  - {name: end_bay, axis: y, length_start_mm: [5, 67], centres_xz_mm: [[245.25, 53.25], [264.25, 53.25], [283.25, 53.25], [245.25, 72.25], [264.25, 72.25], [283.25, 72.25]]}
+  - {name: over_motor, axis: y, length_start_mm: [4, 66], centres_xz_mm: [[81.25, 87.75], [100.25, 87.75]]}
+electrical_space_claims:
+  - {name: drive_board_pro, size_mm: [64, 51, 17.5], corner_mm: [4, 4, 78.5]}
+  - {name: regen_clamp_board, size_mm: [66, 50, 15.3], corner_mm: [4, 57, 78.5]}
+  - {name: dump_resistor_claim, size_mm: [120, 20, 15], corner_mm: [117, 4, 3]}
+  - {name: phase_brake_claim, size_mm: [120, 20, 15], corner_mm: [117, 26, 3]}
+  - {name: application_controller, size_mm: [60, 40, 12], corner_mm: [4, 4, 38]}
+  - {name: independent_supervisor, size_mm: [50, 30, 10], corner_mm: [4, 95, 38]}
+  - {name: auxiliary_power_claim, size_mm: [50, 30, 12], corner_mm: [66, 4, 38]}
+  - {name: transfer_and_bus_claim, size_mm: [50, 30, 12], corner_mm: [66, 105, 38]}
+  - {name: protection_and_balance, size_mm: [40, 100, 15], corner_mm: [236, 10, 82.5]}
+  - {name: mains_entry_and_filter, size_mm: [28, 55, 30], corner_mm: [293, 70, 45]}
+  - {name: fan_and_duct_claim, size_mm: [25, 50, 50], corner_mm: [296, 5, 45]}
+notes:
+  - The bank is split into three groups (8 + 12 wiring lengths unresolved); cell leads, balance taps and insulation are additional.
+  - Motor bridge and deck are proposed side-wall-attached plates; wall stiffness, joints and fasteners are unqualified.
+  - Electronics above the deck and in the motor bay sit on proposed trays/standoffs that are not modelled.
+  - Fan and mains-inlet openings are cut in the +X end wall; airflow path across the supply is not demonstrated.
+  - Pulleys are smooth pitch envelopes; tooth geometry, belt rating and tensioner are not designed.

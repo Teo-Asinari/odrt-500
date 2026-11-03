@@ -1,0 +1,28 @@
+# Explicit comparison assumptions; none of these are qualified component designs.
+study:
+  motors: [ro100_standard, ro100_lite]
+  ropes: [dynaone_hs_4, dynaone_hs_5, dynaone_hs_6]
+  core_radii_mm: [15, 20, 25, 35]
+  turns_per_layer: [4, 6, 9, 18]
+  layers: [1, 2, 3]
+  ratios: [1, 4, 6, 8, 10, 25]
+  routings: [unguided, guided]
+  layouts: [legacy_side_mount_5m, folded_3m]
+  dead_turns: 3
+  fleet_angle_deg: 4
+  gear_efficiency: 0.95
+  drum_inertia_kg_m2: 0.0003
+  driver_current_screen_a: 40
+  lowest_bus_for_speed_screen_v: 40
+  running_clearance_mm: 8
+  axial_bearing_pair_mm: 16
+  axial_structure_mm: 12
+  pulley_face_mm: 15
+  drum_flange_pair_mm: 10
+  flange_radius_extra_mm: 10
+  guided_lead_mm: 90
+  cable_ea_n: 500000
+  handle_mass_kg: 0.5
+  km_sensitivity: [0.34, 0.53]
+  reference_snap_lbf: 932
+  capacitor_series: 22

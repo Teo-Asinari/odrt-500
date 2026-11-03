@@ -1,0 +1,43 @@
+# Integration proposal, not manufacturing dimensions or qualified safety clearances.
+envelope_mm: [323, 139, 100]
+wall_mm: 2
+motor_axis_xy_mm: [60, 69.5]
+drum_axis_xy_mm: [175, 69.5]
+motor_bottom_mm: 8
+drum_bottom_mm: 44
+drum_flange_thickness_mm: 2
+drum_bore_radius_mm: 23.5
+drum_flange_radius_mm: 50
+pulley_bottom_mm: 79
+pulley_face_mm: 15
+belt_pitch_mm: 3
+pinion_teeth: 20
+pulley_envelope_extra_radius_mm: 1
+motor_bearing:
+  source: https://www.nsk.com/engineering/products/bearings/ball-bearings/deep-groove-ball-bearings/single-row-deep-groove-ball-bearings/6000-apn.html
+  accessed: '2026-11-02'
+  dimensions_mm: [10, 26, 8]
+drum_bearing:
+  source: https://www.nsk.com/ph-en/engineering/products/bearings/ball-bearings/deep-groove-ball-bearings/single-row-deep-groove-ball-bearings/6005-apn.html
+  accessed: '2026-11-02'
+  dimensions_mm: [25, 47, 12]
+  dynamic_n: 11100
+  static_n: 5850
+  mass_kg: 0.079
+electrical_space_claims:
+  - {name: application_controller, size_mm: [40, 60, 12], corner_mm: [14, 5, 42]}
+  - {name: independent_supervisor, size_mm: [50, 30, 10], corner_mm: [14, 95, 42]}
+  - {name: protection_and_balance, size_mm: [100, 40, 15], corner_mm: [14, 92, 55]}
+  - {name: fan_and_duct_claim, size_mm: [50, 50, 25], corner_mm: [68, 3, 42]}
+  - {name: dump_resistor_claim, size_mm: [120, 20, 15], corner_mm: [8, 4, 78]}
+  - {name: phase_brake_claim, size_mm: [120, 20, 15], corner_mm: [8, 115, 75]}
+  - {name: drive_board_claim, size_mm: [66, 50, 13], corner_mm: [239, 78, 85]}
+  - {name: mains_entry_and_filter, size_mm: [55, 28, 30], corner_mm: [184, 2, 46]}
+  - {name: auxiliary_power_claim, size_mm: [50, 30, 12], corner_mm: [14, 5, 56]}
+  - {name: transfer_and_bus_claim, size_mm: [50, 30, 12], corner_mm: [68, 95, 42]}
+notes:
+  - Bearing boundary dimensions are sourced; retention shoulders seals lubrication fits and life are unqualified.
+  - All electronics heights except the supply are unverified space claims. Functional allocations must be reconciled with actual circuit designs.
+  - Belt wheels are smooth pitch/envelope representations; teeth belt ratings tensioner and hubs need detailed design.
+  - Supply is stacked below the drum; a 1 mm partition claim is NOT an approved mains clearance or airflow allowance.
+  - Guide travel is 30 mm at 90 mm lead. Guide contact curvature friction wear and synchronization remain unresolved.

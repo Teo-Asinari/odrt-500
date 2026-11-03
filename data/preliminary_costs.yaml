@@ -1,0 +1,59 @@
+# USD planning allowances, NOT supplier quotations or manufacturing offers.
+# Each triple is prototype / 100-unit / 1000-unit procurement [low, high].
+# Includes unselected functions. Architecture changes require re-estimation.
+basis: Analyst planning ranges, 2026-11-02; no supplier volume discounts verified. Custom parts depend on unresolved geometry and process.
+currency: USD
+listing_context:
+  source: https://store.cubemars.com/products/ro100
+  accessed: '2026-11-02'
+  observed_usd: 156.90
+  note: Page lists Lite and Standard styles and sold-out text; exact variant price and stock not confirmed. Context only, not a quote in totals.
+items:
+  - {id: motor, scope: unit, covers: [motor], description: Motor set excluding separate rotor support, ranges: [[160, 220], [140, 200], [110, 180]]}
+  - {id: drive, scope: unit, covers: [drive], description: Inverter with chopper; exact revision unselected, ranges: [[150, 250], [120, 220], [90, 180]]}
+  - {id: supply, scope: unit, covers: [supply], description: Internal mains supply, ranges: [[80, 150], [65, 120], [50, 100]]}
+  - {id: storage, scope: unit, covers: [capacitor], description: Complete 22-cell bank allowance spanning reference and compact candidates, ranges: [[100, 350], [75, 280], [55, 220]]}
+  - {id: inlet, scope: unit, covers: [inlet], description: Mains inlet cord and strain relief, ranges: [[12, 30], [8, 22], [6, 18]]}
+  - {id: mains_protection, scope: unit, covers: [input_protection], description: Fuse two-pole switch and filter/surge network, ranges: [[20, 60], [12, 45], [8, 30]]}
+  - {id: source_block, scope: unit, covers: [source_block], description: Reverse blocking and branch fuse, ranges: [[12, 45], [8, 30], [5, 20]]}
+  - {id: bank_protection, scope: unit, covers: [bank_protection], description: Bank fuse precharge disconnect and feedback, ranges: [[35, 100], [25, 80], [18, 60]]}
+  - {id: balancing, scope: unit, covers: [balancing], description: Cell balance monitor and temperature sensing, ranges: [[35, 100], [20, 70], [12, 50]]}
+  - {id: bus_storage, scope: unit, covers: [bus_storage], description: DC-link capacitors and bleed, ranges: [[12, 35], [8, 25], [5, 18]]}
+  - {id: auxiliary, scope: unit, covers: [aux_power], description: Fused auxiliary converters and rails, ranges: [[15, 45], [10, 30], [6, 22]]}
+  - {id: dump, scope: unit, covers: [dump], description: Pulse resistor cutoff mounting and sensing, ranges: [[25, 85], [18, 65], [12, 45]]}
+  - {id: phase_transfer, scope: unit, covers: [phase_transfer], description: Interlocked phase transfer hardware and feedback, ranges: [[40, 140], [30, 110], [20, 80]]}
+  - {id: phase_brake, scope: unit, covers: [phase_brake], description: Passive braking network and thermal sensing, ranges: [[20, 65], [12, 45], [8, 30]]}
+  - {id: encoder, scope: unit, covers: [encoder], description: Encoder coupling and mounting, ranges: [[25, 100], [18, 70], [12, 50]]}
+  - {id: force, scope: unit, covers: [force_sensor], description: Force bridge ADC and plausibility channel, ranges: [[50, 180], [35, 130], [25, 90]]}
+  - {id: control, scope: unit, covers: [controller], description: Application controller PCB and local UI, ranges: [[40, 140], [25, 90], [15, 60]]}
+  - {id: supervisor, scope: unit, covers: [supervisor], description: Independent supervisory hardware, ranges: [[30, 100], [18, 70], [12, 50]]}
+  - {id: stop, scope: unit, covers: [stop], description: Local stop actuator and contacts, ranges: [[15, 50], [10, 35], [7, 25]]}
+  - {id: mount_sensing, scope: unit, covers: [mount], description: Mount retention and board-mode sensing, ranges: [[10, 35], [6, 25], [4, 18]]}
+  - {id: peer, scope: unit, covers: [peer, peer_connector], description: Isolated peer interface connector and cable allowance, ranges: [[20, 65], [12, 45], [8, 30]]}
+  - {id: cooling, scope: unit, covers: [fan], description: Fan ducts thermal interface and airflow feedback, ranges: [[25, 90], [18, 65], [12, 45]]}
+  - {id: enclosure, scope: unit, covers: [enclosure], description: Enclosure base lid seals vents and earth bonds, ranges: [[150, 500], [70, 220], [35, 120]]}
+  - {id: rotor_support, scope: unit, covers: [], description: Rotor carrier bearings shaft and stator mount, ranges: [[80, 250], [40, 140], [20, 80]]}
+  - {id: transmission, scope: unit, covers: [], description: Belt pulleys hubs tensioning and guards, ranges: [[90, 300], [45, 160], [25, 90]]}
+  - {id: drum, scope: unit, covers: [], description: Drum bearings dead shaft and flange assembly, ranges: [[100, 350], [50, 180], [25, 100]]}
+  - {id: routing, scope: unit, covers: [guide_actuator], description: Guide actuator drive feedback traverse mechanism sheaves and exit assembly, ranges: [[100, 350], [50, 180], [25, 100]]}
+  - {id: rope, scope: unit, covers: [], description: Rope qualified terminations handle and end fitting, ranges: [[40, 140], [25, 90], [18, 65]]}
+  - {id: arrestor, scope: unit, covers: [], description: Mechanical travel/release energy management allowance; design unresolved, ranges: [[60, 250], [30, 150], [20, 100]]}
+  - {id: harness, scope: unit, covers: [], description: Internal wiring connectors shielding insulation clips and fasteners, ranges: [[50, 180], [30, 110], [20, 70]]}
+  - {id: unit_interface, scope: unit, covers: [], description: Structural mounting interface and independent retention, ranges: [[60, 220], [30, 120], [18, 70]]}
+  - {id: unit_packaging, scope: unit, covers: [], description: Unit packaging labels and documentation, ranges: [[15, 50], [10, 35], [7, 25]]}
+  - {id: common_board, scope: board, covers: [], description: Common board stiffeners feet two latches retention and bar accessory, ranges: [[250, 800], [130, 450], [80, 280]]}
+  - {id: wall_adapter, scope: wall, covers: [], description: One wall adapter with retention; substrate-specific installation excluded, ranges: [[80, 280], [40, 150], [25, 90]]}
+  - {id: rack_adapter, scope: rack, covers: [], description: One rack adapter clamps pads and retention, ranges: [[100, 350], [50, 180], [30, 110]]}
+  - {id: door_adapter, scope: door, covers: [], description: One door adapter allowance; no high-force capability established, ranges: [[80, 300], [40, 160], [25, 100]]}
+production:
+  assembly_calibration_test_hours: [[10, 25], [4, 10], [2, 5]]
+  labor_usd_per_hour: [35, 80]
+  yield_fraction: [0.90, 0.98]
+  factory_overhead_fraction: [0.10, 0.30]
+  warranty_fraction: [0.03, 0.10]
+  distribution_fraction_of_retail: [0.15, 0.35]
+  gross_margin_fraction_of_retail: [0.30, 0.50]
+  accessory_assembly_hours: [[2, 6], [1, 3], [0.5, 2]]
+  nre_usd: [160000, 1400000]
+  nre_basis: Unquoted allowance for engineering tooling fixtures EMC/electrical/mechanical qualification and documentation. Not an approved budget; commercial-scale engineering scope remains uncertain.
+exclusions: Taxes freight import duties site installation subscriptions financing recall liability and jurisdiction-specific certification scope beyond the NRE allowance. Any missing required function requires a new line; no blank price is counted as zero.

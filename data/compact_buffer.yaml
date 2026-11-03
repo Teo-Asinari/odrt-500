@@ -1,0 +1,24 @@
+# Alternative only: does not replace the verified coupled reference.
+part: eaton_hv1860_2r7107_r
+source: https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-hv-supercapacitors-cylindrical-cells-data-sheet.pdf
+accessed: '2026-11-02'
+availability: Not verified
+price_usd: null
+documented:
+  capacitance_f: 100
+  voltage_rated_v: 2.7
+  esr_initial_max_ohm: 0.012
+  capacitance_initial_min_fraction: 0.9
+  capacitance_end_life_fraction: 0.7
+  esr_end_life_multiplier: 2
+  diameter_max_mm: 18.5
+  length_max_mm: 60.5
+  mass_kg: 0.020
+  thermal_resistance_k_per_w: 10
+  current_rms_15k_rise_a: 11
+  case_max_c: 65
+assumptions:
+  thermal_capacity_j_per_k: 20
+  thermal_capacity_bounds_j_per_k: [10, 40]
+  thermal_capacity_basis: Unmeasured 1000 J/kg/K effective specific heat; bounds 500 to 2000. No manufacturer heat-capacity claim.
+  aging_basis: Combine minimum initial capacitance with 30 percent relative loss and doubled initial maximum ESR; screening corner, not a lifetime prediction.

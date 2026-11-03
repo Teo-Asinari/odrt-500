@@ -1,0 +1,40 @@
+# Source facts for revision studies only; original catalog/reference unchanged.
+odrive_pro:
+  source: https://docs.odriverobotics.com/v/latest/hardware/pro-datasheet.html
+  accessed: '2026-11-02'
+  facts: {voltage_max_v: 58, modulation_depth_typical: 0.99, current_free_air_25c_a: 20, current_active_cooling_25c_a: 80, current_peak_3s_a: 100, length_mm: 64, width_mm: 51, height_mm: 17.5}
+  availability: Not verified
+  price_usd: null
+epp500_54:
+  source: https://www.meanwell.com/Upload/PDF/EPP-500/EPP-500-SPEC.PDF
+  accessed: '2026-11-02'
+  facts: {nominal_v: 54, adjustment_min_v: 51, adjustment_max_v: 56, power_forced_air_w: 500, power_convection_w: 320.2, efficiency_nominal: 0.94, required_airflow_cfm: 25, length_mm: 127, width_mm: 76.2, height_mm: 40}
+  availability: Not verified
+  price_usd: null
+regen_clamp:
+  source: https://docs.odriverobotics.com/v/latest/hardware/regen-clamp-datasheet.html
+  accessed: '2026-11-02'
+  facts: {voltage_max_v: 58, forward_free_air_a: 20, forward_heatspreader_a: 40, forward_active_cooling_a: 80, brake_heatspreader_a: 40, brake_peak_3s_a: 80, activation_over_input_typ_v: 2.35, activation_over_input_max_v: 2.50, deactivation_over_input_typ_v: 0.75, deactivation_over_input_min_v: 0.5, onboard_capacitance_f: 0.0008, length_mm: 66, width_mm: 50, height_mm: 15.3}
+  availability: Not verified
+  price_usd: null
+nsk_6302:
+  source: https://www.nsk.com/in-en/engineering/products/bearings/ball-bearings/deep-groove-ball-bearings/single-row-deep-groove-ball-bearings/6302-apn.html
+  accessed: '2026-11-02'
+  facts: {bore_mm: 15, diameter_mm: 42, width_mm: 13, dynamic_n: 12600, static_n: 5450, mass_kg: 0.083}
+  availability: Not verified
+  price_usd: null
+assumptions:
+  modulation_utilization: 0.78
+  electrical_frequency_comparison_hz: 700
+  ambient_max_c_for_ratings: 40
+  input_capacitance_f: 0.003
+  output_added_capacitance_f: 0.0008
+  diode_resistance_ohm: 0.001
+  diode_offset_v: 0.010
+  notes:
+    - Modulation utilization is the retained conservative DC-equivalent model bound; published typical modulation depth is a different quantity and is not substituted for it.
+    - The 700 Hz comparison is carried as a provisional screen, not a sourced Pro frequency rating.
+    - Clamp forward drop is approximated by 10 mV plus 1 milliohm times current; not a validated nonlinear characteristic.
+    - Input capacitor is an additional proposal. Assigning all published clamp capacitance to output is an unverified allocation.
+    - Clamp switching is averaged between hysteresis endpoints; actual ripple, switching delay, frequency and peaks require separate verification.
+    - Clamp conduction loss is placed in the drive thermal node; separate board hotspot and OTP behavior are unvalidated.
