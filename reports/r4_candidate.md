@@ -1,6 +1,6 @@
 # R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1
 
-Fingerprint: `e5d3015c45bcccc720c226ec755801240a2a4024d719a25f73f4c39736b9d387`
+Fingerprint: `2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells on the drive bus (bidirectional; one-way supply and dump unchanged), EPP-500-54 at 52 V, motor current limit 50 A. Controller: see below.
 
@@ -58,8 +58,8 @@ Fingerprint: `e5d3015c45bcccc720c226ec755801240a2a4024d719a25f73f4c39736b9d387`
 | r2_aged / paired_release | 0.30 | 1125 | 42.2–54.4 | 31.8 | 0.1 | none | none |
 | r2_aged / paired_release_asymmetric | 0.30 | 1125 | 42.2–54.4 | 31.8 | 46.5 | none | none |
 | r2_aged / paired_emergency_stop | 0.30 | 1125 | 51.2–54.4 | 33.0 | 0.0 | none | none |
-| r2_aged / paired_dump_failure | 1.29 | 1248 | 45.4–57.0 | 47.4 | 76.2 | overvoltage | none |
-| r2_aged / paired_dump_failure_coordinated | 1.29 | 1125 | 51.2–57.0 | 30.5 | 0.5 | overvoltage | none |
+| r2_aged / paired_dump_failure | 1.29 | 1248 | 45.4–55.9 | 47.4 | 76.2 | overvoltage | none |
+| r2_aged / paired_dump_failure_coordinated | 1.29 | 1125 | 51.2–55.9 | 30.5 | 0.6 | overvoltage | none |
 
 ## Numerical refinement
 
@@ -95,12 +95,12 @@ Trip lowered to 30 V ([ODrive Pro](https://docs.odriverobotics.com/v/latest/hard
 
 ## Bank on the drive bus: hardware checks at the simulated envelope
 
-In R3 + C1 fast reversal the one-way clamp dumps 317 W of regeneration and the aged bank reaches the 30 V trip. With the bank on the drive bus the fast-motion study dumps 49 W and the aged fast reversal no longer trips. The supply stays one-way; the dump thresholds and trip are unchanged.
+In R3 + C1 fast reversal the one-way clamp dumps 317 W of regeneration and the aged bank reaches the 30 V trip. With the bank on the drive bus the fast-motion study dumps 49 W and the aged fast reversal no longer trips. The supply stays one-way and the dump thresholds are unchanged; the overvoltage trip is lowered to 56 V (below).
 
 | Check | Simulated | Limit / basis | Outcome |
 |---|---:|---|---|
 | Worst cell (max bank 53.68 V / 20 × 1.05) | 2.818 V | 3 V rated | pass |
-| Worst cell at the 57 V trip | 2.993 V | 3 V rated | pass |
+| Worst cell at the 56 V trip | 2.940 V | 3 V rated | pass |
 | Bank RMS current over one set, worst (r2_aged / single_fast_full) | 14.2 A | 11.7 A continuous (15 K rise) | exceeds continuous rating in r2_aged/single_fast_full, r2_fresh/single_fast_full; cells reach 29.0 °C over the 18 s set |
 | Cell temperature if that set repeated continuously (fresh / aged ESR, 25 °C) | 47 / 70 °C | 65 °C case maximum | FAIL: back-to-back sets of this case need a bank duty limit or cooling |
 | Supply peak current | 9.6 A | 9.6 A limit | one-way source assumed |
@@ -148,7 +148,7 @@ Peak rope force 1250 N and peak current 90.4 A × Kt = 18.08 Nm, combined as unc
 | 700 | 28.5 | 1 | 2.74 | 8.07 | 85.6 | 14.5 | nonpositive nominal slack tension |
 | 700 | 53.5 | -1 | 2.74 | 8.42 | 85.6 | 11.9 | nonpositive nominal slack tension |
 | 700 | 53.5 | 1 | 2.74 | 6.15 | 85.6 | 16.7 | nonpositive nominal slack tension |
-| 850 | 28.5 | -1 | 2.57 | 6.95 | 89.6 | 12.0 | none |
+| 850 | 28.5 | -1 | 2.57 | 6.95 | 89.6 | 12.1 | none |
 | 850 | 28.5 | 1 | 2.57 | 7.54 | 89.6 | 14.5 | none |
 | 850 | 53.5 | -1 | 2.57 | 7.82 | 89.6 | 12.2 | none |
 | 850 | 53.5 | 1 | 2.57 | 5.90 | 89.6 | 16.8 | none |

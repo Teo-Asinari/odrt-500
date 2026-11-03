@@ -1,8 +1,9 @@
 {
-  "fingerprint": "256137b2998b089f38eb1e95d9c4f6d015bd6ba91a29bbdbfbaf499ae7ae3b10",
-  "r4_fingerprint": "e5d3015c45bcccc720c226ec755801240a2a4024d719a25f73f4c39736b9d387",
+  "fingerprint": "b8dde555f3240ae164377463ce220a9c4ea21f6c5c4e560c2159ef6f6678033f",
+  "r4_fingerprint": "2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05",
   "assumptions": {
     "device_voltage_class_v": 80,
+    "clamp_margin_v": 2,
     "supply_current_margin": 0.8,
     "fuse_current_factor": 1.25,
     "bypass_close_delta_v": 5,
@@ -58,8 +59,8 @@
       "case": "r2_aged/single_fast_full"
     },
     "bus_max_v": {
-      "value": 56.96235375321788,
-      "case": "r2_aged/paired_dump_failure"
+      "value": 55.92220686644034,
+      "case": "r2_aged/paired_dump_failure_coordinated"
     },
     "bus_min_normal_v": {
       "value": 33.27467711696063,
@@ -68,11 +69,13 @@
   },
   "regen_clamp": {
     "voltage_max_v": 58,
-    "trip_v": 57,
-    "bus_max_v": 56.96235375321788,
-    "trip_margin_v": 1,
+    "trip_v": 56,
+    "bus_max_v": 55.92220686644034,
+    "trip_margin_v": 2,
     "voltage_pass": true,
-    "meets_device_class": false,
+    "margin_required_v": 2,
+    "margin_pass": true,
+    "bus_margin_v": 2.077793133559659,
     "forward_a": 9.615384615384615,
     "forward_rating_free_air_a": 20,
     "forward_pass": true,
@@ -85,8 +88,8 @@
     "note": "The chopper switches the full bus voltage across the 1 \u03a9 dump, so its instantaneous current is bus V / 1 \u03a9, inside the 80 A / 3 s peak. The cycle-averaged current is compared with the 40 A heatspreader rating. Whether that rating is an average or an instantaneous limit, and the chopper ripple, are verification items."
   },
   "reverse_blocking": {
-    "blocking_v_max": 4.962353753217883,
-    "blocking_at_trip_v": 5,
+    "blocking_v_max": 3.922206866440341,
+    "blocking_at_trip_v": 4,
     "forward_a": 9.615384615384615,
     "loss_w": 0.4622781065088757,
     "device_class_v": 80,
@@ -99,12 +102,12 @@
     "fuse_min_rating_a": 17.80171785257917,
     "peak_to_fuse_rating": 1.9490808223157539,
     "prospective_fault_a": {
-      "r2_fresh": 237.50000000000003,
-      "r2_aged": 123.91304347826087
+      "r2_fresh": 233.33333333333337,
+      "r2_aged": 121.73913043478262
     },
     "fault_multiple_of_rating": {
-      "r2_fresh": 13.341409068877601,
-      "r2_aged": 6.960735166370922
+      "r2_fresh": 13.107349260651679,
+      "r2_aged": 6.838617005557397
     },
     "disconnect_loss_w": 0.8112669657672601,
     "device_class_v": 80,
@@ -150,7 +153,7 @@
     "loss_bank_w": 0.52,
     "self_discharge_tau_h": 7.222222222222222,
     "worst_cell_at_max_bank_v": 2.693192266191422,
-    "worst_cell_at_trip_v": 2.8777777777777778,
+    "worst_cell_at_trip_v": 2.8222222222222224,
     "cell_monitor_trip_v": 2.95,
     "cell_rated_v": 3,
     "normal_below_monitor": true,

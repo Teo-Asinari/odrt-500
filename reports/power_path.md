@@ -1,6 +1,6 @@
 # R4 power-path sizing
 
-Fingerprint: `256137b2998b089f38eb1e95d9c4f6d015bd6ba91a29bbdbfbaf499ae7ae3b10` (R4 `e5d3015c45bc`)
+Fingerprint: `b8dde555f3240ae164377463ce220a9c4ea21f6c5c4e560c2159ef6f6678033f` (R4 `2ab987c41238`)
 
 **Functional sizing only.** Ratings are derived from the [R4 simulated envelope](r4_candidate.md) and cited data already in the repository. No part is selected; every `assumed` value in `data/power_path.yaml` is a verification item.
 
@@ -13,7 +13,7 @@ Fingerprint: `256137b2998b089f38eb1e95d9c4f6d015bd6ba91a29bbdbfbaf499ae7ae3b10` 
 | Bank maximum V | 53.68 | r2_fresh/single_stroke_full |
 | Supply peak current A | 9.62 | r2_fresh/single_hold_full |
 | Dump current, cycle-averaged maximum A | 19.76 | r2_aged/single_fast_full |
-| Bus maximum V (incl. faults) | 56.96 | r2_aged/paired_dump_failure |
+| Bus maximum V (incl. faults) | 55.92 | r2_aged/paired_dump_failure_coordinated |
 | Bus minimum V (untripped cases) | 33.27 | r2_aged/single_fast_full |
 
 ## Regen Clamp in R4 (reverse block + dump)
@@ -22,8 +22,9 @@ R4 keeps the ODrive Regen Clamp but moves the bank to its output (drive) side. I
 
 | Check | Simulated / required | Clamp rating | Outcome |
 |---|---:|---:|---|
-| Bus maximum (incl. faults) | 56.96 V | 58 V | pass |
-| Margin above the 57 V trip | 1.0 V | 80 V class rule | FAIL: 58 V part, thin margin for switching transients |
+| Bus maximum (incl. faults) | 55.92 V | 58 V | pass |
+| Clamp maximum minus the 56 V trip | 2.0 V | at least 2 V | pass |
+| Clamp maximum minus the simulated bus maximum | 2.08 V | — | pass |
 | Forward (supply) current | 9.6 A | 20 A free air | pass |
 | Brake current, cycle-averaged maximum (r2_aged/single_fast_full) | 19.8 A | 40 A heatspreader | pass |
 | Brake current, switched (bus V / dump resistance) | 54.5 A | 80 A for 3 s | pass |
@@ -32,7 +33,7 @@ The chopper switches the full bus voltage across the 1 Ω dump, so its instantan
 
 ## Reverse blocking (source block)
 
-Provided by the clamp's ideal diode, or, if the 58 V rating is rejected, a discrete 80 V-class MOSFET OR-ing stage. It blocks up to 5.0 V in the simulated envelope and 5.0 V at the trip, carries 9.6 A forward and dissipates about 0.46 W at 0.005 Ω (assumed). Source branch DC fuse at least 12.0 A. Blocks during every regenerative event, not only at faults: the bus sits at the 54.4 V dump level in normal use.
+Provided by the clamp's ideal diode, or, if the 58 V rating is rejected, a discrete 80 V-class MOSFET OR-ing stage. It blocks up to 3.9 V in the simulated envelope and 4.0 V at the trip, carries 9.6 A forward and dissipates about 0.46 W at 0.005 Ω (assumed). Source branch DC fuse at least 12.0 A. Blocks during every regenerative event, not only at faults: the bus sits at the 54.4 V dump level in normal use.
 
 ## Bank fuse and disconnect
 
@@ -40,8 +41,8 @@ Bank RMS 14.2 A and peak 34.7 A. Fuse at least 17.8 A (1.25 × RMS); the peak is
 
 | Bank | Prospective bank fault current A | Multiple of fuse rating |
 |---|---:|---:|
-| r2_fresh | 238 | 13.3 |
-| r2_aged | 124 | 7.0 |
+| r2_fresh | 233 | 13.1 |
+| r2_aged | 122 | 6.8 |
 
 Bank short-circuit current is set by cell ESR, so the aged bank gives the lowest clearing multiple. Fuse time-current behaviour at that multiple must be checked against the cell and wiring I²t.
 
@@ -63,7 +64,7 @@ Passive balancing: 260 Ω per cell (10 mA = 100 × an assumed 0.1 mA leakage spr
 | Check | Worst cell V | Limit V | Outcome |
 |---|---:|---:|---|
 | Simulated maximum bank voltage | 2.693 | 2.95 cell monitor trip | pass |
-| At the bus trip | 2.878 | 3 rated | pass |
+| At the bus trip | 2.822 | 3 rated | pass |
 
 Capacitance spread 10% below the string mean (the documented initial minimum). This replaces the earlier 1.05 worst-cell factor.
 

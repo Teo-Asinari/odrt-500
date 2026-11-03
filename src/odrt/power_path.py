@@ -55,7 +55,8 @@ def size(r4, spec, components):
     out['regen_clamp'] = {
         'voltage_max_v': clamp['voltage_max_v'], 'trip_v': trip, 'bus_max_v': env['bus_max_v'][0],
         'trip_margin_v': clamp['voltage_max_v']-trip, 'voltage_pass': env['bus_max_v'][0] < clamp['voltage_max_v'],
-        'meets_device_class': clamp['voltage_max_v'] >= d['device_voltage_class_v'],
+        'margin_required_v': d['clamp_margin_v'], 'margin_pass': clamp['voltage_max_v']-trip >= d['clamp_margin_v'],
+        'bus_margin_v': clamp['voltage_max_v']-env['bus_max_v'][0],
         'forward_a': fwd, 'forward_rating_free_air_a': clamp['forward_free_air_a'], 'forward_pass': fwd < clamp['forward_free_air_a'],
         'brake_switched_a': i_dump, 'brake_average_peak_a': env['dump_average_peak_a'][0],
         'brake_continuous_a': clamp['brake_heatspreader_a'], 'brake_peak_3s_a': clamp['brake_peak_3s_a'],
@@ -163,8 +164,8 @@ def write_report(r, path):
           'the supply, and its clamp remains the dump chopper.', '',
           '| Check | Simulated / required | Clamp rating | Outcome |', '|---|---:|---:|---|',
           f'| Bus maximum (incl. faults) | {c["bus_max_v"]:.2f} V | {c["voltage_max_v"]} V | {ok(c["voltage_pass"])} |',
-          f'| Margin above the {c["trip_v"]} V trip | {c["trip_margin_v"]:.1f} V | {a["device_voltage_class_v"]} V class rule | '
-          + ('pass' if c['meets_device_class'] else 'FAIL: 58 V part, thin margin for switching transients') + ' |',
+          f'| Clamp maximum minus the {c["trip_v"]:g} V trip | {c["trip_margin_v"]:.1f} V | at least {c["margin_required_v"]} V | {ok(c["margin_pass"])} |',
+          f'| Clamp maximum minus the simulated bus maximum | {c["bus_margin_v"]:.2f} V | — | {"pass" if c["bus_margin_v"] > 0 else "FAIL"} |',
           f'| Forward (supply) current | {c["forward_a"]:.1f} A | {c["forward_rating_free_air_a"]} A free air | {ok(c["forward_pass"])} |',
           f'| Brake current, cycle-averaged maximum ({e["dump_average_peak_a"]["case"]}) | {c["brake_average_peak_a"]:.1f} A | '
           f'{c["brake_continuous_a"]} A heatspreader | {ok(c["brake_continuous_pass"])} |',

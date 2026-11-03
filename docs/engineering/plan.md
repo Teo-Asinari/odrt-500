@@ -105,3 +105,5 @@ Next: improve the motor thermal path (stator carrier into base/walls), recover b
 ## R4 power-path checkpoint
 
 [Power-path review](power-path-review.md): `make power-path` sizes the Regen Clamp reuse (reverse block + dump), fuses, disconnect, shared pre-charge/discharge resistor, passive balancing and dump monitoring from the R4 envelope; the electrical definition and cost allowances follow R4. One check fails (clamp 58 V vs 57 V trip). Three primary sources could not be read and are recorded. Next: owner choice on trip vs 80 V parts and on start-up time; part selection with datasheets; simulate the pre-charge/discharge sequence and the dump-monitor rule; supervisor latching. The goal remains active and incomplete.
+
+Owner decision 2026-11-03: R4 overvoltage trip 56 V (was 57 V) for 2 V of Regen Clamp margin. The full R4 suite was rerun; only the aged dump-failure cases change, and all power-path checks now pass.

@@ -12,7 +12,8 @@ sources_not_read:
     source: none read
     status: No controller is named; only required ratings are derived.
 design:
-  device_voltage_class_v: 80          # >= 1.4 x the 57 V trip for switching transients; assumed rule
+  device_voltage_class_v: 80          # discrete MOSFETs/fuses: >= 1.4 x the trip for switching transients; assumed rule
+  clamp_margin_v: 2                   # Regen Clamp maximum minus the trip (owner decision 2026-11-03: 56 V trip)
   supply_current_margin: 0.8          # pre-charge holds supply current at or below 80% of its rating
   fuse_current_factor: 1.25           # fuse rating >= 1.25 x continuous (RMS) current; assumed rule
   bypass_close_delta_v: 5             # close the pre-charge bypass when bus - bank < this

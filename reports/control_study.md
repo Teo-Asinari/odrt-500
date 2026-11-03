@@ -1,6 +1,6 @@
 # Controller study (R3 machine)
 
-Fingerprint: `ce6787061e6202d5a181a8d11b113d5379a2510c24c6776810abb956f7f2b5fa`
+Fingerprint: `00bbcb5c04a4f8e438ebc5f2faf7c7423e5f96258dbc2ffc73c50adebbacda78`
 
 **Study only. The reference controller is unchanged.** Fast reversal is not current- or voltage-limited in R3; its error is control dynamics (about 13 kg of reflected inertia at the rope, weak force feedback, feedforward on the scenario's planned rather than measured acceleration). This sweep tests how far gains alone go before model changes.
 

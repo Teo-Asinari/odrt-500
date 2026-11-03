@@ -87,7 +87,9 @@ def test_r4_moves_bank_to_drive_bus_and_keeps_r3c_controller():
     from odrt.r2_candidate import load_r3c, load_r4, model_factory
     r3c, *_ = load_r3c(REPO); cfg, *_ , derived, _, _ = load_r4(REPO)
     assert cfg['power_topology'] == 'bidirectional' and 'power_topology' not in r3c
-    assert cfg['control'] == r3c['control'] and cfg['power'] == r3c['power']
+    assert cfg['control'] == r3c['control']
+    assert cfg['power']['trip_v'] == 56 < r3c['power']['trip_v'] == 57
+    assert {k: v for k, v in cfg['power'].items() if k != 'trip_v'} == {k: v for k, v in r3c['power'].items() if k != 'trip_v'}
     assert derived['r4_power']['proposal']['topology'] == 'bidirectional'
     # The bank-on-bus model is the base coupled model wrapped by the frame heat path.
     model_factory(cfg)

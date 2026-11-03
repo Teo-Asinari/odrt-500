@@ -5,12 +5,17 @@ proposal:
   basis: >-
     In R3 + C1 fast reversal the one-way clamp dumps 317 W of regeneration and the aged bank reaches
     the 30 V trip. With the bank on the drive bus the fast-motion study dumps 49 W and the aged
-    fast reversal no longer trips. The supply stays one-way; the dump thresholds and trip are unchanged.
+    fast reversal no longer trips. The supply stays one-way and the dump thresholds are unchanged; the overvoltage trip is lowered to 56 V (below).
   retained_from_r3: [5:1 belt, conducted motor heat path, 30 V undervoltage trip, controller C1]
+  # Owner decision 2026-11-03: overvoltage trip lowered from 57 V so the Regen Clamp's 58 V rating keeps 2 V of margin.
+  trip_v: 56
+  trip_basis: >-
+    Normal operation peaks at the 54.4 V dump level, so 56 V leaves about 1.6 V above normal use and 2 V
+    below the Regen Clamp's 58 V maximum. Chosen instead of replacing the clamp with 80 V-class parts.
 # Hardware functions this topology needs. Checked here from the simulated envelope where data allow.
 functions:
   reverse_blocking:
-    need: The bus reaches the 54.35-54.5 V dump and up to the 57 V trip, above the 52 V supply setpoint and the EPP-500-54 56 V adjustment maximum. The supply output must not be back-fed.
+    need: The bus reaches the 54.35-54.5 V dump and up to the 56 V trip, above the 52 V supply setpoint and the EPP-500-54 56 V adjustment maximum. The supply output must not be back-fed.
     proposal: Ideal-diode (MOSFET OR-ing) controller on the supply output. The model's one-way source assumes it.
     on_resistance_ohm: 0.005   # assumed MOSFET path; no part selected
   precharge:

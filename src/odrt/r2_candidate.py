@@ -153,6 +153,11 @@ def load_r4(root=Path('.')):
     if spec['proposal']['topology'] != 'bidirectional':
         raise ConfigError('R4 proposal must use the bidirectional topology')
     cfg['power_topology'] = 'bidirectional'
+    trip = spec['proposal']['trip_v']
+    clamp = load_yaml(Path(root)/'data/revision_components.yaml')['regen_clamp']['facts']['voltage_max_v']
+    if not cfg['power']['dump_full_v'] < trip < clamp:
+        raise ConfigError('R4 overvoltage trip must lie between full dump duty and the Regen Clamp maximum')
+    cfg['power']['trip_v'] = trip
     return cfg, parts, variants, dict(derived, r4_power=spec), source, support
 
 

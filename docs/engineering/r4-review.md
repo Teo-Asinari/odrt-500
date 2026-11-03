@@ -1,5 +1,7 @@
 # R4 candidate review — 2026-11-03
 
+> **Update:** the overvoltage trip is now 56 V, not 57 V ([power-path review](power-path-review.md)). The rerun changes only the aged dump-failure cases, which trip 58 ms earlier at 55.92 V. Every other result below is unchanged. The worst cell at the trip is now 2.82 V (capacitance-spread analysis).
+
 **Decision: REVISE, but R4 should replace R3 + C1 as the lead candidate.** Moving the bank onto the drive bus improves or leaves unchanged every case in the full suite, with no new failed comparison. Fast reversal and full stroke still fail, because they are voltage-limited by the RO100 at 5:1 (see the [fast-motion review](fast-motion-review.md)). Endurance is still limited by the motor's Km. Both need the owner's motor/bus decision. The bank exceeds its continuous RMS current rating only in back-to-back fast reversal, and the power-path hardware is not designed.
 
 R4 = R3 + C1, with the 20-cell TV bank moved from upstream of the one-way Regen Clamp onto the drive bus ([data/r4_power.yaml](../../data/r4_power.yaml)). The supply stays one-way, and the 54.35–54.5 V dump and 57 V trip are unchanged.
