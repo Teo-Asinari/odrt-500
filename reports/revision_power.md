@@ -1,6 +1,6 @@
 # Higher-voltage upstream-buffer power experiment
 
-Fingerprint: `04cd1d8e999ed5a2e2d8664fedcc395da9cd39e0dd54a2476e75d6306257978d`
+Fingerprint: `aec6a7fa53d622886a493cee410cd9fe673ce6058ee9c89a9ae8cfb7a913b0ed`
 
 **REVISE: this is a topology experiment, not a selected complete machine.** The bank is upstream of a reverse-blocking Regen Clamp and cannot receive regenerated motor energy. A separate input-link state, one-way forward drop, clamp loss and relative-input averaged dump replace the bidirectional bank/DC-link path. Source, capacitor and dump thermal powers and stored energy are updated in the same plant.
 

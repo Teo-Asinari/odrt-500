@@ -43,6 +43,7 @@ def _envelope(r4):
 
 def size(r4, spec, components):
     d = spec['design']; p = r4['power']; cells = r4['cell_values']; n = p['cell_series']
+    mon = r4['derived']['r4_power']['functions']['dump_monitor']
     env = _envelope(r4); v0 = p['nominal_v']; trip = p['trip_v']
     supply = components['epp500_54']['facts']; limit_a = supply['power_forced_air_w']/v0
     esr = {b: cells[b]['esr_initial_max_ohm']*n for b in cells}
@@ -86,12 +87,16 @@ def size(r4, spec, components):
 
     # One pulse resistor: pre-charge (bus -> bank) at start, service discharge (bank -> return) at shutdown.
     r = v0/(d['supply_current_margin']*limit_a)
-    dv = d['bypass_close_delta_v']; enable = r4['derived']['r4_power']['functions']['precharge']['enable_threshold_v']
+    enable = r4['derived']['r4_power']['functions']['precharge']['enable_threshold_v']
+    # Close the bypass only when top-off current through the closed path stays under the supply margin;
+    # the drive is enabled after closure (make precharge simulates the same rule).
+    close_dv = lambda b: d['supply_current_margin']*limit_a*(esr[b]+d['wiring_resistance_ohm']+d['disconnect_on_resistance_ohm'])
     rows = []
     for b in cap:
-        tau = r*cap[b]; vc = v0-dv
+        tau = r*cap[b]; dv = close_dv(b); vc = v0-dv
         rows.append({'bank': b, 'bank_capacitance_f': cap[b], 'tau_s': tau,
-                     'time_to_enable_s': tau*math.log(v0/(v0-enable)), 'time_to_bypass_s': tau*math.log(v0/dv),
+                     'bypass_close_delta_v': dv, 'time_to_bypass_s': tau*math.log(v0/dv),
+                     'time_to_enable_s': max(tau*math.log(v0/dv), tau*math.log(v0/(v0-enable))),
                      'precharge_energy_j': cap[b]*v0*vc-.5*cap[b]*vc*vc,
                      'bypass_inrush_a': dv/(esr[b]+d['wiring_resistance_ohm']),
                      'discharge_time_s': tau*math.log(env['bank_max_v'][0]/d['service_safe_v']),
@@ -121,11 +126,11 @@ def size(r4, spec, components):
     fresh_dump = r4['banks']['r2_fresh'].get('paired_dump_failure', {})
     out['dump_monitor'] = {
         'peak_current_a': i_dump, 'shunt_ohm': d['dump_shunt_ohm'], 'shunt_signal_mv': 1000*i_dump*d['dump_shunt_ohm'],
-        'shunt_peak_w': i_dump**2*d['dump_shunt_ohm'], 'detection_s': d['dump_detection_s'],
+        'shunt_peak_w': i_dump**2*d['dump_shunt_ohm'], 'detection_s': mon['detection_s'],
         'fresh_dump_failure_bus_max_v': fresh_dump.get('maximum_bus_v'), 'dump_start_v': p['dump_start_v'],
         'rule': f'Expected dump current is commanded duty × bus V / {p["dump_resistance_ohm"]} Ω. Flag a dump-path fault when measured current '
-                f'stays below half of expected for {d["dump_detection_s"]} s while expected exceeds {d["dump_min_expected_a"]} A, or when the bus '
-                f'exceeds {p["dump_full_v"]} V (full duty) for {d["dump_detection_s"]} s; stop the unit and latch, independent of the overvoltage trip.'}
+                f'stays below {mon["measured_fraction"]} × expected for {mon["detection_s"]} s while expected exceeds {mon["min_expected_a"]} A, or when the bus '
+                f'exceeds {mon["backup_bus_v"]} V for {mon["detection_s"]} s; stop the unit and latch, independent of the overvoltage trip.'}
     out['bank_duty'] = {'derate_start_c': d['bank_derate_start_c'], 'case_max_c': cells['r2_fresh']['case_max_c'],
                         'continuous_fast_reversal_c': r4['derived']['r4_checks']['continuous_repetition_cell_c'],
                         'rule': 'Bank temperature sensing (balancing node) feeds the existing torque derate from '
@@ -185,11 +190,13 @@ def write_report(r, path):
     L += [f'| {b} | {v:.0f} | {bp["fault_multiple_of_rating"][b]:.1f} |' for b, v in bp['prospective_fault_a'].items()]
     L += ['', bp['note'], '', '## Pre-charge and service discharge (one pulse resistor)', '',
           f'{pc["resistor_ohm"]:.1f} Ω holds start-up supply current at {pc["supply_current_a"]:.1f} A against the '
-          f'{pc["supply_limit_a"]:.1f} A rating, peak {pc["peak_power_w"]:.0f} W. Bypass closes at {a["bypass_close_delta_v"]} V difference. '
+          f'{pc["supply_limit_a"]:.1f} A rating, peak {pc["peak_power_w"]:.0f} W. The bypass closes when the bus-to-bank difference is small enough that top-off current '
+          f'stays under the supply margin ({pc["rows"][0]["bypass_close_delta_v"]:.2f} V fresh), and the drive is enabled only after closure '
+          '([sequence simulation](precharge.md)). '
           + pc['note'], '',
-          '| Bank | C F | τ s | To drive enable s | To bypass s | Pre-charge energy J | Bypass inrush A | Service discharge to '
-          f'{a["service_safe_v"]} V s | Discharge energy J | Bleed-only τ h |', '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
-    L += [f'| {x["bank"]} | {x["bank_capacitance_f"]:.2f} | {x["tau_s"]:.0f} | {x["time_to_enable_s"]:.0f} | {x["time_to_bypass_s"]:.0f} | '
+          '| Bank | C F | τ s | To bypass = drive enable s | Pre-charge energy J | Bypass inrush A | Service discharge to '
+          f'{a["service_safe_v"]} V s | Discharge energy J | Bleed-only τ h |', '|---|---:|---:|---:|---:|---:|---:|---:|---:|']
+    L += [f'| {x["bank"]} | {x["bank_capacitance_f"]:.2f} | {x["tau_s"]:.0f} | {x["time_to_enable_s"]:.0f} | '
           f'{x["precharge_energy_j"]:.0f} | {x["bypass_inrush_a"]:.1f} | {x["discharge_time_s"]:.0f} | {x["discharge_energy_j"]:.0f} | '
           f'{x["bleed_only_tau_h"]:.1f} |' for x in pc['rows']]
     L += ['', 'Without an active discharge the 10 kΩ bleed alone leaves the bank charged for hours; service discharge is required.', '',

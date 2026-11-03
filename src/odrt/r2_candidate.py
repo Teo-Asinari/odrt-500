@@ -81,6 +81,9 @@ def model_factory(cfg):
     from odrt.coupled import build_model
     from odrt.upstream_buffer import build_upstream_model
     base = build_model if cfg.get('power_topology') == 'bidirectional' else build_upstream_model
+    if 'dump_monitor' in cfg:
+        from odrt.dump_monitor import dump_monitor_factory
+        base = dump_monitor_factory(base)
     if 'frame_thermal' in cfg:
         from odrt.frame_thermal import frame_factory
         return frame_factory(base)
@@ -158,12 +161,15 @@ def load_r4(root=Path('.')):
     if not cfg['power']['dump_full_v'] < trip < clamp:
         raise ConfigError('R4 overvoltage trip must lie between full dump duty and the Regen Clamp maximum')
     cfg['power']['trip_v'] = trip
+    if not cfg['power']['dump_full_v'] < spec['functions']['dump_monitor']['backup_bus_v'] < trip:
+        raise ConfigError('R4 dump-monitor backup voltage must lie between full dump duty and the trip')
+    cfg['dump_monitor'] = {k: spec['functions']['dump_monitor'][k] for k in ('detection_s', 'min_expected_a', 'measured_fraction', 'reset_s', 'backup_bus_v')}
     return cfg, parts, variants, dict(derived, r4_power=spec), source, support
 
 
 def r4_fingerprint(root=Path('.')):
     root = Path(root); h = hashlib.sha256(r3c_fingerprint(root).encode())
-    h.update((root/'data/r4_power.yaml').read_bytes())
+    h.update((root/'data/r4_power.yaml').read_bytes()+Path(__file__).with_name('dump_monitor.py').read_bytes())
     return h.hexdigest()
 
 

@@ -31,7 +31,11 @@ from odrt.units import lbf_to_n
 UNIT_FIELDS = ('theta_rad', 'omega_rad_s', 'torque_nm', 'integral_n', 'force_sensor_n', 'speed_sensor_m_s',
                'capacitor_v', 'bus_v', 'winding_c', 'housing_c', 'drive_c', 'supply_c', 'capacitor_c', 'dump_c', 'air_c',
                'trip_latched', 'trip_time_s', 'trip_reason')
-TRIP_REASONS = ('undervoltage', 'overvoltage', 'winding_temperature', 'drive_temperature', 'capacitor_temperature')
+# The first MARGIN_EVENTS reasons are the per-unit voltage/thermal zero-crossing margins built here.
+# Later reasons are latched by model extensions (odrt.dump_monitor) and only reported here.
+TRIP_REASONS = ('undervoltage', 'overvoltage', 'winding_temperature', 'drive_temperature', 'capacitor_temperature',
+                'dump_fault')
+MARGIN_EVENTS = 5
 GLOBAL_FIELDS = ('bar_position_m', 'bar_speed_m_s', 'bar_angle_rad', 'bar_angular_speed_rad_s')
 QUADRATURES = ('user_work_j', 'wall_input_j', 'ambient_heat_j')
 FAULTS = ('none', 'mains_loss_braked', 'mains_loss_buffered', 'load_cell_zero', 'encoder_loss',
@@ -458,15 +462,15 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
     for i,margins in enumerate(event_margins):
         base = 4+i*len(UNIT_FIELDS)
         latched = x[base+UNIT_FIELDS.index('trip_latched')]>.5
-        zero.append(ca.if_else(latched,ca.SX.ones(len(TRIP_REASONS)),margins))
-        own_event = ca.logic_and(event_index>=i*len(TRIP_REASONS),event_index<(i+1)*len(TRIP_REASONS))
+        zero.append(ca.if_else(latched,ca.SX.ones(MARGIN_EVENTS),margins))
+        own_event = ca.logic_and(event_index>=i*MARGIN_EVENTS,event_index<(i+1)*MARGIN_EVENTS)
         # Apply simultaneous events together, preserving exact paired symmetry.
         simultaneous = ca.mmin(margins)<=1e-7
         trip = ca.logic_and(ca.logic_not(latched),ca.logic_or(own_event,simultaneous))
         reason = ca.SX(0)
-        for j in reversed(range(len(TRIP_REASONS))):
+        for j in reversed(range(MARGIN_EVENTS)):
             reason = ca.if_else(margins[j]<=1e-7,j+1,reason)
-        reason = ca.if_else(own_event,event_index-i*len(TRIP_REASONS)+1,reason)
+        reason = ca.if_else(own_event,event_index-i*MARGIN_EVENTS+1,reason)
         for field,value in [('trip_latched',1),('trip_time_s',t),('trip_reason',reason),
                             ('integral_n',0),('torque_nm',0)]:
             index = base+UNIT_FIELDS.index(field)

@@ -1,12 +1,11 @@
 {
-  "fingerprint": "b8dde555f3240ae164377463ce220a9c4ea21f6c5c4e560c2159ef6f6678033f",
-  "r4_fingerprint": "2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05",
+  "fingerprint": "6194ad33839147563d99682d824afe490457843336be5fa452d236be746e2991",
+  "r4_fingerprint": "75697c0bbd113e6a8b21b7aeb472e53b098e9318b17474976116bf72babacf0b",
   "assumptions": {
     "device_voltage_class_v": 80,
     "clamp_margin_v": 2,
     "supply_current_margin": 0.8,
     "fuse_current_factor": 1.25,
-    "bypass_close_delta_v": 5,
     "service_safe_v": 5,
     "wiring_resistance_ohm": 0.02,
     "ideal_diode_on_resistance_ohm": 0.005,
@@ -16,8 +15,6 @@
     "capacitance_spread_fraction": 0.1,
     "cell_monitor_trip_v": 2.95,
     "dump_shunt_ohm": 0.001,
-    "dump_detection_s": 0.1,
-    "dump_min_expected_a": 2,
     "bank_derate_start_c": 55
   },
   "sources_not_read": [
@@ -39,15 +36,15 @@
   ],
   "envelope": {
     "bank_rms_a": {
-      "value": 14.241374282063337,
+      "value": 14.241257452226554,
       "case": "r2_aged/single_fast_full"
     },
     "bank_peak_a": {
-      "value": 34.696986870738044,
+      "value": 34.69865851814834,
       "case": "r2_fresh/left_torque_inverted"
     },
     "bank_max_v": {
-      "value": 53.6774607914456,
+      "value": 53.677663898731964,
       "case": "r2_fresh/single_stroke_full"
     },
     "supply_peak_a": {
@@ -55,32 +52,32 @@
       "case": "r2_fresh/single_hold_full"
     },
     "dump_average_peak_a": {
-      "value": 19.759273797874325,
+      "value": 19.75875412203483,
       "case": "r2_aged/single_fast_full"
     },
     "bus_max_v": {
-      "value": 55.92220686644034,
-      "case": "r2_aged/paired_dump_failure_coordinated"
+      "value": 55.92226013837273,
+      "case": "r2_aged/paired_dump_failure"
     },
     "bus_min_normal_v": {
-      "value": 33.27467711696063,
+      "value": 33.27462913989576,
       "case": "r2_aged/single_fast_full"
     }
   },
   "regen_clamp": {
     "voltage_max_v": 58,
     "trip_v": 56,
-    "bus_max_v": 55.92220686644034,
+    "bus_max_v": 55.92226013837273,
     "trip_margin_v": 2,
     "voltage_pass": true,
     "margin_required_v": 2,
     "margin_pass": true,
-    "bus_margin_v": 2.077793133559659,
+    "bus_margin_v": 2.077739861627272,
     "forward_a": 9.615384615384615,
     "forward_rating_free_air_a": 20,
     "forward_pass": true,
     "brake_switched_a": 54.5,
-    "brake_average_peak_a": 19.759273797874325,
+    "brake_average_peak_a": 19.75875412203483,
     "brake_continuous_a": 40,
     "brake_peak_3s_a": 80,
     "brake_continuous_pass": true,
@@ -88,7 +85,7 @@
     "note": "The chopper switches the full bus voltage across the 1 \u03a9 dump, so its instantaneous current is bus V / 1 \u03a9, inside the 80 A / 3 s peak. The cycle-averaged current is compared with the 40 A heatspreader rating. Whether that rating is an average or an instantaneous limit, and the chopper ripple, are verification items."
   },
   "reverse_blocking": {
-    "blocking_v_max": 3.922206866440341,
+    "blocking_v_max": 3.922260138372728,
     "blocking_at_trip_v": 4,
     "forward_a": 9.615384615384615,
     "loss_w": 0.4622781065088757,
@@ -97,19 +94,19 @@
     "note": "Blocks during every regenerative event, not only at faults: the bus sits at the 54.4 V dump level in normal use."
   },
   "bank_protection": {
-    "rms_a": 14.241374282063337,
-    "peak_a": 34.696986870738044,
-    "fuse_min_rating_a": 17.80171785257917,
-    "peak_to_fuse_rating": 1.9490808223157539,
+    "rms_a": 14.241257452226554,
+    "peak_a": 34.69865851814834,
+    "fuse_min_rating_a": 17.801571815283193,
+    "peak_to_fuse_rating": 1.9491907163140776,
     "prospective_fault_a": {
       "r2_fresh": 233.33333333333337,
       "r2_aged": 121.73913043478262
     },
     "fault_multiple_of_rating": {
-      "r2_fresh": 13.107349260651679,
-      "r2_aged": 6.838617005557397
+      "r2_fresh": 13.107456788338746,
+      "r2_aged": 6.838673106959345
     },
-    "disconnect_loss_w": 0.8112669657672601,
+    "disconnect_loss_w": 0.8112536552823935,
     "device_class_v": 80,
     "note": "Bank short-circuit current is set by cell ESR, so the aged bank gives the lowest clearing multiple. Fuse time-current behaviour at that multiple must be checked against the cell and wiring I\u00b2t."
   },
@@ -123,24 +120,26 @@
         "bank": "r2_fresh",
         "bank_capacitance_f": 5.0,
         "tau_s": 33.8,
-        "time_to_enable_s": 67.78027464998264,
-        "time_to_bypass_s": 79.15303624777965,
-        "precharge_energy_j": 6697.5,
-        "bypass_inrush_a": 20.833333333333336,
-        "discharge_time_s": 80.22616834291578,
-        "discharge_energy_j": 7203.174492542948,
+        "bypass_close_delta_v": 1.8769230769230767,
+        "time_to_bypass_s": 112.27041609854071,
+        "time_to_enable_s": 112.27041609854071,
+        "precharge_energy_j": 6751.192899408285,
+        "bypass_inrush_a": 7.820512820512821,
+        "discharge_time_s": 80.22629623669448,
+        "discharge_energy_j": 7203.229004063082,
         "bleed_only_tau_h": 13.88888888888889
       },
       {
         "bank": "r2_aged",
         "bank_capacitance_f": 3.15,
         "tau_s": 21.294,
-        "time_to_enable_s": 42.701573029489076,
-        "time_to_bypass_s": 49.86641283610118,
-        "precharge_energy_j": 4219.424999999999,
-        "bypass_inrush_a": 10.869565217391305,
-        "discharge_time_s": 50.54248605603695,
-        "discharge_energy_j": 4537.999930302058,
+        "bypass_close_delta_v": 3.569230769230769,
+        "time_to_bypass_s": 57.04436067636821,
+        "time_to_enable_s": 57.04436067636821,
+        "precharge_energy_j": 4238.735431952662,
+        "bypass_inrush_a": 7.759197324414716,
+        "discharge_time_s": 50.54256662911752,
+        "discharge_energy_j": 4538.034272559742,
         "bleed_only_tau_h": 8.75
       }
     ],
@@ -152,7 +151,7 @@
     "loss_per_cell_w": 0.026000000000000002,
     "loss_bank_w": 0.52,
     "self_discharge_tau_h": 7.222222222222222,
-    "worst_cell_at_max_bank_v": 2.693192266191422,
+    "worst_cell_at_max_bank_v": 2.6932035499295535,
     "worst_cell_at_trip_v": 2.8222222222222224,
     "cell_monitor_trip_v": 2.95,
     "cell_rated_v": 3,
@@ -166,16 +165,16 @@
     "shunt_signal_mv": 54.5,
     "shunt_peak_w": 2.97025,
     "detection_s": 0.1,
-    "fresh_dump_failure_bus_max_v": 55.632557148344745,
+    "fresh_dump_failure_bus_max_v": 55.13622397058624,
     "dump_start_v": 54.35,
-    "rule": "Expected dump current is commanded duty \u00d7 bus V / 1 \u03a9. Flag a dump-path fault when measured current stays below half of expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 54.5 V (full duty) for 0.1 s; stop the unit and latch, independent of the overvoltage trip."
+    "rule": "Expected dump current is commanded duty \u00d7 bus V / 1 \u03a9. Flag a dump-path fault when measured current stays below 0.5 \u00d7 expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 55.0 V for 0.1 s; stop the unit and latch, independent of the overvoltage trip."
   },
   "bank_duty": {
     "derate_start_c": 55,
     "case_max_c": 65,
     "continuous_fast_reversal_c": {
-      "r2_fresh": 47.30984155859965,
-      "r2_aged": 69.6196831171993
+      "r2_fresh": 47.30947552026582,
+      "r2_aged": 69.61895104053164
     },
     "rule": "Bank temperature sensing (balancing node) feeds the existing torque derate from 55 \u00b0C to the case maximum; this is the duty limit for back-to-back fast work."
   }

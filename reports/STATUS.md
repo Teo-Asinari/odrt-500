@@ -2,6 +2,10 @@
 
 ## Active engineering goal — 2026-11-03
 
+**Simulated today:** [dump monitor and pre-charge sequence](../docs/engineering/power-path-review.md). The dump monitor (active in R4) catches the fresh-bank dump failure 0.51 s after the fault (bus 55.14 V), with no false trips across the suite; the aged case still trips on 56 V overvoltage first.
+Pre-charge corrected (drive enables only after bypass closure; bypass at 1.9 V, not 5 V): **120 s to drive enable with the resistor, 24 s charging straight from the supply** if its constant-current mode is confirmed (normal operation needs that anyway).
+Service discharge 83 s to 5 V; the discharge switch must be normally closed because the auxiliary rail collapses within 0.4 s.
+
 **Power path (R4):** [review](../docs/engineering/power-path-review.md), [sizing](power_path.md). Bank behind the Regen Clamp's output: the clamp's diode blocks supply back-feed and its chopper stays the dump.
 Sized: ≥17.8 A time-delay bank fuse, back-to-back MOSFET disconnect, one 6.8 Ω pulse resistor for pre-charge (68 s to enable, fresh) and service discharge (80 s to 5 V), passive 260 Ω balancing
 (worst cell 2.82 V at the trip), dump current shunt with a fault rule independent of overvoltage. **Trip lowered to 56 V** (owner decision): full R4 rerun changes only the aged dump-failure cases (trip 58 ms earlier, 55.92 V peak, 2 V under the clamp's 58 V); all power-path checks pass.

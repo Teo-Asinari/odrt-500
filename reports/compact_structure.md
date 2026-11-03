@@ -1,6 +1,6 @@
 # Compact mechanical load-path screen
 
-Fingerprint: `78207b7e168fa05651551436c625c846f5da3c7c92fd885ee81c56220f5bd5c1`
+Fingerprint: `c1c2c58c2ee9344201742ec237bd3a0c6359c7b375bf93d643f9b3a8d272b966`
 
 **Assessment: REVISE.** This uses current CAD bearing/support locations and the compact candidate force/current envelope. It does not qualify joints, fatigue, mounts or hardware.
 

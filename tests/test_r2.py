@@ -109,3 +109,24 @@ def test_r4_power_checks_flag_cell_voltage_and_continuous_rms():
     assert k['continuous_repetition_cell_c']['r2_aged'] > k['continuous_repetition_cell_c']['r2_fresh']
     cases['r2_fresh']['a']['unit_0.max_capacitor_v'] = 3.0*n
     assert not power_checks(derived['r4_power'], cases, parts, cfg, variants)['cell_voltage_pass']
+
+
+@pytest.mark.slow
+def test_r4_dump_monitor_catches_fresh_dump_failure_without_false_trips():
+    pytest.importorskip('cadquery'); pytest.importorskip('casadi')
+    from odrt.engineering import load_engineering
+    from odrt.project import load_inputs
+    from odrt.r2_candidate import _job, load_r4
+    inputs = load_inputs(REPO); cfg, parts, variants, *_ = load_r4(REPO)
+    parts['r2_cell'] = {'values': variants['r2_fresh']}; criteria = load_engineering(REPO)[0]
+    cases = {c['name']: c for c in cfg['cases']}
+    def run(name, window):
+        case = dict(cases[name], window_s=window)
+        return _job(('case', (name,), cfg, parts, inputs.scenarios[case['scenario']], inputs.defaults,
+                     inputs.envelope.max_usable_stroke_m, case, {}, criteria, None))[2]
+    fault = run('paired_dump_failure', 2.5)
+    assert fault['unit_0.trip_reason'] == 'dump_fault' and fault['unit_1.trip_reason'] is None
+    assert fault['maximum_bus_v'] < cfg['power']['trip_v']
+    assert fault['unit_0.trip_time_s'] - cases['paired_dump_failure']['fault_time_s'] < 1.
+    normal = run('single_fast_full', 6)
+    assert not normal['unit_0.trip_latched'] and normal['numerical_valid']

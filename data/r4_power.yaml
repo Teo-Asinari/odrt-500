@@ -28,6 +28,14 @@ functions:
   cell_voltage:
     need: The bank now sees the drive bus maximum. Series cells must stay under rating with imbalance.
     worst_cell_factor: 1.05    # assumed worst cell / mean cell voltage with passive balancing; no balancing design yet
+  dump_monitor:
+    need: With the bank on the bus, a failed dump no longer reaches the overvoltage trip (fresh bank peaks at 55.6 V). Detect it directly.
+    proposal: Supervisor compares the shunt-measured dump current with commanded duty x bus V / R; latches a dump_fault trip.
+    detection_s: 0.1        # condition must hold this long
+    min_expected_a: 2       # below this, shunt offset and the duty ramp make the comparison unreliable; assumed
+    measured_fraction: 0.5  # fault when measured < this x expected
+    reset_s: 0.001          # timer decay when the condition clears
+    backup_bus_v: 55.0      # also fault if the bus stays above this; 0.5 V over full duty, 1 V under the trip (normal use peaks ~54.4 V)
   ripple_current:
     need: Bank current now carries drive bus transients. Compared with the cell's 15 K-rise RMS current.
     note: Cycle-averaged current only. Drive PWM-frequency ripple is assumed to stay in the drive-bus capacitors; bus wiring inductance is not modelled.

@@ -1,6 +1,6 @@
 # R4 power-path sizing
 
-Fingerprint: `b8dde555f3240ae164377463ce220a9c4ea21f6c5c4e560c2159ef6f6678033f` (R4 `2ab987c41238`)
+Fingerprint: `6194ad33839147563d99682d824afe490457843336be5fa452d236be746e2991` (R4 `75697c0bbd11`)
 
 **Functional sizing only.** Ratings are derived from the [R4 simulated envelope](r4_candidate.md) and cited data already in the repository. No part is selected; every `assumed` value in `data/power_path.yaml` is a verification item.
 
@@ -13,7 +13,7 @@ Fingerprint: `b8dde555f3240ae164377463ce220a9c4ea21f6c5c4e560c2159ef6f6678033f` 
 | Bank maximum V | 53.68 | r2_fresh/single_stroke_full |
 | Supply peak current A | 9.62 | r2_fresh/single_hold_full |
 | Dump current, cycle-averaged maximum A | 19.76 | r2_aged/single_fast_full |
-| Bus maximum V (incl. faults) | 55.92 | r2_aged/paired_dump_failure_coordinated |
+| Bus maximum V (incl. faults) | 55.92 | r2_aged/paired_dump_failure |
 | Bus minimum V (untripped cases) | 33.27 | r2_aged/single_fast_full |
 
 ## Regen Clamp in R4 (reverse block + dump)
@@ -48,12 +48,12 @@ Bank short-circuit current is set by cell ESR, so the aged bank gives the lowest
 
 ## Pre-charge and service discharge (one pulse resistor)
 
-6.8 Ω holds start-up supply current at 7.7 A against the 9.6 A rating, peak 400 W. Bypass closes at 5 V difference. The resistor limits supply current itself, so start-up does not depend on the supply overload mode. The same resistor discharges the bank for service. Pulse-energy rating, not continuous power, sizes it.
+6.8 Ω holds start-up supply current at 7.7 A against the 9.6 A rating, peak 400 W. The bypass closes when the bus-to-bank difference is small enough that top-off current stays under the supply margin (1.88 V fresh), and the drive is enabled only after closure ([sequence simulation](precharge.md)). The resistor limits supply current itself, so start-up does not depend on the supply overload mode. The same resistor discharges the bank for service. Pulse-energy rating, not continuous power, sizes it.
 
-| Bank | C F | τ s | To drive enable s | To bypass s | Pre-charge energy J | Bypass inrush A | Service discharge to 5 V s | Discharge energy J | Bleed-only τ h |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| r2_fresh | 5.00 | 34 | 68 | 79 | 6698 | 20.8 | 80 | 7203 | 13.9 |
-| r2_aged | 3.15 | 21 | 43 | 50 | 4219 | 10.9 | 51 | 4538 | 8.8 |
+| Bank | C F | τ s | To bypass = drive enable s | Pre-charge energy J | Bypass inrush A | Service discharge to 5 V s | Discharge energy J | Bleed-only τ h |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| r2_fresh | 5.00 | 34 | 112 | 6751 | 7.8 | 80 | 7203 | 13.9 |
+| r2_aged | 3.15 | 21 | 57 | 4239 | 7.8 | 51 | 4538 | 8.8 |
 
 Without an active discharge the 10 kΩ bleed alone leaves the bank charged for hours; service discharge is required.
 
@@ -70,7 +70,7 @@ Capacitance spread 10% below the string mean (the documented initial minimum). T
 
 ## Dump-path monitoring
 
-Peak dump current 54.5 A; a 1 mΩ shunt gives 54 mV and 3.0 W peak. In the fresh-bank dump-failure case the bus reached 55.6 V without a trip. Rule: Expected dump current is commanded duty × bus V / 1 Ω. Flag a dump-path fault when measured current stays below half of expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 54.5 V (full duty) for 0.1 s; stop the unit and latch, independent of the overvoltage trip.
+Peak dump current 54.5 A; a 1 mΩ shunt gives 54 mV and 3.0 W peak. In the fresh-bank dump-failure case the bus reached 55.1 V without a trip. Rule: Expected dump current is commanded duty × bus V / 1 Ω. Flag a dump-path fault when measured current stays below 0.5 × expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 55.0 V for 0.1 s; stop the unit and latch, independent of the overvoltage trip.
 
 ## Bank duty limit
 

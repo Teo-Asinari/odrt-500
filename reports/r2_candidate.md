@@ -1,6 +1,6 @@
 # R2 candidate simulation
 
-Fingerprint: `1382f45c2488501f8f6f3532cd7f0cd5dd3e829cddcb06b17469707060d8fc29`
+Fingerprint: `264790ad170fccca53a518e8e2710bc09309749cdb908a610b617c05767f4dd9`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller gains are unchanged from the reference.
 

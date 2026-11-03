@@ -16,7 +16,6 @@ design:
   clamp_margin_v: 2                   # Regen Clamp maximum minus the trip (owner decision 2026-11-03: 56 V trip)
   supply_current_margin: 0.8          # pre-charge holds supply current at or below 80% of its rating
   fuse_current_factor: 1.25           # fuse rating >= 1.25 x continuous (RMS) current; assumed rule
-  bypass_close_delta_v: 5             # close the pre-charge bypass when bus - bank < this
   service_safe_v: 5                   # service discharge target
   wiring_resistance_ohm: 0.02         # bank loop wiring + fuse + switch, assumed for prospective fault current
   ideal_diode_on_resistance_ohm: 0.005  # assumed MOSFET path
@@ -26,6 +25,13 @@ design:
   capacitance_spread_fraction: 0.10   # worst cell capacitance below the string mean; documented initial minimum is -10%
   cell_monitor_trip_v: 2.95           # per-cell overvoltage trip, below the 3.0 V rating
   dump_shunt_ohm: 0.001
-  dump_detection_s: 0.1               # dump-path fault must be flagged within this after the bus exceeds dump start
-  dump_min_expected_a: 2             # below this, shunt offset and duty ramp make the comparison unreliable; assumed
   bank_derate_start_c: 55             # matches the model's capacitor derate (case max - 10 K)
+# Start-up / service-discharge sequence simulation (make precharge). All assumed.
+sequence:
+  aux_load_w: 10               # supervisor, controller, sensors, fan from the bus via DC/DC
+  aux_min_input_v: 15          # auxiliary DC/DC minimum input voltage
+  charged_within_v: 0.5        # start-up complete when the bank is within this of the setpoint
+  bypass_timeout_factor: 1.5   # bypass not closed by this x the expected time -> pre-charge fault
+  resistor_heat_capacity_j_k: 150  # aluminium-housed pulse resistor on a heatsink
+  resistor_to_air_k_w: 1.5
+  mains_loss_at_s: 30

@@ -1,6 +1,6 @@
 # R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1
 
-Fingerprint: `2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05`
+Fingerprint: `75697c0bbd113e6a8b21b7aeb472e53b098e9318b17474976116bf72babacf0b`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells on the drive bus (bidirectional; one-way supply and dump unchanged), EPP-500-54 at 52 V, motor current limit 50 A. Controller: see below.
 
@@ -19,20 +19,20 @@ Fingerprint: `2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05`
 | r2_fresh / single_stroke_full | 10.73 | 645 | 50.1–54.4 | 36.8 | 0.0 | none | proposed normal overshoot, proposed tracking RMS, recommended electrical frequency |
 | r2_fresh / paired_heavy_full | 0.11 | 1125 | 47.2–54.4 | 105.6 | 0.0 | none | none |
 | r2_fresh / paired_asymmetric | 0.10 | 1121 | 47.2–54.4 | 105.3 | 0.6 | none | none |
-| r2_fresh / left_power_loss_uncoordinated | 0.30 | 1250 | 48.7–54.4 | 47.5 | 76.2 | none | none |
-| r2_fresh / left_power_loss_coordinated | 0.30 | 1125 | 51.0–54.4 | 33.3 | 3.6 | none | none |
+| r2_fresh / left_power_loss_uncoordinated | 0.30 | 1249 | 48.7–54.4 | 47.5 | 76.2 | none | none |
+| r2_fresh / left_power_loss_coordinated | 0.31 | 1125 | 51.0–54.4 | 33.3 | 3.6 | none | none |
 | r2_fresh / left_power_loss_buffered | 0.30 | 1125 | 43.8–54.4 | 48.2 | 0.0 | none | none |
-| r2_fresh / left_power_loss_buffered_coordinated | 0.30 | 1125 | 43.8–54.4 | 48.2 | 0.0 | none | none |
-| r2_fresh / left_sensor_loss | 0.30 | 1129 | 51.0–54.4 | 33.2 | 1.7 | none | none |
-| r2_fresh / left_encoder_loss | 0.30 | 1125 | 51.2–54.4 | 33.3 | 2.1 | none | none |
+| r2_fresh / left_power_loss_buffered_coordinated | 0.31 | 1125 | 43.8–54.4 | 48.2 | 0.0 | none | none |
+| r2_fresh / left_sensor_loss | 0.31 | 1129 | 51.0–54.4 | 33.2 | 1.7 | none | none |
+| r2_fresh / left_encoder_loss | 0.31 | 1125 | 51.2–54.4 | 33.3 | 2.1 | none | none |
 | r2_fresh / left_torque_inverted | 0.30 | 1196 | 45.1–54.4 | 33.2 | 6.0 | none | recommended electrical frequency, virtual motor voltage controllability |
-| r2_fresh / left_torque_frozen | 0.30 | 1125 | 51.2–54.4 | 33.4 | 2.1 | none | none |
+| r2_fresh / left_torque_frozen | 0.31 | 1125 | 51.2–54.4 | 33.4 | 2.1 | none | none |
 | r2_fresh / paired_communication_loss | 0.30 | 1125 | 51.4–54.4 | 33.3 | 0.0 | none | none |
-| r2_fresh / paired_release | 0.30 | 1125 | 47.7–54.4 | 31.9 | 0.1 | none | none |
+| r2_fresh / paired_release | 0.31 | 1125 | 47.7–54.4 | 31.9 | 0.2 | none | none |
 | r2_fresh / paired_release_asymmetric | 0.30 | 1125 | 47.7–54.4 | 31.9 | 46.5 | none | none |
 | r2_fresh / paired_emergency_stop | 0.30 | 1125 | 51.4–54.4 | 33.0 | 0.0 | none | none |
-| r2_fresh / paired_dump_failure | 1.29 | 1125 | 49.2–55.6 | 48.2 | 0.0 | none | none |
-| r2_fresh / paired_dump_failure_coordinated | 1.29 | 1125 | 49.2–55.6 | 48.2 | 0.0 | none | none |
+| r2_fresh / paired_dump_failure | 1.29 | 1247 | 48.8–55.1 | 47.4 | 76.2 | dump_fault | none |
+| r2_fresh / paired_dump_failure_coordinated | 1.29 | 1125 | 51.4–55.1 | 30.6 | 0.3 | dump_fault | none |
 | r2_aged / single_endurance_full | 21.18 | 1121 | 37.0–54.4 | 128.5 | 0.0 | none | proposed normal overshoot, proposed tracking RMS |
 | r2_aged / single_curl_full | 0.13 | 179 | 51.8–53.2 | 28.4 | 0.0 | none | none |
 | r2_aged / single_row_full | 0.11 | 538 | 50.5–54.4 | 48.7 | 0.0 | none | none |
@@ -46,18 +46,18 @@ Fingerprint: `2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05`
 | r2_aged / single_stroke_full | 11.49 | 648 | 48.6–54.4 | 36.8 | 0.0 | none | proposed normal overshoot, proposed tracking RMS, recommended electrical frequency |
 | r2_aged / paired_heavy_full | 0.11 | 1125 | 42.1–54.4 | 105.6 | 0.0 | none | none |
 | r2_aged / paired_asymmetric | 0.10 | 1121 | 42.2–54.4 | 105.3 | 0.6 | none | none |
-| r2_aged / left_power_loss_uncoordinated | 0.30 | 1249 | 43.3–54.4 | 47.5 | 76.2 | none | none |
+| r2_aged / left_power_loss_uncoordinated | 0.31 | 1249 | 43.3–54.4 | 47.5 | 76.2 | none | none |
 | r2_aged / left_power_loss_coordinated | 0.30 | 1125 | 50.4–54.4 | 33.3 | 3.6 | none | none |
-| r2_aged / left_power_loss_buffered | 0.30 | 1125 | 33.7–54.4 | 48.2 | 0.0 | none | none |
+| r2_aged / left_power_loss_buffered | 0.31 | 1125 | 33.7–54.4 | 48.2 | 0.0 | none | none |
 | r2_aged / left_power_loss_buffered_coordinated | 0.30 | 1125 | 33.7–54.4 | 48.2 | 0.0 | none | none |
 | r2_aged / left_sensor_loss | 0.30 | 1129 | 50.4–54.4 | 33.2 | 1.7 | none | none |
 | r2_aged / left_encoder_loss | 0.30 | 1125 | 50.6–54.4 | 33.3 | 2.1 | none | none |
 | r2_aged / left_torque_inverted | 0.30 | 1189 | 43.7–54.4 | 33.2 | 6.0 | none | recommended electrical frequency, virtual motor voltage controllability |
 | r2_aged / left_torque_frozen | 0.30 | 1125 | 50.6–54.4 | 33.4 | 2.1 | none | none |
-| r2_aged / paired_communication_loss | 0.30 | 1125 | 51.2–54.4 | 33.3 | 0.0 | none | none |
-| r2_aged / paired_release | 0.30 | 1125 | 42.2–54.4 | 31.8 | 0.1 | none | none |
+| r2_aged / paired_communication_loss | 0.31 | 1125 | 51.2–54.4 | 33.3 | 0.0 | none | none |
+| r2_aged / paired_release | 0.30 | 1125 | 42.2–54.4 | 31.8 | 0.3 | none | none |
 | r2_aged / paired_release_asymmetric | 0.30 | 1125 | 42.2–54.4 | 31.8 | 46.5 | none | none |
-| r2_aged / paired_emergency_stop | 0.30 | 1125 | 51.2–54.4 | 33.0 | 0.0 | none | none |
+| r2_aged / paired_emergency_stop | 0.31 | 1125 | 51.2–54.4 | 33.0 | 0.0 | none | none |
 | r2_aged / paired_dump_failure | 1.29 | 1248 | 45.4–55.9 | 47.4 | 76.2 | overvoltage | none |
 | r2_aged / paired_dump_failure_coordinated | 1.29 | 1125 | 51.2–55.9 | 30.5 | 0.6 | overvoltage | none |
 
@@ -67,8 +67,8 @@ Fingerprint: `2ab987c412381acb06c4238491960c541714d631583248f3883c814280b65d05`
 |---|---:|---|
 | r2_fresh__single_heavy_full | 0.000% | pass |
 | r2_aged__single_fast_full | 0.000% | pass |
-| r2_fresh__paired_release_asymmetric | 0.002% | pass |
-| r2_aged__left_power_loss_buffered_coordinated | 0.022% | pass |
+| r2_fresh__paired_release_asymmetric | 0.001% | pass |
+| r2_aged__left_power_loss_buffered_coordinated | 0.028% | pass |
 
 ## Conducted heat path
 
@@ -140,15 +140,15 @@ If the supply does not current-limit cleanly into the bank, a pre-charge resisto
 
 ## Support screen at simulated R2 loads
 
-Peak rope force 1250 N and peak current 90.4 A × Kt = 18.08 Nm, combined as uncorrelated corners; belt tension difference 1577 N. 8/16 corners pass.
+Peak rope force 1249 N and peak current 90.4 A × Kt = 18.08 Nm, combined as uncorrelated corners; belt tension difference 1577 N. 8/16 corners pass.
 
 | Preload N/span | Rope z mm | Torque sign | Motor C0/P | Drum C0/P | Motor shaft MPa | Drum shaft MPa | Failed screens |
 |---:|---:|---:|---:|---:|---:|---:|---|
-| 700 | 28.5 | -1 | 2.74 | 7.36 | 85.6 | 12.0 | nonpositive nominal slack tension |
+| 700 | 28.5 | -1 | 2.74 | 7.37 | 85.6 | 12.0 | nonpositive nominal slack tension |
 | 700 | 28.5 | 1 | 2.74 | 8.07 | 85.6 | 14.5 | nonpositive nominal slack tension |
 | 700 | 53.5 | -1 | 2.74 | 8.42 | 85.6 | 11.9 | nonpositive nominal slack tension |
-| 700 | 53.5 | 1 | 2.74 | 6.15 | 85.6 | 16.7 | nonpositive nominal slack tension |
-| 850 | 28.5 | -1 | 2.57 | 6.95 | 89.6 | 12.1 | none |
+| 700 | 53.5 | 1 | 2.74 | 6.15 | 85.6 | 16.6 | nonpositive nominal slack tension |
+| 850 | 28.5 | -1 | 2.57 | 6.95 | 89.6 | 12.0 | none |
 | 850 | 28.5 | 1 | 2.57 | 7.54 | 89.6 | 14.5 | none |
 | 850 | 53.5 | -1 | 2.57 | 7.82 | 89.6 | 12.2 | none |
 | 850 | 53.5 | 1 | 2.57 | 5.90 | 89.6 | 16.8 | none |
@@ -159,7 +159,7 @@ Peak rope force 1250 N and peak current 90.4 A × Kt = 18.08 Nm, combined as unc
 | 1150 | 28.5 | -1 | 1.96 | 5.41 | 110.3 | 12.4 | motor bearing static factor |
 | 1150 | 28.5 | 1 | 1.96 | 5.67 | 110.3 | 14.8 | motor bearing static factor |
 | 1150 | 53.5 | -1 | 1.96 | 5.79 | 110.3 | 13.5 | motor bearing static factor |
-| 1150 | 53.5 | 1 | 1.96 | 4.86 | 110.3 | 17.8 | motor bearing static factor |
+| 1150 | 53.5 | 1 | 1.96 | 4.87 | 110.3 | 17.8 | motor bearing static factor |
 
 ## Limits
 

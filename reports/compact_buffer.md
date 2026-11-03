@@ -1,6 +1,6 @@
 # Compact buffer experiment
 
-Fingerprint: `3336514579535f58bb3be0aa871a6bfd919b729fd95d412b9c364eb1ac9f0f30`
+Fingerprint: `bd2550abb0bf58540a23aae449bb9ef2c083978febcd0f48684eabd385287cec`
 
 This experiment retains the coupled reference mechanics, source, control and thermal network. It changes the capacitor cell only. No complete enclosure fit or protection circuit is established.
 
