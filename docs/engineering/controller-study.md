@@ -1,5 +1,7 @@
 # Controller study — 2026-11-02
 
+> **Correction (2026-11-03):** the diagnosis below is superseded by the [fast-motion review](fast-motion-review.md). Fast reversal *is* voltage-limited: the requested current sits on the back-EMF/bus bound for 52% of the set, carrying 85% of the squared error. The `voltage_uncontrollable` flag used here only detects infeasibility, not saturation. Bandwidth (sensor and torque lags) contributes a few newtons. The planned-acceleration feedforward is not realisable on hardware. The gain results in this study are unchanged.
+
 **Decision: propose controller C1 for adoption after review; fast reversal still fails and needs a force-loop design, not more gain.**
 
 Evidence: [gain/feature sweep](../../reports/control_study.md) (16 variants × 8 cases on the R3 machine) and

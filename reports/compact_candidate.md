@@ -1,6 +1,6 @@
 # CAD-derived compact candidate simulation
 
-Fingerprint: `2237f34c849e4eb02151d7ff76cf4182edd4e20179daa07e2d087658f6e9867a`
+Fingerprint: `a65a6bd4d6895fd9734fad2a2237025c6383bc6f9982de0a67540d4ec9b8e7f8`
 
 **Assessment: REVISE.** This study evaluates the compact geometry candidate, not a complete qualified product. It retains all configured normal and fault scenarios and does not retune controller gains.
 

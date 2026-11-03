@@ -2,7 +2,7 @@
 
 > Simulation only. This is a reusable electromechanical model with explicit limitations, not hardware or human-use qualification.
 
-Input/model hash: `a348d72c23f4d10e1e19ef41b11ec09999c4fe1475ec29bdead5ea08ea1f1bad`
+Input/model hash: `30026a67431c239a42d9633763240dacb8727aae11f56b91d90065a6a1c14025`
 
 Case scope: **complete configured suite**; 27 of 27 configured cases. CasADi 3.8.2, NumPy 1.26.4.
 

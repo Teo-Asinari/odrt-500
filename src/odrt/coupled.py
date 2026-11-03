@@ -350,7 +350,13 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
         current_min = ca.fmax(-limit,(emf-vmax)/resistance)
         current_max = ca.fmin(limit,(emf+vmax)/resistance)
         uncontrollable = current_min>current_max
-        target_current = ca.if_else(uncontrollable,0,clamp(target_tau/motor['kt_nm_per_a'],current_min,current_max))
+        requested_current = target_tau/motor['kt_nm_per_a']
+        # Diagnostic only: the requested current lies beyond a back-EMF/bus bound
+        # that is tighter than the current limit. Saturation, not infeasibility.
+        voltage_limited = ca.logic_and(ca.logic_and(enabled,ca.logic_not(uncontrollable)),
+            ca.logic_or(ca.logic_and(requested_current>current_max,current_max<limit),
+                        ca.logic_and(requested_current<current_min,current_min>-limit)))
+        target_current = ca.if_else(uncontrollable,0,clamp(requested_current,current_min,current_max))
         target_tau = motor['kt_nm_per_a']*target_current
         normal_targets.append(target_tau)
         if fault=='torque_inverted':
@@ -434,7 +440,8 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
                           'motor_electrical_hz':ca.fabs(g*omega)*motor['pole_pairs']/(2*math.pi),'motor_bus_w':motor_bus_power,'supply_bus_w':source_power,'dump_w':dump_heat,
                           'copper_w':copper,'esr_w':cap_esr_heat,'gear_w':gear_heat,'cable_damping_w':cable_heat,
                           'phase_brake_w':brake_heat,'drive_enabled':enabled,'local_stop':local_stop,
-                          'target_torque_nm':target_tau,'voltage_uncontrollable':ca.logic_and(enabled,uncontrollable),'port_regularization_w':regularization_loss}.items():
+                          'target_torque_nm':target_tau,'voltage_uncontrollable':ca.logic_and(enabled,uncontrollable),
+                          'voltage_limited':voltage_limited,'port_regularization_w':regularization_loss}.items():
             observables[f'unit_{i}.{key}'] = value
     dz[1] = (user_force-total_force)/mass
     dz[3] = (user_moment-total_moment)/bar_i if n==2 else 0
@@ -466,7 +473,7 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
             post_state[index] = ca.if_else(trip,value,x[index])
     transition = ca.Function('physical_trip_transition',[event_index,t,x],[post_state])
     return dict(t=t,x=x,p=frozen_parameter,ode=ode,quad=quad,energy=energy,observables=obs,normal_targets=targets,observable_names=list(observables),
-                state_names=state_names,state0=np.array(state0),rhs=dynamics,capacitance_f=cap_c,
+                state_names=state_names,unit_fields=UNIT_FIELDS,state0=np.array(state0),rhs=dynamics,capacitance_f=cap_c,
                 esr_ohm=cap_r,rotor_inertia_kg_m2=rotor_j,stroke_m=stroke_m,units=n,
                 zero=ca.vertcat(*zero),transition=transition)
 
@@ -644,6 +651,11 @@ def summarize(sig,cfg,parts,case):
         for field in ('winding_c','housing_c','drive_c','supply_c','capacitor_c','dump_c','air_c'):
             metrics[prefix+'max_'+field] = float(sig[prefix+field].max())
         metrics[prefix+'voltage_uncontrollable_fraction'] = float(sig[prefix+'voltage_uncontrollable'].mean())
+        # Report-only saturation diagnostic; no pass/fail criterion is attached.
+        limited = sig[prefix+'voltage_limited'][normal]>.5
+        metrics[prefix+'voltage_limited_fraction'] = float(limited.mean()) if limited.size else None
+        metrics[prefix+'voltage_limited_error_share'] = (float((err[limited]**2).sum()/(err*err).sum())
+                                                         if err.size and (err*err).sum()>0 else None)
         metrics[prefix+'min_payout_m'] = float(sig[prefix+'payout_m'].min())
         metrics[prefix+'max_payout_m'] = float(sig[prefix+'payout_m'].max())
         metrics[prefix+'min_tension_n'] = float(force.min())

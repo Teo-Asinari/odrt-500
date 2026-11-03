@@ -1,6 +1,14 @@
 # Status
 
-## Active engineering goal — 2026-11-02
+## Active engineering goal — 2026-11-03
+
+**Fast-motion review:** [review](../docs/engineering/fast-motion-review.md), [study](fast_motion_study.md). The controller study's bandwidth diagnosis was wrong.
+Fast reversal and full stroke are **voltage-limited** (52% / 32% of the motion on the back-EMF/bus bound, carrying 85% / 78% of the error). The one-way Regen Clamp also dumps 317 W of the
+fast-reversal regeneration, draining the bank. A **bidirectional bank** at 5:1 takes fast reversal 11.4 → 8.0% (aged: 62% with trip → 12%, no trip), with no heavy/slow/endurance regression;
+proposed as the R4 power topology, fault suite not yet rerun. No ratio passes heavy (needs ≥5:1 at 50–60 A) and fast (needs ≤4:1) together with the RO100 at 52 V: **owner decision** on motor/bus class or a reduced fast envelope, alongside the endurance Km decision.
+The planned-acceleration feedforward is not realisable on hardware and should be retired. New report-only diagnostics: `voltage_limited_fraction`, `voltage_limited_error_share`.
+
+## Previous checkpoint — 2026-11-02
 
 **Controller study:** [review](../docs/engineering/controller-study.md). Proposed controller C1 (kp 4, release limiter 2.5 m/s, 0.15 m end zone)
 on the full R3 suite ([results](r3c_candidate.md)): fast reversal 29 → 11%, full stroke 36 → 14% with no stop engagement, aged asymmetric set no longer trips.

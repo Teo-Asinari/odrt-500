@@ -1,6 +1,6 @@
 # Upstream-buffer numerical refinement
 
-Revision fingerprint: `f270fddd5ec7ca14eccde51878c19ab86ae5f1e2f2461d2d2d28c0526f96de62`
+Revision fingerprint: `04cd1d8e999ed5a2e2d8664fedcc395da9cd39e0dd54a2476e75d6306257978d`
 
 | Case | Max medium–fine change | Outcome |
 |---|---:|---|

@@ -1,0 +1,27 @@
+# Fast-motion study on R3 with controller C1 (make fast-study). Study only; nothing adopted.
+purpose: >-
+  The controller study attributed the remaining fast-reversal error to force-loop bandwidth. Trace
+  analysis contradicts that: sensor and torque-loop lags contribute a few newtons, while the commanded
+  current sits on the back-EMF/bus voltage bound for about half of the set. This study attributes the
+  error and tests the voltage, energy and feedforward levers separately.
+banks: [r2_fresh, r2_aged]
+cases: [single_fast_full, single_stroke_full, single_heavy_full, paired_heavy_full, single_slow_full, single_endurance_full]
+# Each variant may change control, reference or power keys, a sensitivity scale, or the topology.
+# topology: clamp (R3: bank upstream of the one-way Regen Clamp) or bidirectional (bank on the drive bus).
+variants:
+  r3c: {}
+  measured_accel: {control: {acceleration_blend: 1.0}}
+  no_feedforward: {control: {inertia_feedforward: 0}}
+  esr_0.1: {sensitivity: {esr_scale: 0.1}}
+  ratio_4.5: {reference: {ratio: 4.5}}
+  bidirectional: {topology: bidirectional}
+  bidirectional_ratio_4.5: {topology: bidirectional, reference: {ratio: 4.5}}
+  bidirectional_ratio_4: {topology: bidirectional, reference: {ratio: 4.0}}
+  # 60 A is the RO100 peak torque (12 N m / 0.2 N m/A); the ODrive Pro lists 80 A with active cooling.
+  bidirectional_ratio_4.5_60a: {topology: bidirectional, reference: {ratio: 4.5}, control: {current_limit_a: 60}}
+notes:
+  - Ratio variants keep the R2 CAD drum inertia and do not rerun the belt, bearing or support screens; the motor's reflected inertia scales with the ratio squared.
+  - The bidirectional topology puts the 20-cell bank directly on the drive bus through its ESR, keeps the one-way supply and the 54.35–54.5 V dump. Pre-charge, inrush, bank ripple current, supply reverse blocking and cell balancing are not modelled.
+  - The 60 A variant uses the motor's whole peak-torque current. Motor and drive heating at that current are modelled; drive current rating with the proposed airflow is not verified.
+  - Cells with a trip report little voltage-limited share because a tripped drive is disabled, not saturated.
+  - voltage-limited share is the fraction of squared tracking error that occurs while the requested current exceeds a back-EMF/bus bound tighter than the current limit. It is a diagnostic, not a pass/fail criterion.

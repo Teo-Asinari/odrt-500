@@ -29,6 +29,7 @@ STUDIES = {
     'control-study': ('reports/control_study.json', 'fingerprint', 'odrt.control_study', 'study_fingerprint', None),
     'r3c-candidate': ('reports/r3c_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r3c_fingerprint', None),
     'r3-candidate': ('reports/r3_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r3_fingerprint', None),
+    'fast-study': ('reports/fast_motion_study.json', 'fingerprint', 'odrt.fast_motion_study', 'study_fingerprint', None),
 }
 
 
