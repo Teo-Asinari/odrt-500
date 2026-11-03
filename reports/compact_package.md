@@ -1,6 +1,6 @@
 # Compact integration experiment
 
-Fingerprint: `f8ec3e97929d1bc74bb7967ea21e21c60c1daa0624d4adce4728eaeda3d16a3c`
+Fingerprint: `0f87aadf667c20e52cf5b039801839dafbfaef496b6bc73dd36f8697e6c26eb8`
 
 ![CAD integration views](figures/compact_package.png)
 
