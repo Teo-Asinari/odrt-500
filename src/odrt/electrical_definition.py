@@ -94,7 +94,8 @@ def generate(root=Path('.')):
     (reports/'harness_preliminary.csv').write_text(output.getvalue())
     lines = ['# Preliminary electrical definition', '', f'Fingerprint: `{digest}`', '',
              '**Functional schematic, not a pin-level or fabrication schematic.** '
-             'The candidate parts remain from the coupled reference; the compact buffer experiment is separate. '
+             'The power path follows the R4 candidate (bank on the drive bus behind the Regen Clamp; [sizing](power_path.md)); '
+             'other candidate parts remain from the coupled reference. '
              'Graph edges represent semantic connectivity and bundles, not conductor count or physical routes.', '',
              '[Open functional schematic](figures/electrical_functional.svg) · '
              '[Preliminary harness register](harness_preliminary.csv)', '',
@@ -108,10 +109,11 @@ def generate(root=Path('.')):
               'All supply, inverter, storage, dump, braking, logic and sensor functions need placement, '
               'protection ratings, connectors, wire sizing and thermal review. Every harness row retains TBD '
               'for unengineered details; bundles such as phases and cell taps must be expanded into conductors. '
-              'Selected component labels refer to `data/engineering_components.yaml`, not verified pinouts.', '',
+              'Selected component labels refer to `data/engineering_components.yaml` and, for the R4 power path, '
+              '`data/revision_components.yaml` and `data/revision_support.yaml`; they are not verified pinouts.', '',
               'The phase transfer proposes break-before-make braking. It is not implemented or qualified. '
               'Its switching delay, contact failure, welded states and interlock must replace the current '
-              'ideal fault response in simulation. The S1 inhibit input is not claimed to provide certified STO. '
+              'ideal fault response in simulation. The drive inhibit input is not claimed to provide certified STO. '
               'The supervisor is an independent functional proposal; its power loss, common causes, diagnostics, '
               'latching and reset behavior remain unresolved.', '',
               'A local hardware stop path, bounded peer response, independent sensing plausibility, bank '

@@ -2,6 +2,11 @@
 
 ## Active engineering goal — 2026-11-03
 
+**Power path (R4):** [review](../docs/engineering/power-path-review.md), [sizing](power_path.md). Bank behind the Regen Clamp's output: the clamp's diode blocks supply back-feed and its chopper stays the dump.
+Sized: ≥17.8 A time-delay bank fuse, back-to-back MOSFET disconnect, one 6.8 Ω pulse resistor for pre-charge (68 s to enable, fresh) and service discharge (80 s to 5 V), passive 260 Ω balancing
+(worst cell 2.88 V at the trip), dump current shunt with a fault rule independent of overvoltage. **Fails:** clamp 58 V rating is 1 V above the 57 V trip (choice: 56 V trip or 80 V-class parts).
+Unverified: supply overload mode, cell leakage, clamp brake-rating meaning; no parts selected. Electrical definition and cost allowances now follow R4.
+
 **Current decision: REVISE R4 — new lead candidate.** [R4 review](../docs/engineering/r4-review.md), [results](r4_candidate.md).
 R4 = R3 + C1 with the bank moved onto the drive bus. Across all 54 scenarios it improves or holds every case with no new failed comparison: fast reversal 11.4 → 8.0% (aged 62% with trip → 12.1%, no trip),
 full stroke 14 → 11%, higher bus minimums everywhere; refinements pass. Fast reversal/full stroke (voltage-limited at 5:1) and endurance (Km) still fail, pending the owner's motor/bus decision.

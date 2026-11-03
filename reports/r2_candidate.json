@@ -1,5 +1,5 @@
 {
-  "fingerprint": "57920a0d63127c682ffad92c32fa6d4714c385433dfd96fe0d771601310d0e83",
+  "fingerprint": "ac23fb23f1a0de15c9f65c7f98df92bf90009d7f94d2d886705f5415bdde367f",
   "study": "r2",
   "title": "R2 candidate simulation",
   "assessment": "REVISE",
@@ -174,6 +174,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 2.038541375219303,
+        "unit_0.capacitor_peak_a": 14.21334364734509,
+        "unit_0.dump_average_peak_a": 10.584941412764952,
         "unit_0.supply_peak_a": 9.622565140030616,
         "assessment": [
           {
@@ -238,6 +240,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.21269711044010498,
+        "unit_0.capacitor_peak_a": 0.7633006513821787,
+        "unit_0.dump_average_peak_a": 2.1550676365278227,
         "unit_0.supply_peak_a": 1.4451283650530122,
         "assessment": [
           {
@@ -299,6 +303,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.8476031858859574,
+        "unit_0.capacitor_peak_a": 3.902515516583611,
+        "unit_0.dump_average_peak_a": 9.324408963598614,
         "unit_0.supply_peak_a": 7.121006784360758,
         "assessment": [
           {
@@ -360,6 +366,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.2492883094464107,
+        "unit_0.capacitor_peak_a": 5.9851876254594325,
+        "unit_0.dump_average_peak_a": 13.552199490033345,
         "unit_0.supply_peak_a": 9.620357083169267,
         "assessment": [
           {
@@ -421,6 +429,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.6026583176312196,
+        "unit_0.capacitor_peak_a": 10.693207496066103,
+        "unit_0.dump_average_peak_a": 1.519334091004084,
         "unit_0.supply_peak_a": 9.621410959795057,
         "assessment": [
           {
@@ -484,6 +494,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.49996049317800145,
+        "unit_0.capacitor_peak_a": 1.4767725899723094,
+        "unit_0.dump_average_peak_a": 4.067821107840031,
         "unit_0.supply_peak_a": 4.781182071252452,
         "assessment": [
           {
@@ -545,6 +557,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.725946562430575,
+        "unit_0.capacitor_peak_a": 10.203548429092184,
+        "unit_0.dump_average_peak_a": 13.859476625350435,
         "unit_0.supply_peak_a": 9.62153922690587,
         "assessment": [
           {
@@ -606,6 +620,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.0875050850801213,
+        "unit_0.capacitor_peak_a": 3.321321683979503,
+        "unit_0.dump_average_peak_a": 0.0,
         "unit_0.supply_peak_a": 9.619695975751172,
         "assessment": [
           {
@@ -667,6 +683,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.07941886094423162,
+        "unit_0.capacitor_peak_a": 0.6166233291042742,
+        "unit_0.dump_average_peak_a": 0.5715232036592967,
         "unit_0.supply_peak_a": 0.7971151850772061,
         "assessment": [
           {
@@ -728,6 +746,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 8.181270422940562,
+        "unit_0.capacitor_peak_a": 24.557143151170703,
+        "unit_0.dump_average_peak_a": 33.77373166000739,
         "unit_0.supply_peak_a": 9.625916043402965,
         "assessment": [
           {
@@ -794,6 +814,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.640397791230674,
+        "unit_0.capacitor_peak_a": 6.5749223343638175,
+        "unit_0.dump_average_peak_a": 15.888348431398814,
         "unit_0.supply_peak_a": 9.620512099770798,
         "assessment": [
           {
@@ -886,9 +908,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.73327471396,
+        "unit_0.capacitor_peak_a": 10.097841246993157,
+        "unit_0.dump_average_peak_a": 13.704196592968525,
         "unit_0.supply_peak_a": 9.621536316682974,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.733274716218042,
+        "unit_1.capacitor_peak_a": 10.097841114057651,
+        "unit_1.dump_average_peak_a": 13.704196592968998,
         "unit_1.supply_peak_a": 9.621536316661999,
         "assessment": [
           {
@@ -981,9 +1007,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 6.192860567498217,
+        "unit_0.capacitor_peak_a": 23.478764499367315,
+        "unit_0.dump_average_peak_a": 17.485083302711164,
         "unit_0.supply_peak_a": 9.625165588344261,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 1.9970705204768697,
+        "unit_1.capacitor_peak_a": 8.33295572137658,
+        "unit_1.dump_average_peak_a": 10.342633041584726,
         "unit_1.supply_peak_a": 9.620855381430536,
         "assessment": [
           {
@@ -1078,9 +1108,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7296639129060323,
+        "unit_0.capacitor_peak_a": 3.0226704639760147,
+        "unit_0.dump_average_peak_a": 13.704196592968525,
         "unit_0.supply_peak_a": 4.049313537440906,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 5.350426198837085,
+        "unit_1.capacitor_peak_a": 23.931245342298627,
+        "unit_1.dump_average_peak_a": 13.704196592968998,
         "unit_1.supply_peak_a": 9.62455139003638,
         "assessment": [
           {
@@ -1173,9 +1207,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7296626786720829,
+        "unit_0.capacitor_peak_a": 3.0226702775000165,
+        "unit_0.dump_average_peak_a": 13.704180394270393,
         "unit_0.supply_peak_a": 4.049345181218683,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.8144771467239026,
+        "unit_1.capacitor_peak_a": 3.484561557178106,
+        "unit_1.dump_average_peak_a": 13.704180394271349,
         "unit_1.supply_peak_a": 5.115474698339925,
         "assessment": [
           {
@@ -1268,9 +1306,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 9.408362088056164,
+        "unit_0.capacitor_peak_a": 19.704623078374926,
+        "unit_0.dump_average_peak_a": 13.704196592968525,
         "unit_0.supply_peak_a": 4.049313537440906,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 3.2863331689990813,
+        "unit_1.capacitor_peak_a": 8.023593936369041,
+        "unit_1.dump_average_peak_a": 13.704196592968998,
         "unit_1.supply_peak_a": 9.620859282680593,
         "assessment": [
           {
@@ -1363,9 +1405,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 9.408343926525014,
+        "unit_0.capacitor_peak_a": 19.70473169715826,
+        "unit_0.dump_average_peak_a": 13.704180394270393,
         "unit_0.supply_peak_a": 4.049345181218683,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 3.2863421316788144,
+        "unit_1.capacitor_peak_a": 8.02371874431219,
+        "unit_1.dump_average_peak_a": 13.704180394271349,
         "unit_1.supply_peak_a": 9.62085930616347,
         "assessment": [
           {
@@ -1458,9 +1504,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.8126947245439501,
+        "unit_0.capacitor_peak_a": 5.865146449588046,
+        "unit_0.dump_average_peak_a": 13.704180394270393,
         "unit_0.supply_peak_a": 7.675345067043346,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.7978605133366476,
+        "unit_1.capacitor_peak_a": 3.0226702776050476,
+        "unit_1.dump_average_peak_a": 13.704180394271349,
         "unit_1.supply_peak_a": 4.359977871169993,
         "assessment": [
           {
@@ -1553,9 +1603,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7728065725751576,
+        "unit_0.capacitor_peak_a": 3.0226702775000165,
+        "unit_0.dump_average_peak_a": 13.704180394270393,
         "unit_0.supply_peak_a": 4.049345181218683,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.8004920239289107,
+        "unit_1.capacitor_peak_a": 3.0226702776050476,
+        "unit_1.dump_average_peak_a": 13.704180394271349,
         "unit_1.supply_peak_a": 4.488760318293006,
         "assessment": [
           {
@@ -1648,9 +1702,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.0799925604273553,
+        "unit_0.capacitor_peak_a": 25.38297611622324,
+        "unit_0.dump_average_peak_a": 13.704180774705735,
         "unit_0.supply_peak_a": 9.625411250380214,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.840947847724962,
+        "unit_1.capacitor_peak_a": 4.389599075639145,
+        "unit_1.dump_average_peak_a": 13.704180777214733,
         "unit_1.supply_peak_a": 6.144163294097909,
         "assessment": [
           {
@@ -1750,9 +1808,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7934230174761233,
+        "unit_0.capacitor_peak_a": 3.0226702775000165,
+        "unit_0.dump_average_peak_a": 13.704180394270393,
         "unit_0.supply_peak_a": 4.049345181218683,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.816381435409973,
+        "unit_1.capacitor_peak_a": 3.0226702776050476,
+        "unit_1.dump_average_peak_a": 13.704180394271349,
         "unit_1.supply_peak_a": 4.334768423398288,
         "assessment": [
           {
@@ -1845,9 +1907,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7927128398795389,
+        "unit_0.capacitor_peak_a": 3.0226704639760147,
+        "unit_0.dump_average_peak_a": 13.704196592968525,
         "unit_0.supply_peak_a": 4.049313537440906,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.7927128398393699,
+        "unit_1.capacitor_peak_a": 3.0226704640793662,
+        "unit_1.dump_average_peak_a": 13.704196592968998,
         "unit_1.supply_peak_a": 4.049313536944243,
         "assessment": [
           {
@@ -1940,9 +2006,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.068603322838707,
+        "unit_0.capacitor_peak_a": 20.754713050172253,
+        "unit_0.dump_average_peak_a": 13.704180394270393,
         "unit_0.supply_peak_a": 9.624087207013082,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 1.068603322861728,
+        "unit_1.capacitor_peak_a": 20.75471305600839,
+        "unit_1.dump_average_peak_a": 13.704180394271349,
         "unit_1.supply_peak_a": 9.624087207014549,
         "assessment": [
           {
@@ -2035,9 +2105,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.0695354090672737,
+        "unit_0.capacitor_peak_a": 20.7880460434588,
+        "unit_0.dump_average_peak_a": 13.710370175545608,
         "unit_0.supply_peak_a": 9.624095700430322,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 1.0555085286165222,
+        "unit_1.capacitor_peak_a": 20.599855046965427,
+        "unit_1.dump_average_peak_a": 13.600159676297126,
         "unit_1.supply_peak_a": 9.624047502937339,
         "assessment": [
           {
@@ -2130,9 +2204,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7574730977831952,
+        "unit_0.capacitor_peak_a": 3.0226704639760147,
+        "unit_0.dump_average_peak_a": 13.704196592968525,
         "unit_0.supply_peak_a": 4.049313537440906,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.7574730977486295,
+        "unit_1.capacitor_peak_a": 3.0226704640793662,
+        "unit_1.dump_average_peak_a": 13.704196592968998,
         "unit_1.supply_peak_a": 4.049313536944243,
         "assessment": [
           {
@@ -2225,9 +2303,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.44859748414216943,
+        "unit_0.capacitor_peak_a": 3.0226676886650434,
+        "unit_0.dump_average_peak_a": 0.0,
         "unit_0.supply_peak_a": 3.6007916491087006,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.016538561003795,
+        "unit_1.capacitor_peak_a": 16.003826890270744,
+        "unit_1.dump_average_peak_a": 12.195204440500556,
         "unit_1.supply_peak_a": 9.622519986830936,
         "assessment": [
           {
@@ -2320,9 +2402,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.4485974885736862,
+        "unit_0.capacitor_peak_a": 3.0226676886650434,
+        "unit_0.dump_average_peak_a": 0.0,
         "unit_0.supply_peak_a": 3.6007916491087006,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.4482765704528602,
+        "unit_1.capacitor_peak_a": 3.0226676886650434,
+        "unit_1.dump_average_peak_a": 2.382472854716134,
         "unit_1.supply_peak_a": 3.6007916491087006,
         "assessment": [
           {
@@ -2391,6 +2477,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.9044464339271922,
+        "unit_0.capacitor_peak_a": 16.46346745185955,
+        "unit_0.dump_average_peak_a": 10.348325706458839,
         "unit_0.supply_peak_a": 9.624061193027323,
         "assessment": [
           {
@@ -2455,6 +2543,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.13919337816759794,
+        "unit_0.capacitor_peak_a": 0.4969596730935616,
+        "unit_0.dump_average_peak_a": 2.155031756725046,
         "unit_0.supply_peak_a": 1.6629163437991423,
         "assessment": [
           {
@@ -2516,6 +2606,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.556925684815419,
+        "unit_0.capacitor_peak_a": 2.556249044384274,
+        "unit_0.dump_average_peak_a": 9.311606324779662,
         "unit_0.supply_peak_a": 8.266574011873656,
         "assessment": [
           {
@@ -2577,6 +2669,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.2045305560709088,
+        "unit_0.capacitor_peak_a": 6.611700104388922,
+        "unit_0.dump_average_peak_a": 13.534091021408953,
         "unit_0.supply_peak_a": 9.620687644617023,
         "assessment": [
           {
@@ -2638,6 +2732,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.39512311281550855,
+        "unit_0.capacitor_peak_a": 11.395610754212369,
+        "unit_0.dump_average_peak_a": 1.515491751621604,
         "unit_0.supply_peak_a": 9.621919507784169,
         "assessment": [
           {
@@ -2701,6 +2797,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.3254077360057297,
+        "unit_0.capacitor_peak_a": 0.9528029676543104,
+        "unit_0.dump_average_peak_a": 4.067639119053728,
         "unit_0.supply_peak_a": 5.148428279917304,
         "assessment": [
           {
@@ -2762,6 +2860,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 5.565388382459955,
+        "unit_0.capacitor_peak_a": 13.077441457577814,
+        "unit_0.dump_average_peak_a": 13.856351449566192,
         "unit_0.supply_peak_a": 9.62315925811458,
         "assessment": [
           {
@@ -2823,6 +2923,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.7839496780948215,
+        "unit_0.capacitor_peak_a": 2.946895494551298,
+        "unit_0.dump_average_peak_a": 0.0,
         "unit_0.supply_peak_a": 9.619799765174248,
         "assessment": [
           {
@@ -2884,6 +2986,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.05175938458629236,
+        "unit_0.capacitor_peak_a": 0.3430690086632993,
+        "unit_0.dump_average_peak_a": 0.571504947822902,
         "unit_0.supply_peak_a": 0.9037824812494222,
         "assessment": [
           {
@@ -2945,6 +3049,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 3.1192531599555147,
+        "unit_0.capacitor_peak_a": 22.71366627807371,
+        "unit_0.dump_average_peak_a": 30.45978581071141,
         "unit_0.supply_peak_a": 9.625229230023859,
         "assessment": [
           {
@@ -3011,6 +3117,8 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 1.2164386500595836,
+        "unit_0.capacitor_peak_a": 7.016720916104983,
+        "unit_0.dump_average_peak_a": 15.842498532800422,
         "unit_0.supply_peak_a": 9.620798065036945,
         "assessment": [
           {
@@ -3103,9 +3211,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 5.420450235037538,
+        "unit_0.capacitor_peak_a": 13.119711266939099,
+        "unit_0.dump_average_peak_a": 13.700637429284873,
         "unit_0.supply_peak_a": 9.623236065018682,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 5.4204502124110014,
+        "unit_1.capacitor_peak_a": 13.119710961414896,
+        "unit_1.dump_average_peak_a": 13.700637429289182,
         "unit_1.supply_peak_a": 9.623236064991378,
         "assessment": [
           {
@@ -3204,9 +3316,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.773184461144624,
+        "unit_0.capacitor_peak_a": 14.067755697972522,
+        "unit_0.dump_average_peak_a": 16.745940821434317,
         "unit_0.supply_peak_a": 9.62349173341414,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 2.001162534967401,
+        "unit_1.capacitor_peak_a": 14.085621690099519,
+        "unit_1.dump_average_peak_a": 10.2591620986856,
         "unit_1.supply_peak_a": 9.622717935292277,
         "assessment": [
           {
@@ -3305,9 +3421,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.4804836303090104,
+        "unit_0.capacitor_peak_a": 1.9889740500382758,
+        "unit_0.dump_average_peak_a": 13.700637429284873,
         "unit_0.supply_peak_a": 5.0623744779810345,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 2.5081727189921357,
+        "unit_1.capacitor_peak_a": 24.823549905527805,
+        "unit_1.dump_average_peak_a": 13.700637429289182,
         "unit_1.supply_peak_a": 9.626098719633125,
         "assessment": [
           {
@@ -3400,9 +3520,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.4805074427929898,
+        "unit_0.capacitor_peak_a": 1.9889732104321698,
+        "unit_0.dump_average_peak_a": 13.700632195277695,
         "unit_0.supply_peak_a": 5.062563497114817,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.5353997277741391,
+        "unit_1.capacitor_peak_a": 2.2822735916037122,
+        "unit_1.dump_average_peak_a": 13.70063219485728,
         "unit_1.supply_peak_a": 6.34919103732985,
         "assessment": [
           {
@@ -3495,9 +3619,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.455266622495957,
+        "unit_0.capacitor_peak_a": 19.177370176544077,
+        "unit_0.dump_average_peak_a": 13.700637429284873,
         "unit_0.supply_peak_a": 5.0623744779810345,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 2.4466852274896422,
+        "unit_1.capacitor_peak_a": 23.40835301800824,
+        "unit_1.dump_average_peak_a": 13.700637429289182,
         "unit_1.supply_peak_a": 9.625437603782638,
         "assessment": [
           {
@@ -3590,9 +3718,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.455266653723572,
+        "unit_0.capacitor_peak_a": 19.17761332721738,
+        "unit_0.dump_average_peak_a": 13.700632195277695,
         "unit_0.supply_peak_a": 5.062563497114817,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 1.4392223188459965,
+        "unit_1.capacitor_peak_a": 9.24243491652797,
+        "unit_1.dump_average_peak_a": 13.70063219485728,
         "unit_1.supply_peak_a": 9.621334868038264,
         "assessment": [
           {
@@ -3685,9 +3817,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.5342121086916406,
+        "unit_0.capacitor_peak_a": 3.859412659422791,
+        "unit_0.dump_average_peak_a": 13.700632195277695,
         "unit_0.supply_peak_a": 9.619929239759937,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.5244736067620165,
+        "unit_1.capacitor_peak_a": 1.9889732104265825,
+        "unit_1.dump_average_peak_a": 13.70063219485728,
         "unit_1.supply_peak_a": 5.353745884221137,
         "assessment": [
           {
@@ -3780,9 +3916,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.5080955588981895,
+        "unit_0.capacitor_peak_a": 1.9889732104321698,
+        "unit_0.dump_average_peak_a": 13.700632195277695,
         "unit_0.supply_peak_a": 5.062563497114817,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.5262038685295791,
+        "unit_1.capacitor_peak_a": 1.9889732104265825,
+        "unit_1.dump_average_peak_a": 13.70063219485728,
         "unit_1.supply_peak_a": 5.523478566019878,
         "assessment": [
           {
@@ -3875,9 +4015,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.8134583438154105,
+        "unit_0.capacitor_peak_a": 21.58392252185588,
+        "unit_0.dump_average_peak_a": 13.700640052406547,
         "unit_0.supply_peak_a": 9.6261162305075,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.5523726784744643,
+        "unit_1.capacitor_peak_a": 2.869095907113704,
+        "unit_1.dump_average_peak_a": 13.700640056567293,
         "unit_1.supply_peak_a": 7.674440804106289,
         "assessment": [
           {
@@ -3977,9 +4121,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.5216001697120136,
+        "unit_0.capacitor_peak_a": 1.9889732104321698,
+        "unit_0.dump_average_peak_a": 13.700632195277695,
         "unit_0.supply_peak_a": 5.062563497114817,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.5365909597600208,
+        "unit_1.capacitor_peak_a": 1.9889732104265825,
+        "unit_1.dump_average_peak_a": 13.70063219485728,
         "unit_1.supply_peak_a": 5.300329782983624,
         "assessment": [
           {
@@ -4072,9 +4220,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.5211232272432726,
+        "unit_0.capacitor_peak_a": 1.9889740500382758,
+        "unit_0.dump_average_peak_a": 13.700637429284873,
         "unit_0.supply_peak_a": 5.0623744779810345,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.5211232272021848,
+        "unit_1.capacitor_peak_a": 1.988974050113464,
+        "unit_1.dump_average_peak_a": 13.700637429289182,
         "unit_1.supply_peak_a": 5.062374477955621,
         "assessment": [
           {
@@ -4167,9 +4319,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.8186634192816684,
+        "unit_0.capacitor_peak_a": 17.785149193193533,
+        "unit_0.dump_average_peak_a": 13.700632195277695,
         "unit_0.supply_peak_a": 9.624628443427223,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.8186634191761815,
+        "unit_1.capacitor_peak_a": 17.78514918513853,
+        "unit_1.dump_average_peak_a": 13.70063219485728,
         "unit_1.supply_peak_a": 9.624628443424458,
         "assessment": [
           {
@@ -4262,9 +4418,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.8194513608425292,
+        "unit_0.capacitor_peak_a": 17.81922663746827,
+        "unit_0.dump_average_peak_a": 13.706822707461908,
         "unit_0.supply_peak_a": 9.624640307160071,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.809798750653542,
+        "unit_1.capacitor_peak_a": 17.61408582176045,
+        "unit_1.dump_average_peak_a": 13.596719657478193,
         "unit_1.supply_peak_a": 9.624569716008063,
         "assessment": [
           {
@@ -4357,9 +4517,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.4980195643248709,
+        "unit_0.capacitor_peak_a": 1.9889740500382758,
+        "unit_0.dump_average_peak_a": 13.700637429284873,
         "unit_0.supply_peak_a": 5.0623744779810345,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.4980195643464397,
+        "unit_1.capacitor_peak_a": 1.988974050113464,
+        "unit_1.dump_average_peak_a": 13.700637429289182,
         "unit_1.supply_peak_a": 5.062374477955621,
         "assessment": [
           {
@@ -4452,9 +4616,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.29507167536804985,
+        "unit_0.capacitor_peak_a": 1.98897165031619,
+        "unit_0.dump_average_peak_a": 0.0,
         "unit_0.supply_peak_a": 4.66069292425946,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.606067843246749,
+        "unit_1.capacitor_peak_a": 18.988959640859903,
+        "unit_1.dump_average_peak_a": 12.194464639067368,
         "unit_1.supply_peak_a": 9.624036793841796,
         "assessment": [
           {
@@ -4547,9 +4715,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 0.2950717704332577,
+        "unit_0.capacitor_peak_a": 1.9889732104321698,
+        "unit_0.dump_average_peak_a": 0.0,
         "unit_0.supply_peak_a": 4.660694578977238,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 0.29485825484204736,
+        "unit_1.capacitor_peak_a": 1.9889732104265825,
+        "unit_1.dump_average_peak_a": 2.380961397882125,
         "unit_1.supply_peak_a": 4.660694578949727,
         "assessment": [
           {
@@ -4776,9 +4948,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.73327471396,
+        "unit_0.capacitor_peak_a": 10.097841246993157,
+        "unit_0.dump_average_peak_a": 13.704196592968525,
         "unit_0.supply_peak_a": 9.621536316682974,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.733274716218042,
+        "unit_1.capacitor_peak_a": 10.097841114057651,
+        "unit_1.dump_average_peak_a": 13.704196592968998,
         "unit_1.supply_peak_a": 9.621536316661999,
         "assessment": [
           {
@@ -4870,9 +5046,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.733386284872642,
+        "unit_0.capacitor_peak_a": 10.098442910662637,
+        "unit_0.dump_average_peak_a": 13.704181773227747,
         "unit_0.supply_peak_a": 9.621536478801149,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.733386285190988,
+        "unit_1.capacitor_peak_a": 10.098442891500074,
+        "unit_1.dump_average_peak_a": 13.70418177322824,
         "unit_1.supply_peak_a": 9.621536478798296,
         "assessment": [
           {
@@ -4964,9 +5144,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.7334518747771295,
+        "unit_0.capacitor_peak_a": 10.098812979374053,
+        "unit_0.dump_average_peak_a": 13.7041924040153,
         "unit_0.supply_peak_a": 9.621536576370225,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.733451879813599,
+        "unit_1.capacitor_peak_a": 10.098812678605189,
+        "unit_1.dump_average_peak_a": 13.704192404015311,
         "unit_1.supply_peak_a": 9.621536576322749,
         "assessment": [
           {
@@ -5058,9 +5242,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.733704355679811,
+        "unit_0.capacitor_peak_a": 10.098224668419322,
+        "unit_0.dump_average_peak_a": 13.68812773029154,
         "unit_0.supply_peak_a": 9.621536435701515,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.733704354168914,
+        "unit_1.capacitor_peak_a": 10.098224772483086,
+        "unit_1.dump_average_peak_a": 13.688127730291026,
         "unit_1.supply_peak_a": 9.621536435717813,
         "assessment": [
           {
@@ -5152,9 +5340,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 6.432908760332656,
+        "unit_0.capacitor_peak_a": 22.692619208202206,
+        "unit_0.dump_average_peak_a": 7.841239206183011,
         "unit_0.supply_peak_a": 9.625110426659457,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 6.43290876030555,
+        "unit_1.capacitor_peak_a": 22.692619208212154,
+        "unit_1.dump_average_peak_a": 7.841239206435344,
         "unit_1.supply_peak_a": 9.625110426659456,
         "assessment": [
           {
@@ -5252,9 +5444,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 5.078428333341571,
+        "unit_0.capacitor_peak_a": 18.152035045072203,
+        "unit_0.dump_average_peak_a": 13.469593150018566,
         "unit_0.supply_peak_a": 9.62360833026455,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 5.078426817540167,
+        "unit_1.capacitor_peak_a": 18.152034923536775,
+        "unit_1.dump_average_peak_a": 13.469593150018566,
         "unit_1.supply_peak_a": 9.623608330298545,
         "assessment": [
           {
@@ -5354,9 +5550,13 @@
         ],
         "unit_0.max_capacitor_v": 52.0,
         "unit_0.capacitor_rms_a": 4.737281966698234,
+        "unit_0.capacitor_peak_a": 10.175614968915527,
+        "unit_0.dump_average_peak_a": 14.405492143418794,
         "unit_0.supply_peak_a": 9.62153394331825,
         "unit_1.max_capacitor_v": 52.0,
         "unit_1.capacitor_rms_a": 4.737281963088099,
+        "unit_1.capacitor_peak_a": 10.175614842775007,
+        "unit_1.dump_average_peak_a": 14.405492136580966,
         "unit_1.supply_peak_a": 9.621533943283008,
         "assessment": [
           {

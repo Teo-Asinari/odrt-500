@@ -1,0 +1,179 @@
+{
+  "fingerprint": "256137b2998b089f38eb1e95d9c4f6d015bd6ba91a29bbdbfbaf499ae7ae3b10",
+  "r4_fingerprint": "e5d3015c45bcccc720c226ec755801240a2a4024d719a25f73f4c39736b9d387",
+  "assumptions": {
+    "device_voltage_class_v": 80,
+    "supply_current_margin": 0.8,
+    "fuse_current_factor": 1.25,
+    "bypass_close_delta_v": 5,
+    "service_safe_v": 5,
+    "wiring_resistance_ohm": 0.02,
+    "ideal_diode_on_resistance_ohm": 0.005,
+    "disconnect_on_resistance_ohm": 0.004,
+    "cell_leakage_a": 0.0001,
+    "balancing_current_ratio": 100,
+    "capacitance_spread_fraction": 0.1,
+    "cell_monitor_trip_v": 2.95,
+    "dump_shunt_ohm": 0.001,
+    "dump_detection_s": 0.1,
+    "dump_min_expected_a": 2,
+    "bank_derate_start_c": 55
+  },
+  "sources_not_read": [
+    {
+      "item": "EPP-500-54 overload protection type (constant current vs hiccup) and start-up into capacitive load",
+      "source": "https://www.meanwell.com/Upload/PDF/EPP-500/EPP-500-SPEC.PDF",
+      "status": "Fetched 2026-11-03 but text not extractable; not used. The pre-charge below does not rely on it."
+    },
+    {
+      "item": "Eaton TV1860-3R0107-R leakage current and capacitance upper tolerance",
+      "source": "https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-tv-supercapacitors-cylindrical-cells-data-sheet.pdf",
+      "status": "Fetch timed out 2026-11-03; leakage is assumed below."
+    },
+    {
+      "item": "Ideal-diode controller ratings (candidate class, e.g. 80 V-rated controllers)",
+      "source": "none read",
+      "status": "No controller is named; only required ratings are derived."
+    }
+  ],
+  "envelope": {
+    "bank_rms_a": {
+      "value": 14.241374282063337,
+      "case": "r2_aged/single_fast_full"
+    },
+    "bank_peak_a": {
+      "value": 34.696986870738044,
+      "case": "r2_fresh/left_torque_inverted"
+    },
+    "bank_max_v": {
+      "value": 53.6774607914456,
+      "case": "r2_fresh/single_stroke_full"
+    },
+    "supply_peak_a": {
+      "value": 9.615384615384615,
+      "case": "r2_fresh/single_hold_full"
+    },
+    "dump_average_peak_a": {
+      "value": 19.759273797874325,
+      "case": "r2_aged/single_fast_full"
+    },
+    "bus_max_v": {
+      "value": 56.96235375321788,
+      "case": "r2_aged/paired_dump_failure"
+    },
+    "bus_min_normal_v": {
+      "value": 33.27467711696063,
+      "case": "r2_aged/single_fast_full"
+    }
+  },
+  "regen_clamp": {
+    "voltage_max_v": 58,
+    "trip_v": 57,
+    "bus_max_v": 56.96235375321788,
+    "trip_margin_v": 1,
+    "voltage_pass": true,
+    "meets_device_class": false,
+    "forward_a": 9.615384615384615,
+    "forward_rating_free_air_a": 20,
+    "forward_pass": true,
+    "brake_switched_a": 54.5,
+    "brake_average_peak_a": 19.759273797874325,
+    "brake_continuous_a": 40,
+    "brake_peak_3s_a": 80,
+    "brake_continuous_pass": true,
+    "brake_peak_pass": true,
+    "note": "The chopper switches the full bus voltage across the 1 \u03a9 dump, so its instantaneous current is bus V / 1 \u03a9, inside the 80 A / 3 s peak. The cycle-averaged current is compared with the 40 A heatspreader rating. Whether that rating is an average or an instantaneous limit, and the chopper ripple, are verification items."
+  },
+  "reverse_blocking": {
+    "blocking_v_max": 4.962353753217883,
+    "blocking_at_trip_v": 5,
+    "forward_a": 9.615384615384615,
+    "loss_w": 0.4622781065088757,
+    "device_class_v": 80,
+    "source_fuse_min_a": 12.019230769230768,
+    "note": "Blocks during every regenerative event, not only at faults: the bus sits at the 54.4 V dump level in normal use."
+  },
+  "bank_protection": {
+    "rms_a": 14.241374282063337,
+    "peak_a": 34.696986870738044,
+    "fuse_min_rating_a": 17.80171785257917,
+    "peak_to_fuse_rating": 1.9490808223157539,
+    "prospective_fault_a": {
+      "r2_fresh": 237.50000000000003,
+      "r2_aged": 123.91304347826087
+    },
+    "fault_multiple_of_rating": {
+      "r2_fresh": 13.341409068877601,
+      "r2_aged": 6.960735166370922
+    },
+    "disconnect_loss_w": 0.8112669657672601,
+    "device_class_v": 80,
+    "note": "Bank short-circuit current is set by cell ESR, so the aged bank gives the lowest clearing multiple. Fuse time-current behaviour at that multiple must be checked against the cell and wiring I\u00b2t."
+  },
+  "precharge_discharge": {
+    "resistor_ohm": 6.76,
+    "peak_power_w": 400.0,
+    "supply_current_a": 7.6923076923076925,
+    "supply_limit_a": 9.615384615384615,
+    "rows": [
+      {
+        "bank": "r2_fresh",
+        "bank_capacitance_f": 5.0,
+        "tau_s": 33.8,
+        "time_to_enable_s": 67.78027464998264,
+        "time_to_bypass_s": 79.15303624777965,
+        "precharge_energy_j": 6697.5,
+        "bypass_inrush_a": 20.833333333333336,
+        "discharge_time_s": 80.22616834291578,
+        "discharge_energy_j": 7203.174492542948,
+        "bleed_only_tau_h": 13.88888888888889
+      },
+      {
+        "bank": "r2_aged",
+        "bank_capacitance_f": 3.15,
+        "tau_s": 21.294,
+        "time_to_enable_s": 42.701573029489076,
+        "time_to_bypass_s": 49.86641283610118,
+        "precharge_energy_j": 4219.424999999999,
+        "bypass_inrush_a": 10.869565217391305,
+        "discharge_time_s": 50.54248605603695,
+        "discharge_energy_j": 4537.999930302058,
+        "bleed_only_tau_h": 8.75
+      }
+    ],
+    "note": "The resistor limits supply current itself, so start-up does not depend on the supply overload mode. The same resistor discharges the bank for service. Pulse-energy rating, not continuous power, sizes it."
+  },
+  "balancing": {
+    "resistor_ohm": 260.0,
+    "current_a": 0.01,
+    "loss_per_cell_w": 0.026000000000000002,
+    "loss_bank_w": 0.52,
+    "self_discharge_tau_h": 7.222222222222222,
+    "worst_cell_at_max_bank_v": 2.693192266191422,
+    "worst_cell_at_trip_v": 2.8777777777777778,
+    "cell_monitor_trip_v": 2.95,
+    "cell_rated_v": 3,
+    "normal_below_monitor": true,
+    "trip_below_rating": true,
+    "note": "Cells balanced at the setpoint; dynamic excursions above it divide by capacitance, so the lowest-capacitance cell rises fastest. Leakage-driven drift is held by the passive resistors while the supply holds the setpoint."
+  },
+  "dump_monitor": {
+    "peak_current_a": 54.5,
+    "shunt_ohm": 0.001,
+    "shunt_signal_mv": 54.5,
+    "shunt_peak_w": 2.97025,
+    "detection_s": 0.1,
+    "fresh_dump_failure_bus_max_v": 55.632557148344745,
+    "dump_start_v": 54.35,
+    "rule": "Expected dump current is commanded duty \u00d7 bus V / 1 \u03a9. Flag a dump-path fault when measured current stays below half of expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 54.5 V (full duty) for 0.1 s; stop the unit and latch, independent of the overvoltage trip."
+  },
+  "bank_duty": {
+    "derate_start_c": 55,
+    "case_max_c": 65,
+    "continuous_fast_reversal_c": {
+      "r2_fresh": 47.30984155859965,
+      "r2_aged": 69.6196831171993
+    },
+    "rule": "Bank temperature sensing (balancing node) feeds the existing torque derate from 55 \u00b0C to the case maximum; this is the duty limit for back-to-back fast work."
+  }
+}

@@ -101,3 +101,7 @@ Next: improve the motor thermal path (stator carrier into base/walls), recover b
 ## R4 checkpoint
 
 [R4 review](r4-review.md): R3 + C1 with the bank on the drive bus (`make r4-candidate`), the full fresh/aged suite, refinements, uncertainties, a realisable-feedforward variant, and bank-on-bus hardware checks (cell voltage, RMS current and continuous repetition, pre-charge, reverse blocking). It improves or holds every case and becomes the lead candidate; decision REVISE. Next: power-path design (supply overload mode, ideal diode, pre-charge, balancing, fusing) into the electrical definition and costs; supervisor dump detection and a bank duty limit; then the owner's motor/bus and endurance decisions. The goal remains active and incomplete.
+
+## R4 power-path checkpoint
+
+[Power-path review](power-path-review.md): `make power-path` sizes the Regen Clamp reuse (reverse block + dump), fuses, disconnect, shared pre-charge/discharge resistor, passive balancing and dump monitoring from the R4 envelope; the electrical definition and cost allowances follow R4. One check fails (clamp 58 V vs 57 V trip). Three primary sources could not be read and are recorded. Next: owner choice on trip vs 80 V parts and on start-up time; part selection with datasheets; simulate the pre-charge/discharge sequence and the dump-monitor rule; supervisor latching. The goal remains active and incomplete.

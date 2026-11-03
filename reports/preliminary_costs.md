@@ -1,8 +1,8 @@
 # Complete-function preliminary cost allowances
 
-Fingerprint: `b5340e70bce437f309345362f82961e716c373f2fe96c8f1a29925375cb405a4`
+Fingerprint: `7f3323668486c49f3e4123031641dc85d11abca43f81b4302931accf0fc01916`
 
-**Planning estimates, not supplier quotes.** Analyst planning ranges, 2026-11-02; no supplier volume discounts verified. Custom parts depend on unresolved geometry and process.
+**Planning estimates, not supplier quotes.** Analyst planning ranges, 2026-11-02, R4 power path revised 2026-11-03; no supplier volume discounts verified. Custom parts depend on unresolved geometry and process.
 
 These allowances include every function in the preliminary electrical definition, plus mechanics, cable routing, arrestor, harness, retention, assembly, calibration, test, board and adapters. They supersede the historical priced-floor interpretation for planning, but are not a validated BOM for a compact machine. No volume quotation has been obtained. All costs are USD.
 
@@ -11,15 +11,15 @@ These allowances include every function in the preliminary electrical definition
 | Motor set excluding separate rotor support / unit | $160–$220 | $140–$200 | $110–$180 |
 | Inverter with chopper; exact revision unselected / unit | $150–$250 | $120–$220 | $90–$180 |
 | Internal mains supply / unit | $80–$150 | $65–$120 | $50–$100 |
-| Complete 22-cell bank allowance spanning reference and compact candidates / unit | $100–$350 | $75–$280 | $55–$220 |
+| Complete 20-cell TV bank on the drive bus (R4); cell price not yet sourced / unit | $100–$350 | $75–$280 | $55–$220 |
 | Mains inlet cord and strain relief / unit | $12–$30 | $8–$22 | $6–$18 |
 | Fuse two-pole switch and filter/surge network / unit | $20–$60 | $12–$45 | $8–$30 |
-| Reverse blocking and branch fuse / unit | $12–$45 | $8–$30 | $5–$20 |
-| Bank fuse precharge disconnect and feedback / unit | $35–$100 | $25–$80 | $18–$60 |
-| Cell balance monitor and temperature sensing / unit | $35–$100 | $20–$70 | $12–$50 |
+| Regen Clamp (ideal diode and brake chopper) and source branch fuse; clamp price not sourced / unit | $40–$100 | $30–$80 | $22–$60 |
+| Time-delay bank fuse with back-to-back MOSFET disconnect and pulse pre-charge/discharge resistor with switches and feedback / unit | $45–$130 | $32–$100 | $22–$75 |
+| Passive cell balancing with per-cell voltage monitor and bank temperature sensing / unit | $35–$100 | $20–$70 | $12–$50 |
 | DC-link capacitors and bleed / unit | $12–$35 | $8–$25 | $5–$18 |
 | Fused auxiliary converters and rails / unit | $15–$45 | $10–$30 | $6–$22 |
-| Pulse resistor cutoff mounting and sensing / unit | $25–$85 | $18–$65 | $12–$45 |
+| Pulse resistor cutoff mounting temperature and current-shunt sensing / unit | $30–$95 | $22–$72 | $15–$50 |
 | Interlocked phase transfer hardware and feedback / unit | $40–$140 | $30–$110 | $20–$80 |
 | Passive braking network and thermal sensing / unit | $20–$65 | $12–$45 | $8–$30 |
 | Encoder coupling and mounting / unit | $25–$100 | $18–$70 | $12–$50 |
@@ -49,9 +49,9 @@ These allowances include every function in the preliminary electrical definition
 
 | Procurement volume (units) | One unit factory | Two units + board factory | Unit retail before NRE | Pair + board retail before NRE |
 |---|---:|---:|---:|---:|
-| prototype | $2,342–$11,162 | $5,054–$24,358 | $4,258–$74,413 | $9,190–$162,385 |
-| 100 | $1,402–$6,447 | $2,995–$13,989 | $2,549–$42,975 | $5,446–$93,258 |
-| 1000 | $905–$4,197 | $1,923–$9,092 | $1,645–$27,976 | $3,496–$60,611 |
+| prototype | $2,392–$11,313 | $5,153–$24,660 | $4,349–$75,420 | $9,370–$164,398 |
+| 100 | $1,440–$6,569 | $3,071–$14,234 | $2,619–$43,790 | $5,585–$94,889 |
+| 1000 | $932–$4,292 | $1,978–$9,283 | $1,696–$28,611 | $3,597–$61,882 |
 
 A paired system has two units and one board, or two separate mounting adapters. Adapter alternatives are not all charged together. The JSON includes bare pairs and wall/rack/door pairs. The door allowance does not establish door compatibility or load capability.
 
@@ -63,9 +63,9 @@ NRE allowance: $160,000–$1,400,000. Unquoted allowance for engineering tooling
 
 | Volume | NRE per unit | Unit retail with NRE amortization |
 |---|---:|---:|
-| prototype | $160,000–$1,400,000 | $295,167–$9,407,747 |
-| 100 | $1,600–$14,000 | $5,458–$136,308 |
-| 1000 | $160–$1,400 | $1,936–$37,309 |
+| prototype | $160,000–$1,400,000 | $295,258–$9,408,753 |
+| 100 | $1,600–$14,000 | $5,528–$137,124 |
+| 1000 | $160–$1,400 | $1,987–$37,944 |
 
 Listing context only: [CubeMars RO100 listing](https://store.cubemars.com/products/ro100) showed $156.90 and sold-out text on 2026-11-02; exact variant and stock remain unconfirmed. No quote from that page is counted in these totals.
 

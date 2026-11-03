@@ -1,7 +1,7 @@
 # USD planning allowances, NOT supplier quotations or manufacturing offers.
 # Each triple is prototype / 100-unit / 1000-unit procurement [low, high].
 # Includes unselected functions. Architecture changes require re-estimation.
-basis: Analyst planning ranges, 2026-11-02; no supplier volume discounts verified. Custom parts depend on unresolved geometry and process.
+basis: Analyst planning ranges, 2026-11-02, R4 power path revised 2026-11-03; no supplier volume discounts verified. Custom parts depend on unresolved geometry and process.
 currency: USD
 listing_context:
   source: https://store.cubemars.com/products/ro100
@@ -12,15 +12,15 @@ items:
   - {id: motor, scope: unit, covers: [motor], description: Motor set excluding separate rotor support, ranges: [[160, 220], [140, 200], [110, 180]]}
   - {id: drive, scope: unit, covers: [drive], description: Inverter with chopper; exact revision unselected, ranges: [[150, 250], [120, 220], [90, 180]]}
   - {id: supply, scope: unit, covers: [supply], description: Internal mains supply, ranges: [[80, 150], [65, 120], [50, 100]]}
-  - {id: storage, scope: unit, covers: [capacitor], description: Complete 22-cell bank allowance spanning reference and compact candidates, ranges: [[100, 350], [75, 280], [55, 220]]}
+  - {id: storage, scope: unit, covers: [capacitor], description: Complete 20-cell TV bank on the drive bus (R4); cell price not yet sourced, ranges: [[100, 350], [75, 280], [55, 220]]}
   - {id: inlet, scope: unit, covers: [inlet], description: Mains inlet cord and strain relief, ranges: [[12, 30], [8, 22], [6, 18]]}
   - {id: mains_protection, scope: unit, covers: [input_protection], description: Fuse two-pole switch and filter/surge network, ranges: [[20, 60], [12, 45], [8, 30]]}
-  - {id: source_block, scope: unit, covers: [source_block], description: Reverse blocking and branch fuse, ranges: [[12, 45], [8, 30], [5, 20]]}
-  - {id: bank_protection, scope: unit, covers: [bank_protection], description: Bank fuse precharge disconnect and feedback, ranges: [[35, 100], [25, 80], [18, 60]]}
-  - {id: balancing, scope: unit, covers: [balancing], description: Cell balance monitor and temperature sensing, ranges: [[35, 100], [20, 70], [12, 50]]}
+  - {id: source_block, scope: unit, covers: [source_block], description: Regen Clamp (ideal diode and brake chopper) and source branch fuse; clamp price not sourced, ranges: [[40, 100], [30, 80], [22, 60]]}
+  - {id: bank_protection, scope: unit, covers: [bank_protection], description: Time-delay bank fuse with back-to-back MOSFET disconnect and pulse pre-charge/discharge resistor with switches and feedback, ranges: [[45, 130], [32, 100], [22, 75]]}
+  - {id: balancing, scope: unit, covers: [balancing], description: Passive cell balancing with per-cell voltage monitor and bank temperature sensing, ranges: [[35, 100], [20, 70], [12, 50]]}
   - {id: bus_storage, scope: unit, covers: [bus_storage], description: DC-link capacitors and bleed, ranges: [[12, 35], [8, 25], [5, 18]]}
   - {id: auxiliary, scope: unit, covers: [aux_power], description: Fused auxiliary converters and rails, ranges: [[15, 45], [10, 30], [6, 22]]}
-  - {id: dump, scope: unit, covers: [dump], description: Pulse resistor cutoff mounting and sensing, ranges: [[25, 85], [18, 65], [12, 45]]}
+  - {id: dump, scope: unit, covers: [dump], description: Pulse resistor cutoff mounting temperature and current-shunt sensing, ranges: [[30, 95], [22, 72], [15, 50]]}
   - {id: phase_transfer, scope: unit, covers: [phase_transfer], description: Interlocked phase transfer hardware and feedback, ranges: [[40, 140], [30, 110], [20, 80]]}
   - {id: phase_brake, scope: unit, covers: [phase_brake], description: Passive braking network and thermal sensing, ranges: [[20, 65], [12, 45], [8, 30]]}
   - {id: encoder, scope: unit, covers: [encoder], description: Encoder coupling and mounting, ranges: [[25, 100], [18, 70], [12, 50]]}

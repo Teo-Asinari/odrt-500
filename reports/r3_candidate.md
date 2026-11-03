@@ -1,6 +1,6 @@
 # R3 candidate simulation: conducted motor heat path and 30 V undervoltage trip
 
-Fingerprint: `755d4e7b450df72192a42f9af996da8addf54133ce4c69148843e31ceec695e4`
+Fingerprint: `f6dd35cf9f5f9dff9fa3ef5e9ee6a6284ecb46cef46b741dc2d073211fe9412e`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller gains are unchanged from the reference.
 

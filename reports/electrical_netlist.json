@@ -1,5 +1,5 @@
 {
-  "fingerprint": "655dca75b6c170eddf0d6d1e18c7232ad8decc4b1f1d1f70a045e8f26aaceb3c",
+  "fingerprint": "8c56b4a8e8debc9fac648646e684d49349849e854471aab67a3c3fe22986b93e",
   "fidelity": "functional semantic bundles; unqualified",
   "nodes": {
     "inlet": {
@@ -23,8 +23,8 @@
       }
     },
     "supply": {
-      "description": "Open-frame isolated AC/DC source; forced-air rating is conditional",
-      "selection": "epp500_48",
+      "description": "Open-frame isolated AC/DC source at 52 V (R4); forced-air rating is conditional; overload mode into capacitive load unverified",
+      "selection": "epp500_54",
       "ports": {
         "line": "mains",
         "neutral": "mains",
@@ -41,16 +41,17 @@
       }
     },
     "source_block": {
-      "description": "Source branch DC fuse and reverse-current blocking stage",
-      "selection": "unselected",
+      "description": "In R4, the ODrive Regen Clamp ideal diode (supply reverse block) and brake chopper, plus source branch DC fuse >= 12 A; sized in reports/power_path.md",
+      "selection": "regen_clamp; 58 V rating leaves 1 V above the 57 V trip; fuse unselected",
       "ports": {
         "source": "dc48",
-        "bus": "dc48"
+        "bus": "dc48",
+        "chopper": "brake"
       }
     },
     "capacitor": {
-      "description": "Series capacitor bank; current reference 22s350F, compact alternative under study",
-      "selection": "bcap0350_e270_t11",
+      "description": "Series capacitor bank on the drive bus (R4), 20 x 100 F 3.0 V cells",
+      "selection": "eaton_tv1860_3r0107 x20",
       "ports": {
         "positive": "dc48",
         "return": "dc48",
@@ -58,8 +59,8 @@
       }
     },
     "bank_protection": {
-      "description": "Bank fuse, precharge path and bidirectional main disconnect",
-      "selection": "unselected; interrupt rating and welded-switch detection unresolved",
+      "description": "Bank time-delay DC fuse, back-to-back MOSFET disconnect, and one pulse resistor (about 6.8 ohm) switched for pre-charge and service discharge; sized in reports/power_path.md",
+      "selection": "unselected; fuse I2t at the aged-bank fault multiple and welded-switch detection unresolved",
       "ports": {
         "bank": "dc48",
         "bus": "dc48",
@@ -68,8 +69,8 @@
       }
     },
     "balancing": {
-      "description": "Per-cell balancing, voltage monitoring and bank temperature sensing",
-      "selection": "unselected",
+      "description": "Passive per-cell balancing (about 260 ohm), per-cell voltage monitor with 2.95 V trip, bank temperature sensing feeding the torque derate",
+      "selection": "unselected; cell leakage not verified",
       "ports": {
         "cell_taps": "balance",
         "logic_power": "logic",
@@ -77,7 +78,7 @@
       }
     },
     "bus_storage": {
-      "description": "3mF DC-link capacitance and permanent bleed; ratings/layout unresolved",
+      "description": "3 mF DC-link capacitance plus Regen Clamp onboard capacitance and permanent bleed; ratings/layout unresolved",
       "selection": "unselected",
       "ports": {
         "positive": "dc48",
@@ -96,25 +97,25 @@
       }
     },
     "drive": {
-      "description": "Motor inverter and braking chopper; exact revision must be selected",
-      "selection": "odrive_s1",
+      "description": "Motor inverter (ODrive Pro in R4); braking is done by the Regen Clamp, not the drive",
+      "selection": "odrive_pro",
       "ports": {
         "positive": "dc48",
         "return": "dc48",
         "phases": "phase",
         "encoder": "encoder",
         "command": "signal",
-        "inhibit": "signal",
-        "dump": "brake"
+        "inhibit": "signal"
       }
     },
     "dump": {
-      "description": "Braking resistor assembly, thermal cutoff and temperature monitor",
-      "selection": "unselected; model uses 1 ohm, pulse energy and chopper duty unqualified",
+      "description": "Braking resistor assembly (1 ohm in the model), thermal cutoff, temperature monitor and current shunt for dump-path fault detection",
+      "selection": "unselected; resistor pulse energy and the clamp brake-rating interpretation unverified",
       "ports": {
         "chopper": "brake",
         "return": "dc48",
-        "temperature": "signal"
+        "temperature": "signal",
+        "current": "signal"
       }
     },
     "phase_transfer": {
@@ -193,7 +194,8 @@
         "bank_status": "signal",
         "fan": "signal",
         "guide_health": "signal",
-        "guide_inhibit": "signal"
+        "guide_inhibit": "signal",
+        "dump_current": "signal"
       }
     },
     "guide_actuator": {
@@ -317,8 +319,12 @@
       "phase_brake.phases"
     ],
     "dump_chopper": [
-      "drive.dump",
+      "source_block.chopper",
       "dump.chopper"
+    ],
+    "dump_current": [
+      "dump.current",
+      "supervisor.dump_current"
     ],
     "encoder_bundle": [
       "encoder.position",

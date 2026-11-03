@@ -1,0 +1,30 @@
+# R4 power-path sizing (make power-path). Functional sizing from the R4 simulated envelope and cited
+# component data already in the repository. No part below is selected or rated by its manufacturer here.
+# Values marked `assumed` are design assumptions; every one is a verification item.
+sources_not_read:
+  - item: EPP-500-54 overload protection type (constant current vs hiccup) and start-up into capacitive load
+    source: https://www.meanwell.com/Upload/PDF/EPP-500/EPP-500-SPEC.PDF
+    status: Fetched 2026-11-03 but text not extractable; not used. The pre-charge below does not rely on it.
+  - item: Eaton TV1860-3R0107-R leakage current and capacitance upper tolerance
+    source: https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-tv-supercapacitors-cylindrical-cells-data-sheet.pdf
+    status: Fetch timed out 2026-11-03; leakage is assumed below.
+  - item: Ideal-diode controller ratings (candidate class, e.g. 80 V-rated controllers)
+    source: none read
+    status: No controller is named; only required ratings are derived.
+design:
+  device_voltage_class_v: 80          # >= 1.4 x the 57 V trip for switching transients; assumed rule
+  supply_current_margin: 0.8          # pre-charge holds supply current at or below 80% of its rating
+  fuse_current_factor: 1.25           # fuse rating >= 1.25 x continuous (RMS) current; assumed rule
+  bypass_close_delta_v: 5             # close the pre-charge bypass when bus - bank < this
+  service_safe_v: 5                   # service discharge target
+  wiring_resistance_ohm: 0.02         # bank loop wiring + fuse + switch, assumed for prospective fault current
+  ideal_diode_on_resistance_ohm: 0.005  # assumed MOSFET path
+  disconnect_on_resistance_ohm: 0.004   # assumed back-to-back MOSFET pair, total
+  cell_leakage_a: 0.0001              # assumed 0.1 mA worst-case leakage spread; datasheet not read
+  balancing_current_ratio: 100        # passive balancing current >= 100 x leakage spread
+  capacitance_spread_fraction: 0.10   # worst cell capacitance below the string mean; documented initial minimum is -10%
+  cell_monitor_trip_v: 2.95           # per-cell overvoltage trip, below the 3.0 V rating
+  dump_shunt_ohm: 0.001
+  dump_detection_s: 0.1               # dump-path fault must be flagged within this after the bus exceeds dump start
+  dump_min_expected_a: 2             # below this, shunt offset and duty ramp make the comparison unreliable; assumed
+  bank_derate_start_c: 55             # matches the model's capacitor derate (case max - 10 K)

@@ -13,7 +13,8 @@ logic_rails_bundle,logic,aux_power.logic; balancing.logic_power; encoder.logic_p
 inverter_phases,phase,drive.phases; phase_transfer.inverter,TBD,TBD,TBD,TBD,TBD,TBD,TBD
 motor_phases,phase,phase_transfer.motor; motor.phases,TBD,TBD,TBD,TBD,TBD,TBD,TBD
 brake_phases,phase,phase_transfer.brake; phase_brake.phases,TBD,TBD,TBD,TBD,TBD,TBD,TBD
-dump_chopper,brake,drive.dump; dump.chopper,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+dump_chopper,brake,source_block.chopper; dump.chopper,TBD,TBD,TBD,TBD,TBD,TBD,TBD
+dump_current,signal,dump.current; supervisor.dump_current,TBD,TBD,TBD,TBD,TBD,TBD,TBD
 encoder_bundle,encoder,encoder.position; drive.encoder,TBD,TBD,TBD,TBD,TBD,TBD,TBD
 encoder_health,signal,encoder.health; supervisor.encoder_health,TBD,TBD,TBD,TBD,TBD,TBD,TBD
 force_measurement,signal,force_sensor.force; controller.force,TBD,TBD,TBD,TBD,TBD,TBD,TBD

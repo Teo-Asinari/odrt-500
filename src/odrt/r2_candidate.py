@@ -100,6 +100,9 @@ def _job(args):
         p = f'unit_{i}.'
         m[p+'max_capacitor_v'] = float(s[p+'capacitor_v'].max())
         m[p+'capacitor_rms_a'] = float(np.sqrt(np.trapz(s[p+'capacitor_current_a']**2, t)/t[-1]))
+        m[p+'capacitor_peak_a'] = float(np.abs(s[p+'capacitor_current_a']).max())
+        # Cycle-averaged dump current; the chopper's instantaneous current is bus V / dump resistance.
+        m[p+'dump_average_peak_a'] = float((s[p+'dump_w']/np.maximum(s[p+'bus_v'], 1e-9)).max())
         m[p+'supply_peak_a'] = float((s[p+'supply_bus_w']/np.maximum(s[p+'bus_v'], 1e-9)).max())
     m['assessment'] = assess_case(m, cfg, parts, case, criteria)
     m['numerical_valid'] = bool(m['energy_residual_fraction'] <= criteria['energy_residual_fraction_max']['value']

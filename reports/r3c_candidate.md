@@ -1,6 +1,6 @@
 # R3 with candidate controller C1 (kp 4, 2.5 m/s release limiter, 0.15 m end zone)
 
-Fingerprint: `3ad2e894d40edbf7912213c78bcddcc69a6efb364536d687916bbeca100de931`
+Fingerprint: `ef95b6bceaeb7eea485efec9faa1518c1edcdf8b053ba1626e9897ed5f54f3b7`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller: see below.
 
