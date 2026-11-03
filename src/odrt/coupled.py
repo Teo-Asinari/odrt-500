@@ -58,6 +58,15 @@ GROUP_KEYS = {
 }
 
 
+# Optional controller features; defaults reproduce the reference controller exactly.
+#   acceleration_blend: 0 = inertia feedforward on the scenario's planned acceleration,
+#     1 = on the measured payout acceleration (derivative of the filtered encoder speed).
+#   end_zone_m / end_zone_gain_n_s_m: within end_zone_m of either travel limit, the command
+#     gains a velocity-proportional braking term toward that limit (0 disables).
+OPTIONAL_KEYS = {'control': ('acceleration_blend', 'end_zone_m', 'end_zone_gain_n_s_m')}
+CONTROL_DEFAULTS = {'acceleration_blend': 0., 'end_zone_m': 0., 'end_zone_gain_n_s_m': 0.}
+
+
 def load_coupled(root, scenarios=None):
     root = Path(root)
     _, parts, _, _ = load_engineering(root)
@@ -65,7 +74,7 @@ def load_coupled(root, scenarios=None):
     check_keys(d, 'coupled', list(GROUP_KEYS)+['cases'])
     names = ('motor','drive','supply','rope','capacitor')
     for group, fields in GROUP_KEYS.items():
-        check_keys(d[group], 'coupled.'+group, fields)
+        check_keys(d[group], 'coupled.'+group, fields, OPTIONAL_KEYS.get(group, ()))
         for field,value in d[group].items():
             if group == 'reference' and field in names:
                 if value not in parts:
@@ -196,7 +205,8 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
                   user_stiffness_scale,user_damping_scale):
         number(scale,'coupled sensitivity scale',minimum=0,exclusive_minimum=True)
     n = case['units']
-    ref,m,c,p,th = (cfg[k] for k in ('reference','mechanics','control','power','thermal'))
+    ref,m,p,th = (cfg[k] for k in ('reference','mechanics','power','thermal'))
+    c = {**CONTROL_DEFAULTS, **cfg['control']}
     motor,drive,supply,rope,cell = (parts[ref[k]]['values'] for k in ('motor','drive','supply','rope','capacitor'))
     xb,qb,radii = winding_map(ref,rope['diameter_mm']/1000,stroke_m)
     g,eta = ref['ratio'],ref['efficiency']
@@ -314,6 +324,12 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
                              c['winding_stop_c']-tw,c['drive_stop_c']-td,cell['case_max_c']-tc)
         event_margins.append(margins)
         command = scales[i]*fr
+        if c['end_zone_m'] > 0:
+            outer = clamp((s-(stroke_m-c['end_zone_m']))/c['end_zone_m'],0,1)
+            inner = clamp((c['end_zone_m']-s)/c['end_zone_m'],0,1)
+            command += c['end_zone_gain_n_s_m']*(outer*ca.fmax(u['speed_sensor_m_s'],0)
+                                                 -inner*ca.fmax(-u['speed_sensor_m_s'],0))
+            command = ca.fmax(command,0)
         if fault=='handle_release':
             command = ca.if_else(t>=tf+c['local_detection_s'],c['rest_tension_n'],command)
         measured = ca.if_else(own_fault,0,u['force_sensor_n']) if fault=='load_cell_zero' else u['force_sensor_n']
@@ -321,7 +337,10 @@ def build_model(cfg,parts,scenario,defaults,stroke_m,case,*,km_scale=1.,esr_scal
         error = command-measured
         correction = clamp(u['integral_n'],-c['integral_limit_n'],c['integral_limit_n'])
         friction_f = m['friction_n']*friction_scale*ca.tanh(vel/m['friction_speed_m_s'])
-        control_f = command+c['kp']*error+correction-friction_f-c['inertia_feedforward']*meq*ar
+        encoder = ca.if_else(own_fault,0,vel) if fault=='encoder_loss' else vel
+        measured_a = (encoder-u['speed_sensor_m_s'])/c['encoder_filter_s']
+        accel = (1-c['acceleration_blend'])*ar+c['acceleration_blend']*measured_a
+        control_f = command+c['kp']*error+correction-friction_f-c['inertia_feedforward']*meq*accel
         control_f -= c['retract_gain_n_s_m']*ca.fmax(-measured_v-c['retract_speed_limit_m_s'],0)
         gear_control = ca.exp(math.log(eta)*ca.tanh(control_f*vel/ref['gear_transition_w']))
         target_tau = control_f*r/g*gear_control

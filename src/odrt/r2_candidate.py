@@ -117,11 +117,27 @@ def r3_fingerprint(root=Path('.')):
     return h.hexdigest()
 
 
+def load_r3c(root=Path('.')):
+    """R3 with the controller variant proposed by configs/control_study.yaml."""
+    cfg, parts, variants, derived, source, support = load_r3(root)
+    study = load_yaml(Path(root)/'configs/control_study.yaml'); name = study['proposed']
+    cfg['control'].update(study['variants'][name])
+    return cfg, parts, variants, dict(derived, controller={'variant': name, 'changes': study['variants'][name]}), source, support
+
+
+def r3c_fingerprint(root=Path('.')):
+    root = Path(root); h = hashlib.sha256(r3_fingerprint(root).encode())
+    h.update((root/'configs/control_study.yaml').read_bytes()+Path(__file__).with_name('coupled.py').read_bytes())
+    return h.hexdigest()
+
+
 STUDIES = {'r2': dict(load=load_r2, fingerprint=r2_fingerprint, title='R2 candidate simulation', extra=()),
            'r3': dict(load=load_r3, fingerprint=r3_fingerprint, title='R3 candidate simulation: conducted motor heat path and 30 V undervoltage trip',
                       extra=(('high_frame_resistance', {}, {}, 'housing_to_frame_k_w', 'high'),
                              ('low_frame_to_room', {}, {}, 'frame_to_room_w_k', 'low'),
-                             ('warm_room_low_frame', {}, {'ambient_offset_c': 15}, 'frame_to_room_w_k', 'low')))}
+                             ('warm_room_low_frame', {}, {'ambient_offset_c': 15}, 'frame_to_room_w_k', 'low'))),
+           'r3c': dict(load=load_r3c, fingerprint=r3c_fingerprint,
+                       title='R3 with candidate controller C1 (kp 4, 2.5 m/s release limiter, 0.15 m end zone)', extra=())}
 
 
 def run(root=Path('.'), jobs=None, study='r2'):
@@ -251,6 +267,10 @@ def write_report(r, path):
         f = r['derived']['frame_thermal']
         lines += ['', '## Conducted heat path', '', f['summary'], '', '| Parameter | Nominal | Bounds | Basis |', '|---|---:|---|---|']
         lines += [f'| {k} | {v} | {f["bounds"][k]} | {f["basis"][k]} |' for k, v in f['nominal'].items()]
+    if 'controller' in r['derived']:
+        ctl = r['derived']['controller']
+        lines += ['', '## Controller', '', f'Variant `{ctl["variant"]}` from the [controller study](control_study.md): '
+                  + ', '.join(f'{k}={v}' for k, v in ctl['changes'].items()) + '. All other control values are the reference.']
     if 'r3_power' in r['derived']:
         pw = r['derived']['r3_power']
         lines += ['', '## Undervoltage trip', '', f'Trip lowered to {pw["proposal"]["undervoltage_v"]} V '

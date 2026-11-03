@@ -26,6 +26,8 @@ STUDIES = {
     'revision-power': ('reports/revision_power.json', 'fingerprint', 'odrt.revision_power',
                        'revision_fingerprint', None),
     'r2-candidate': ('reports/r2_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r2_fingerprint', None),
+    'control-study': ('reports/control_study.json', 'fingerprint', 'odrt.control_study', 'study_fingerprint', None),
+    'r3c-candidate': ('reports/r3c_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r3c_fingerprint', None),
     'r3-candidate': ('reports/r3_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r3_fingerprint', None),
 }
 

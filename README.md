@@ -24,7 +24,17 @@ make compact-package # compact integration STEP/GLB experiment and explicit geom
 make compact-candidate # all named scenarios with CAD-derived inertia and compact fresh/aged banks
 make compact-structure # candidate study followed by compact shaft/bearing/bridge screens
 make compact-plots # candidate study followed by saved-trace tracking and fault plots
-make test     # unit and negative tests
+make support-revision # roller-bearing / two-ended-shaft screen at comparison loads
+make revision-power # ODrive Pro + Regen Clamp upstream-buffer experiment
+make r2-package # R2 integrated CAD (5:1, roller bearings, TV bank) with clash/keepout checks
+make r2-candidate # R2 full suite, parallel (JOBS=n), plus support screen at simulated loads
+make r3-candidate # R2 + conducted motor heat path + 30 V undervoltage trip
+make control-study # controller gain variants on the R3 machine; reference controller unchanged
+make r3c-candidate # R3 full suite with the proposed controller C1
+make test     # unit and negative tests, in parallel
+make quick    # tests minus those marked slow (~15 s)
+make t T=tests/test_r2.py K=expr # one file / matching tests
+make retest   # rerun only last run's failures
 make report   # simulate all scenarios, regenerate reports/
 make cad      # modular unit + paired-board CAD: build/cad/*.step and *.glb
 make fea      # side-plate FEA convergence study, reports/fea.md
@@ -32,7 +42,9 @@ make visual   # current unit/full/cutaway/exploded + paired-board GLBs in build/
 make ci       # all of the above; fails if committed reports are stale
 ```
 
-There is no hosted CI. Run `make ci` before committing.
+There is no hosted CI. Run `make ci` before committing. Slow studies are skipped when their recorded input fingerprint is unchanged (`FORCE=1 make ci` reruns everything); a study refuses to publish if its inputs change while it runs. Clear `PYTHONPATH` when calling `.venv/bin/python` directly (the Makefile does).
+
+Latest decision: [controller study](docs/engineering/controller-study.md) and [R3 review](docs/engineering/r3-review.md) (REVISE); earlier: [R2 review](docs/engineering/r2-review.md), [R1 review](docs/engineering/compact-candidate-r1-review.md).
 
 The reusable model interface and contributor checks are documented in [`docs/engineering/model-interface.md`](docs/engineering/model-interface.md). The reference model has no physical I/O. Controlled validation/review requirements are in [`validation-plan.md`](docs/engineering/validation-plan.md).
 

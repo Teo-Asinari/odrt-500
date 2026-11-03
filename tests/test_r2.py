@@ -67,3 +67,16 @@ def test_frame_heat_path_keeps_energy_ledger_closed_and_cools_long_duty():
     _, _, bare = _job(args(without))
     assert with_frame['energy_residual_fraction'] < criteria['energy_residual_fraction_max']['value']
     assert with_frame['worst_winding_c'] <= bare['worst_winding_c']
+
+
+def test_optional_controller_keys_default_to_reference_and_unknown_keys_fail(repo_copy):
+    from conftest import edit_yaml
+    from odrt.config import ConfigError
+    from odrt.coupled import CONTROL_DEFAULTS, OPTIONAL_KEYS, load_coupled
+    assert set(CONTROL_DEFAULTS) == set(OPTIONAL_KEYS['control'])
+    assert all(v == 0 for v in CONTROL_DEFAULTS.values())  # zero = reference behaviour
+    edit_yaml(repo_copy/'configs/coupled.yaml', lambda d: d['control'].update(acceleration_blend=1.0))
+    load_coupled(repo_copy)
+    edit_yaml(repo_copy/'configs/coupled.yaml', lambda d: d['control'].update(not_a_gain=1.0))
+    with pytest.raises(ConfigError):
+        load_coupled(repo_copy)

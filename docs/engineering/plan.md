@@ -89,3 +89,7 @@ Next: improve the motor thermal path (stator carrier into base/walls), recover b
 ## R3 heat path and undervoltage checkpoint
 
 [R3 review](r3-review.md): a lumped aluminium frame node (housing-to-frame 0.3 K/W, frame-to-room 1.4 W/K, frame-to-air 1.5 W/K, 800 J/K) and a 30 V undervoltage trip (`make r3-candidate`) recover the R2 heat regression and the aged-bank trips in the heavy, power-loss and endurance cases, with numerical verification passing. Decision REVISE. Endurance is now limited by the RO100's internal winding-to-housing path (A-022) and needs an owner decision; fast reversal/full stroke need a separately reported controller study; aged asymmetric and aged fast reversal still trip. Physical work listed in the R2 review remains open. The goal remains active and incomplete.
+
+## Controller study checkpoint
+
+[Controller study](controller-study.md): optional `acceleration_blend` and end-zone controller features (defaults reproduce the reference exactly), a 16-variant sweep (`make control-study`) and the full R3 suite with proposed controller C1 (`make r3c-candidate`). C1 roughly halves or better the fast-reversal and full-stroke errors and removes the aged asymmetric trip, with no fault-case regressions beyond dump-failure tracking 0.13 → 1.29%. Fast reversal still fails; next is a loop-shaping design with a margin analysis. The reference controller is unchanged pending review. The goal remains active and incomplete.

@@ -2,6 +2,10 @@
 
 ## Active engineering goal — 2026-11-02
 
+**Controller study:** [review](../docs/engineering/controller-study.md). Proposed controller C1 (kp 4, release limiter 2.5 m/s, 0.15 m end zone)
+on the full R3 suite ([results](r3c_candidate.md)): fast reversal 29 → 11%, full stroke 36 → 14% with no stop engagement, aged asymmetric set no longer trips.
+Not adopted yet: fast reversal still fails 5%, gains need noise/margin analysis, and the end zone/limiter need human-factors review.
+
 **Current decision: REVISE R3.** [R3 review](../docs/engineering/r3-review.md).
 R3 = R2 + a conducted motor-to-frame heat path (aluminium base/skin) + a 30 V undervoltage trip (ODrive Pro: 15–58 V). [Results](r3_candidate.md):
 slow heavy pull 128.5 → 104.7 °C; aged paired heavy 17% with trip → 0.18%, no trip; aged power-loss, aged endurance and fresh fast reversal no longer trip.
