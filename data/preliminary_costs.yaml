@@ -16,7 +16,7 @@ items:
   - {id: inlet, scope: unit, covers: [inlet], description: Mains inlet cord and strain relief, ranges: [[12, 30], [8, 22], [6, 18]]}
   - {id: mains_protection, scope: unit, covers: [input_protection], description: Fuse two-pole switch and filter/surge network, ranges: [[20, 60], [12, 45], [8, 30]]}
   - {id: source_block, scope: unit, covers: [source_block], description: Regen Clamp (ideal diode and brake chopper) and source branch fuse; clamp price not sourced, ranges: [[40, 100], [30, 80], [22, 60]]}
-  - {id: bank_protection, scope: unit, covers: [bank_protection], description: Time-delay bank fuse with back-to-back MOSFET disconnect and pulse pre-charge/discharge resistor with switches and feedback, ranges: [[45, 130], [32, 100], [22, 75]]}
+  - {id: bank_protection, scope: unit, covers: [bank_protection], description: Time-delay bank fuse with back-to-back MOSFET disconnect and normally-closed pulse discharge resistor with switch and feedback, ranges: [[40, 120], [28, 90], [20, 68]]}
   - {id: balancing, scope: unit, covers: [balancing], description: Passive cell balancing with per-cell voltage monitor and bank temperature sensing, ranges: [[35, 100], [20, 70], [12, 50]]}
   - {id: bus_storage, scope: unit, covers: [bus_storage], description: DC-link capacitors and bleed, ranges: [[12, 35], [8, 25], [5, 18]]}
   - {id: auxiliary, scope: unit, covers: [aux_power], description: Fused auxiliary converters and rails, ranges: [[15, 45], [10, 30], [6, 22]]}

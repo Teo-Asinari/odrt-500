@@ -27,8 +27,8 @@ nodes:
     selection: eaton_tv1860_3r0107 x20
     ports: {positive: dc48, return: dc48, cell_taps: balance}
   bank_protection:
-    description: Bank time-delay DC fuse, back-to-back MOSFET disconnect, and one pulse resistor (about 6.8 ohm) switched for pre-charge and service discharge; sized in reports/power_path.md
-    selection: unselected; fuse I2t at the aged-bank fault multiple and welded-switch detection unresolved
+    description: Bank time-delay DC fuse, back-to-back MOSFET disconnect closed at power-on (start-up by direct supply charging), and a normally-closed service-discharge path through an about 6.8 ohm pulse resistor; sized in reports/power_path.md
+    selection: unselected; start-up relies on unverified supply constant-current mode; fuse I2t and welded-switch detection unresolved
     ports: {bank: dc48, bus: dc48, command: signal, status: signal}
   balancing:
     description: Passive per-cell balancing (about 260 ohm), per-cell voltage monitor with 2.95 V trip, bank temperature sensing feeding the torque derate

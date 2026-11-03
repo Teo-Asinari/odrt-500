@@ -3,7 +3,7 @@
 ## Active engineering goal — 2026-11-03
 
 **Simulated today:** [dump monitor and pre-charge sequence](../docs/engineering/power-path-review.md). The dump monitor (active in R4) catches the fresh-bank dump failure 0.51 s after the fault (bus 55.14 V), with no false trips across the suite; the aged case still trips on 56 V overvoltage first.
-Pre-charge corrected (drive enables only after bypass closure; bypass at 1.9 V, not 5 V): **120 s to drive enable with the resistor, 24 s charging straight from the supply** if its constant-current mode is confirmed (normal operation needs that anyway).
+**Start-up decided: direct supply charging** (owner, 2026-11-03): drive enabled at 24 s fresh / 15 s aged; the bank disconnect must close by default (the supervisor only powers up at 6.6 s); a failed-open disconnect times out with the drive disabled. Depends on the unverified EPP-500-54 constant-current mode; the resistor sequence (120 s) is the fallback, and the resistor stays as the service-discharge path.
 Service discharge 83 s to 5 V; the discharge switch must be normally closed because the auxiliary rail collapses within 0.4 s.
 
 **Power path (R4):** [review](../docs/engineering/power-path-review.md), [sizing](power_path.md). Bank behind the Regen Clamp's output: the clamp's diode blocks supply back-feed and its chopper stays the dump.

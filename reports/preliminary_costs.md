@@ -1,6 +1,6 @@
 # Complete-function preliminary cost allowances
 
-Fingerprint: `7f3323668486c49f3e4123031641dc85d11abca43f81b4302931accf0fc01916`
+Fingerprint: `60d222fce64d0b101e1d001a4bab39d9aea2833a4b5aeb89bec4e25b2808ee13`
 
 **Planning estimates, not supplier quotes.** Analyst planning ranges, 2026-11-02, R4 power path revised 2026-11-03; no supplier volume discounts verified. Custom parts depend on unresolved geometry and process.
 
@@ -15,7 +15,7 @@ These allowances include every function in the preliminary electrical definition
 | Mains inlet cord and strain relief / unit | $12–$30 | $8–$22 | $6–$18 |
 | Fuse two-pole switch and filter/surge network / unit | $20–$60 | $12–$45 | $8–$30 |
 | Regen Clamp (ideal diode and brake chopper) and source branch fuse; clamp price not sourced / unit | $40–$100 | $30–$80 | $22–$60 |
-| Time-delay bank fuse with back-to-back MOSFET disconnect and pulse pre-charge/discharge resistor with switches and feedback / unit | $45–$130 | $32–$100 | $22–$75 |
+| Time-delay bank fuse with back-to-back MOSFET disconnect and normally-closed pulse discharge resistor with switch and feedback / unit | $40–$120 | $28–$90 | $20–$68 |
 | Passive cell balancing with per-cell voltage monitor and bank temperature sensing / unit | $35–$100 | $20–$70 | $12–$50 |
 | DC-link capacitors and bleed / unit | $12–$35 | $8–$25 | $5–$18 |
 | Fused auxiliary converters and rails / unit | $15–$45 | $10–$30 | $6–$22 |
@@ -49,9 +49,9 @@ These allowances include every function in the preliminary electrical definition
 
 | Procurement volume (units) | One unit factory | Two units + board factory | Unit retail before NRE | Pair + board retail before NRE |
 |---|---:|---:|---:|---:|
-| prototype | $2,392–$11,313 | $5,153–$24,660 | $4,349–$75,420 | $9,370–$164,398 |
-| 100 | $1,440–$6,569 | $3,071–$14,234 | $2,619–$43,790 | $5,585–$94,889 |
-| 1000 | $932–$4,292 | $1,978–$9,283 | $1,696–$28,611 | $3,597–$61,882 |
+| prototype | $2,386–$11,298 | $5,142–$24,628 | $4,338–$75,314 | $9,349–$164,186 |
+| 100 | $1,435–$6,553 | $3,062–$14,202 | $2,610–$43,684 | $5,568–$94,677 |
+| 1000 | $930–$4,281 | $1,974–$9,261 | $1,692–$28,537 | $3,589–$61,734 |
 
 A paired system has two units and one board, or two separate mounting adapters. Adapter alternatives are not all charged together. The JSON includes bare pairs and wall/rack/door pairs. The door allowance does not establish door compatibility or load capability.
 
@@ -63,9 +63,9 @@ NRE allowance: $160,000–$1,400,000. Unquoted allowance for engineering tooling
 
 | Volume | NRE per unit | Unit retail with NRE amortization |
 |---|---:|---:|
-| prototype | $160,000–$1,400,000 | $295,258–$9,408,753 |
-| 100 | $1,600–$14,000 | $5,528–$137,124 |
-| 1000 | $160–$1,400 | $1,987–$37,944 |
+| prototype | $160,000–$1,400,000 | $295,247–$9,408,647 |
+| 100 | $1,600–$14,000 | $5,519–$137,018 |
+| 1000 | $160–$1,400 | $1,983–$37,870 |
 
 Listing context only: [CubeMars RO100 listing](https://store.cubemars.com/products/ro100) showed $156.90 and sold-out text on 2026-11-02; exact variant and stock remain unconfirmed. No quote from that page is counted in these totals.
 

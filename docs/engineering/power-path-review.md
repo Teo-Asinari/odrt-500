@@ -45,7 +45,20 @@ The condition first appears at the first regeneration after the fault, when expe
 
 When mains is lost, the isolated drive bus falls below the 15 V auxiliary minimum in 0.4 s. The supervisor therefore cannot hold a discharge switch on, so **the discharge path must be normally closed** (fail-to-discharge) and opened only by an energised supervisor.
 
-**Start-up time trade.** Sequence B takes 2 minutes with a fresh bank but does not depend on the supply's overload mode. Sequence A takes 24 s but needs constant-current behaviour. Normal R4 operation already runs the supply at its 9.6 A limit, though (heavy and hold cases), so confirming constant-current mode is required either way. Once it is confirmed, sequence A is the better choice, and the resistor is needed only for service discharge.
+**Decision (owner, 2026-11-03): start-up is direct supply charging (sequence A).** The bank disconnect closes at power-on and the supply charges the bank in constant-current mode: the drive enables at 24 s fresh / 15 s aged. The pulse resistor stays only as the normally-closed service-discharge path, and the bypass switch and pre-charge function are removed (cost allowance reduced). New fault variants for A:
+
+| Sequence A (fresh / aged) | Result |
+|---|---|
+| Normal | auxiliary rail up at 6.6 / 3.5 s; drive enabled at 24 / 15 s; supply at its limit for 26 / 15 s |
+| Disconnect fails open | bank never charges; start-up timeout at 35 / 22 s, drive stays disabled |
+| Mains lost at 10 s | drive never enabled; the bank feeds the auxiliary rail down to 15 / 22 V |
+
+Two consequences follow:
+
+- **The bank disconnect must close by default at power-on** (normally closed, or closed by a hardware circuit). The bus follows the bank up from 0 V, so the supervisor only powers up after several seconds.
+- **The decision depends on the EPP-500-54 current-limiting continuously into the bank.** This is unverified; resistor pre-charge (sequence B, 120 s) is the recorded fallback.
+
+**Start-up time trade (as analysed before the decision).** Sequence B takes 2 minutes with a fresh bank but does not depend on the supply's overload mode. Sequence A takes 24 s but needs constant-current behaviour. Normal R4 operation already runs the supply at its 9.6 A limit, though (heavy and hold cases), so confirming constant-current mode is required either way. Once it is confirmed, sequence A is the better choice, and the resistor is needed only for service discharge.
 
 ## Sizing summary
 
@@ -56,8 +69,8 @@ When mains is lost, the isolated drive bus falls below the 15 V auxiliary minimu
 | Source fuse | ≥ 12 A DC | unselected |
 | Bank fuse | ≥ 17.8 A, time-delay (peak 34.7 A); prospective fault 238 A fresh / 124 A aged (7× rating) | unselected; I²t check needed |
 | Bank disconnect | back-to-back MOSFETs, 80 V class, about 0.8 W | unselected |
-| Pre-charge / service discharge | one 6.8 Ω pulse resistor; supply held under 7.7 A of 9.6 A; about 6.3 kJ per charge, 400 W peak | simulated; see above |
-| Start-up time | 120 s to drive enable (fresh), 62 s (aged), after bypass closure | simulated; 24 s if the supply's constant-current mode is confirmed |
+| Service discharge (pre-charge fallback) | one 6.8 Ω pulse resistor, normally closed for discharge; as a fallback pre-charge it would hold the supply under 7.7 A | simulated; see above |
+| Start-up | **direct supply charging (decided)**: drive enabled at 24 s fresh / 15 s aged; disconnect closed by default | depends on unverified supply constant-current mode |
 | Service discharge | 80 s to 5 V (fresh) through the same resistor; bleed alone takes 14 h (τ) | discharge is required, not optional |
 | Balancing | passive 260 Ω per cell, 0.5 W; worst cell 2.69 V in use, 2.82 V at the 56 V trip (−10% capacitance cell) | pass; replaces the 1.05 guess; leakage assumed |
 | Dump monitoring | 1 mΩ shunt; fault when measured < ½ of expected (duty × V / R) for 0.1 s, or bus > 55.0 V for 0.1 s | simulated across the full R4 suite |
@@ -66,7 +79,7 @@ When mains is lost, the isolated drive bus falls below the 15 V auxiliary minimu
 ## Owner and engineering choices
 
 1. **Trip voltage: decided, 56 V.** Normal operation peaks at 54.4 V, so 1.6 V of headroom remains. The fresh-bank dump failure peaks at 55.6 V and still does not trip, so the independent dump monitor remains necessary.
-2. **Start-up time.** Simulated: 120 s with the resistor (fresh bank) or 24 s charging straight from the supply. The latter needs the EPP-500-54's constant-current mode confirmed, which normal operation already needs.
+2. **Start-up: decided, direct supply charging** (24 s fresh). Confirming the EPP-500-54's constant-current behaviour into a capacitive load is now the critical verification item. If it fails, fall back to the resistor sequence (120 s).
 
 ## Not verified
 

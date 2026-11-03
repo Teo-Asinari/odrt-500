@@ -1,5 +1,5 @@
 {
-  "fingerprint": "8c56b4a8e8debc9fac648646e684d49349849e854471aab67a3c3fe22986b93e",
+  "fingerprint": "3fcca82bff4ddacc3f76dbf88aa528f1af3ce130b485d54a23e2e9bc6e328b4c",
   "fidelity": "functional semantic bundles; unqualified",
   "nodes": {
     "inlet": {
@@ -59,8 +59,8 @@
       }
     },
     "bank_protection": {
-      "description": "Bank time-delay DC fuse, back-to-back MOSFET disconnect, and one pulse resistor (about 6.8 ohm) switched for pre-charge and service discharge; sized in reports/power_path.md",
-      "selection": "unselected; fuse I2t at the aged-bank fault multiple and welded-switch detection unresolved",
+      "description": "Bank time-delay DC fuse, back-to-back MOSFET disconnect closed at power-on (start-up by direct supply charging), and a normally-closed service-discharge path through an about 6.8 ohm pulse resistor; sized in reports/power_path.md",
+      "selection": "unselected; start-up relies on unverified supply constant-current mode; fuse I2t and welded-switch detection unresolved",
       "ports": {
         "bank": "dc48",
         "bus": "dc48",

@@ -1,6 +1,6 @@
 # R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1
 
-Fingerprint: `75697c0bbd113e6a8b21b7aeb472e53b098e9318b17474976116bf72babacf0b`
+Fingerprint: `e162902172a4380fac5e259b8899378c0264f9e3dea649209d1954c9654b7290`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells on the drive bus (bidirectional; one-way supply and dump unchanged), EPP-500-54 at 52 V, motor current limit 50 A. Controller: see below.
 

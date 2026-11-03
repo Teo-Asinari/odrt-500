@@ -16,7 +16,7 @@ def envelope(rms=10., peak=30., bank_v=53.5, bus_v=54.4, supply_a=9., trips=Fals
                       'bus_capacitance_f': .003, 'drive_idle_w': 3.},
             'cell_values': {'r2_fresh': cell, 'r2_aged': dict(cell, capacitance_f=63., esr_initial_max_ohm=.022)},
             'banks': {'r2_fresh': {'a': m, 'paired_dump_failure': dict(m, maximum_bus_v=55.6)}, 'r2_aged': {'a': dict(m)}},
-            'derived': {'r4_power': {'functions': {'precharge': {'enable_threshold_v': 45},
+            'derived': {'r4_power': {'functions': {'precharge': {'enable_threshold_v': 45, 'charge_timeout_factor': 1.5},
                                                      'dump_monitor': {'detection_s': .1, 'min_expected_a': 2, 'measured_fraction': .5, 'backup_bus_v': 55.}}},
                         'r4_checks': {'continuous_repetition_cell_c': {'r2_fresh': 40., 'r2_aged': 60.}}}}
 
@@ -76,7 +76,9 @@ def test_bypass_failing_open_keeps_drive_disabled_and_discharge_reaches_safe_vol
     from odrt.precharge import run_discharge, run_sequence
     q = sequence_params('r2_aged')
     fault = run_sequence(q, 'resistor', 'bypass_open')
-    assert not fault['drive_enabled'] and 'bypass_timeout_s' in fault
+    assert not fault['drive_enabled'] and 'start_timeout_s' in fault
+    open_a = run_sequence(q, 'supply_cc', 'disconnect_open')
+    assert not open_a['drive_enabled'] and 'start_timeout_s' in open_a and open_a['final_bank_v'] == 0
     d = run_discharge(q, 53.5)
     assert d['safe_s'] == pytest.approx(q['c_bank']*(q['r_pre']+q['esr']+q['wiring'])*math.log(53.5/q['safe_v']), rel=.05)
     assert d['bus_below_aux_minimum_s'] < 1  # supervisor loses power: discharge switch must be normally closed

@@ -1,6 +1,6 @@
 {
-  "fingerprint": "6194ad33839147563d99682d824afe490457843336be5fa452d236be746e2991",
-  "r4_fingerprint": "75697c0bbd113e6a8b21b7aeb472e53b098e9318b17474976116bf72babacf0b",
+  "fingerprint": "34fffee046bae2c34a5cf6f7f065a8c475dd709157ede8afbc197506096943dd",
+  "r4_fingerprint": "e162902172a4380fac5e259b8899378c0264f9e3dea649209d1954c9654b7290",
   "assumptions": {
     "device_voltage_class_v": 80,
     "clamp_margin_v": 2,
@@ -143,7 +143,8 @@
         "bleed_only_tau_h": 8.75
       }
     ],
-    "note": "The resistor limits supply current itself, so start-up does not depend on the supply overload mode. The same resistor discharges the bank for service. Pulse-energy rating, not continuous power, sizes it."
+    "startup": "supply_cc",
+    "note": "Pulse-energy rating, not continuous power, sizes the resistor. In its pre-charge role it limits supply current itself, so start-up would not depend on the supply overload mode."
   },
   "balancing": {
     "resistor_ohm": 260.0,

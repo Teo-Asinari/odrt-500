@@ -34,4 +34,5 @@ sequence:
   bypass_timeout_factor: 1.5   # bypass not closed by this x the expected time -> pre-charge fault
   resistor_heat_capacity_j_k: 150  # aluminium-housed pulse resistor on a heatsink
   resistor_to_air_k_w: 1.5
-  mains_loss_at_s: 30
+  mains_loss_at_s: 30         # sequence B
+  mains_loss_a_at_s: 10       # sequence A (charges faster)

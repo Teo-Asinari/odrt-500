@@ -104,8 +104,9 @@ def size(r4, spec, components):
                      'bleed_only_tau_h': p['bleed_resistance_ohm']*cap[b]/3600})
     out['precharge_discharge'] = {
         'resistor_ohm': r, 'peak_power_w': v0**2/r, 'supply_current_a': v0/r, 'supply_limit_a': limit_a, 'rows': rows,
-        'note': 'The resistor limits supply current itself, so start-up does not depend on the supply overload mode. '
-                'The same resistor discharges the bank for service. Pulse-energy rating, not continuous power, sizes it.'}
+        'startup': r4['derived']['r4_power']['functions']['precharge'].get('sequence', 'resistor'),
+        'note': 'Pulse-energy rating, not continuous power, sizes the resistor. In its pre-charge role it limits supply current '
+                'itself, so start-up would not depend on the supply overload mode.'}
 
     # Passive balancing and dynamic imbalance from capacitance spread.
     vcell = v0/n; i_bal = d['balancing_current_ratio']*d['cell_leakage_a']; r_bal = vcell/i_bal
@@ -188,18 +189,25 @@ def write_report(r, path):
           f'{a["disconnect_on_resistance_ohm"]} Ω (assumed).', '',
           '| Bank | Prospective bank fault current A | Multiple of fuse rating |', '|---|---:|---:|']
     L += [f'| {b} | {v:.0f} | {bp["fault_multiple_of_rating"][b]:.1f} |' for b, v in bp['prospective_fault_a'].items()]
-    L += ['', bp['note'], '', '## Pre-charge and service discharge (one pulse resistor)', '',
-          f'{pc["resistor_ohm"]:.1f} Ω holds start-up supply current at {pc["supply_current_a"]:.1f} A against the '
+    adopted = pc['startup'] == 'supply_cc'
+    L += ['', bp['note'], '', '## Start-up, service discharge and the pulse resistor', '',
+          ('**Adopted start-up: direct supply charging** (owner decision 2026-11-03). The bank disconnect closes at power-on and the supply '
+           'charges the bank in its constant-current mode, which is unverified for the EPP-500-54 ([sequences](precharge.md)). The '
+           f'{pc["resistor_ohm"]:.1f} Ω pulse resistor is kept only as the normally-closed service-discharge path. The resistor pre-charge '
+           'columns below are the fallback if constant-current mode is not confirmed.' if adopted else 'Start-up uses the resistor pre-charge below.'), '',
+          f'As a fallback pre-charge, {pc["resistor_ohm"]:.1f} Ω holds start-up supply current at {pc["supply_current_a"]:.1f} A against the '
           f'{pc["supply_limit_a"]:.1f} A rating, peak {pc["peak_power_w"]:.0f} W. The bypass closes when the bus-to-bank difference is small enough that top-off current '
           f'stays under the supply margin ({pc["rows"][0]["bypass_close_delta_v"]:.2f} V fresh), and the drive is enabled only after closure '
           '([sequence simulation](precharge.md)). '
           + pc['note'], '',
-          '| Bank | C F | τ s | To bypass = drive enable s | Pre-charge energy J | Bypass inrush A | Service discharge to '
+          '| Bank | C F | τ s | Fallback: to bypass = drive enable s | Fallback: pre-charge energy J | Fallback: bypass inrush A | Service discharge to '
           f'{a["service_safe_v"]} V s | Discharge energy J | Bleed-only τ h |', '|---|---:|---:|---:|---:|---:|---:|---:|---:|']
     L += [f'| {x["bank"]} | {x["bank_capacitance_f"]:.2f} | {x["tau_s"]:.0f} | {x["time_to_enable_s"]:.0f} | '
           f'{x["precharge_energy_j"]:.0f} | {x["bypass_inrush_a"]:.1f} | {x["discharge_time_s"]:.0f} | {x["discharge_energy_j"]:.0f} | '
           f'{x["bleed_only_tau_h"]:.1f} |' for x in pc['rows']]
-    L += ['', 'Without an active discharge the 10 kΩ bleed alone leaves the bank charged for hours; service discharge is required.', '',
+    L += ['', 'Without an active discharge the 10 kΩ bleed alone leaves the bank charged for hours; service discharge is required. '
+          'With start-up no longer constraining it, a smaller resistor would discharge faster at higher bank current (bounded by the bank fuse); '
+          'that is a separate sizing choice.', '',
           '## Cell balancing', '',
           f'Passive balancing: {bal["resistor_ohm"]:.0f} Ω per cell ({1000*bal["current_a"]:.0f} mA = {a["balancing_current_ratio"]} × an '
           f'assumed {1000*a["cell_leakage_a"]:.1f} mA leakage spread), {bal["loss_bank_w"]:.2f} W for the bank, self-discharge τ '

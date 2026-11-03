@@ -1,6 +1,6 @@
 {
-  "fingerprint": "9467e51e7e5e6568c3d73b021368a0aa994d954732766292ed2b31971198ff80",
-  "r4_fingerprint": "75697c0bbd113e6a8b21b7aeb472e53b098e9318b17474976116bf72babacf0b",
+  "fingerprint": "f8d92e3d2558a1e99ee38d849c672e8e4ee880925a73f775b3696ff55ba3669a",
+  "r4_fingerprint": "e162902172a4380fac5e259b8899378c0264f9e3dea649209d1954c9654b7290",
   "sequence_assumptions": {
     "aux_load_w": 10,
     "aux_min_input_v": 15,
@@ -8,7 +8,8 @@
     "bypass_timeout_factor": 1.5,
     "resistor_heat_capacity_j_k": 150,
     "resistor_to_air_k_w": 1.5,
-    "mains_loss_at_s": 30
+    "mains_loss_at_s": 30,
+    "mains_loss_a_at_s": 10
   },
   "parameters": {
     "r2_fresh": {
@@ -30,6 +31,7 @@
       "idle_w": 3,
       "charged_dv": 0.5,
       "timeout_factor": 1.5,
+      "charge_timeout_factor": 1.5,
       "res_c": 150,
       "res_r": 1.5,
       "safe_v": 5
@@ -53,6 +55,7 @@
       "idle_w": 3,
       "charged_dv": 0.5,
       "timeout_factor": 1.5,
+      "charge_timeout_factor": 1.5,
       "res_c": 150,
       "res_r": 1.5,
       "safe_v": 5
@@ -71,7 +74,36 @@
       "bank_peak_a": 9.61515000572447,
       "resistor_energy_j": 0.0,
       "resistor_rise_k": 0.0,
-      "min_bus_after_enable_v": 47.27790761750321
+      "min_bus_after_enable_v": 47.27790761750321,
+      "aux_available_s": 6.64304066742529
+    },
+    "r2_fresh/A_disconnect_open": {
+      "start_timeout_s": 35.1,
+      "end_s": 35.1,
+      "final_bank_v": 0.0,
+      "drive_enabled": false,
+      "supply_peak_a": 0.1976500424163774,
+      "supply_limit_a": 9.615384615384615,
+      "supply_at_limit_s": 0.0,
+      "bank_peak_a": 0.0,
+      "resistor_energy_j": 0.0,
+      "resistor_rise_k": 0.0,
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 0.0
+    },
+    "r2_fresh/A_mains_loss_midway": {
+      "mains_loss_s": 10.0,
+      "end_s": 70.0,
+      "final_bank_v": 14.980140175720845,
+      "drive_enabled": false,
+      "supply_peak_a": 9.615384615384615,
+      "supply_limit_a": 9.615384615384615,
+      "supply_at_limit_s": 10.0,
+      "bank_peak_a": 9.61515000572447,
+      "resistor_energy_j": 0.0,
+      "resistor_rise_k": 0.0,
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 6.627929799237283
     },
     "r2_fresh/B_resistor": {
       "bypass_s": 119.68790392036027,
@@ -86,7 +118,8 @@
       "bank_peak_a": 7.216583100808462,
       "resistor_energy_j": 6336.545776358538,
       "resistor_rise_k": 33.93611155232653,
-      "min_bus_after_enable_v": 51.0840277464179
+      "min_bus_after_enable_v": 51.0840277464179,
+      "aux_available_s": 0.0
     },
     "r2_fresh/B_bypass_welded": {
       "enable_s": 24.06580235727662,
@@ -100,10 +133,11 @@
       "bank_peak_a": 9.61515000572447,
       "resistor_energy_j": 0.0,
       "resistor_rise_k": 0.0,
-      "min_bus_after_enable_v": 47.27790761750321
+      "min_bus_after_enable_v": 47.27790761750321,
+      "aux_available_s": 6.64304066742529
     },
     "r2_fresh/B_bypass_open": {
-      "bypass_timeout_s": 168.40562414781107,
+      "start_timeout_s": 168.40562414781107,
       "end_s": 168.40562414781107,
       "final_bank_v": 51.40922148626257,
       "drive_enabled": false,
@@ -113,7 +147,8 @@
       "bank_peak_a": 7.216583100808462,
       "resistor_energy_j": 6345.067108048652,
       "resistor_rise_k": 33.93611155232653,
-      "min_bus_after_enable_v": null
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 0.0
     },
     "r2_fresh/B_mains_loss_midway": {
       "mains_loss_s": 30.0,
@@ -126,7 +161,8 @@
       "bank_peak_a": 7.216583100808462,
       "resistor_energy_j": 5214.019646225772,
       "resistor_rise_k": 31.523346696061257,
-      "min_bus_after_enable_v": null
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 0.0
     },
     "r2_aged/A_supply_cc": {
       "enable_s": 15.176857447894148,
@@ -140,7 +176,36 @@
       "bank_peak_a": 9.614938482234146,
       "resistor_energy_j": 0.0,
       "resistor_rise_k": 0.0,
-      "min_bus_after_enable_v": 49.336988012457766
+      "min_bus_after_enable_v": 49.336988012457766,
+      "aux_available_s": 3.5169827129674833
+    },
+    "r2_aged/A_disconnect_open": {
+      "start_timeout_s": 22.113,
+      "end_s": 22.113,
+      "final_bank_v": 0.0,
+      "drive_enabled": false,
+      "supply_peak_a": 0.1976500424163774,
+      "supply_limit_a": 9.615384615384615,
+      "supply_at_limit_s": 0.0,
+      "bank_peak_a": 0.0,
+      "resistor_energy_j": 0.0,
+      "resistor_rise_k": 0.0,
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 0.0
+    },
+    "r2_aged/A_mains_loss_midway": {
+      "mains_loss_s": 10.0,
+      "end_s": 70.0,
+      "final_bank_v": 22.041590559850423,
+      "drive_enabled": false,
+      "supply_peak_a": 9.615384615384615,
+      "supply_limit_a": 9.615384615384615,
+      "supply_at_limit_s": 10.0,
+      "bank_peak_a": 9.614938482234146,
+      "resistor_energy_j": 0.0,
+      "resistor_rise_k": 0.0,
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 3.51698953619451
     },
     "r2_aged/B_resistor": {
       "bypass_s": 62.31247721597277,
@@ -155,7 +220,8 @@
       "bank_peak_a": 7.002618733810694,
       "resistor_energy_j": 3859.499936290003,
       "resistor_rise_k": 21.978163125465247,
-      "min_bus_after_enable_v": 50.846779187623966
+      "min_bus_after_enable_v": 50.846779187623966,
+      "aux_available_s": 0.0
     },
     "r2_aged/B_bypass_welded": {
       "enable_s": 15.176857447894148,
@@ -169,10 +235,11 @@
       "bank_peak_a": 9.614938482234146,
       "resistor_energy_j": 0.0,
       "resistor_rise_k": 0.0,
-      "min_bus_after_enable_v": 49.336988012457766
+      "min_bus_after_enable_v": 49.336988012457766,
+      "aux_available_s": 3.5169827129674833
     },
     "r2_aged/B_bypass_open": {
-      "bypass_timeout_s": 85.56654101455231,
+      "start_timeout_s": 85.56654101455231,
       "end_s": 85.56654101455231,
       "final_bank_v": 50.55933705354426,
       "drive_enabled": false,
@@ -182,7 +249,8 @@
       "bank_peak_a": 7.002618733810694,
       "resistor_energy_j": 3876.463165458641,
       "resistor_rise_k": 21.978163125465247,
-      "min_bus_after_enable_v": null
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 0.0
     },
     "r2_aged/B_mains_loss_midway": {
       "mains_loss_s": 30.0,
@@ -195,7 +263,8 @@
       "bank_peak_a": 7.002618733810694,
       "resistor_energy_j": 3618.4428103410364,
       "resistor_rise_k": 21.76126078710342,
-      "min_bus_after_enable_v": null
+      "min_bus_after_enable_v": null,
+      "aux_available_s": 0.0
     }
   },
   "discharge": {

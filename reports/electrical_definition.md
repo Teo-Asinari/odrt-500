@@ -1,6 +1,6 @@
 # Preliminary electrical definition
 
-Fingerprint: `8c56b4a8e8debc9fac648646e684d49349849e854471aab67a3c3fe22986b93e`
+Fingerprint: `3fcca82bff4ddacc3f76dbf88aa528f1af3ce130b485d54a23e2e9bc6e328b4c`
 
 **Functional schematic, not a pin-level or fabrication schematic.** The power path follows the R4 candidate (bank on the drive bus behind the Regen Clamp; [sizing](power_path.md)); other candidate parts remain from the coupled reference. Graph edges represent semantic connectivity and bundles, not conductor count or physical routes.
 
@@ -14,7 +14,7 @@ Fingerprint: `8c56b4a8e8debc9fac648646e684d49349849e854471aab67a3c3fe22986b93e`
 | enclosure | custom; bond joints and continuity unqualified | Bonded conductive chassis, structural base and accessible metal |
 | source_block | regen_clamp; 58 V rating leaves 1 V above the 57 V trip; fuse unselected | In R4, the ODrive Regen Clamp ideal diode (supply reverse block) and brake chopper, plus source branch DC fuse >= 12 A; sized in reports/power_path.md |
 | capacitor | eaton_tv1860_3r0107 x20 | Series capacitor bank on the drive bus (R4), 20 x 100 F 3.0 V cells |
-| bank_protection | unselected; fuse I2t at the aged-bank fault multiple and welded-switch detection unresolved | Bank time-delay DC fuse, back-to-back MOSFET disconnect, and one pulse resistor (about 6.8 ohm) switched for pre-charge and service discharge; sized in reports/power_path.md |
+| bank_protection | unselected; start-up relies on unverified supply constant-current mode; fuse I2t and welded-switch detection unresolved | Bank time-delay DC fuse, back-to-back MOSFET disconnect closed at power-on (start-up by direct supply charging), and a normally-closed service-discharge path through an about 6.8 ohm pulse resistor; sized in reports/power_path.md |
 | balancing | unselected; cell leakage not verified | Passive per-cell balancing (about 260 ohm), per-cell voltage monitor with 2.95 V trip, bank temperature sensing feeding the torque derate |
 | bus_storage | unselected | 3 mF DC-link capacitance plus Regen Clamp onboard capacitance and permanent bleed; ratings/layout unresolved |
 | aux_power | unselected; rail voltages and isolation boundaries unresolved | Fused DC/DC logic rails and fan supply |

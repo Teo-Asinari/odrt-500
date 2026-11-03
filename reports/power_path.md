@@ -1,6 +1,6 @@
 # R4 power-path sizing
 
-Fingerprint: `6194ad33839147563d99682d824afe490457843336be5fa452d236be746e2991` (R4 `75697c0bbd11`)
+Fingerprint: `34fffee046bae2c34a5cf6f7f065a8c475dd709157ede8afbc197506096943dd` (R4 `e162902172a4`)
 
 **Functional sizing only.** Ratings are derived from the [R4 simulated envelope](r4_candidate.md) and cited data already in the repository. No part is selected; every `assumed` value in `data/power_path.yaml` is a verification item.
 
@@ -46,16 +46,18 @@ Bank RMS 14.2 A and peak 34.7 A. Fuse at least 17.8 A (1.25 × RMS); the peak is
 
 Bank short-circuit current is set by cell ESR, so the aged bank gives the lowest clearing multiple. Fuse time-current behaviour at that multiple must be checked against the cell and wiring I²t.
 
-## Pre-charge and service discharge (one pulse resistor)
+## Start-up, service discharge and the pulse resistor
 
-6.8 Ω holds start-up supply current at 7.7 A against the 9.6 A rating, peak 400 W. The bypass closes when the bus-to-bank difference is small enough that top-off current stays under the supply margin (1.88 V fresh), and the drive is enabled only after closure ([sequence simulation](precharge.md)). The resistor limits supply current itself, so start-up does not depend on the supply overload mode. The same resistor discharges the bank for service. Pulse-energy rating, not continuous power, sizes it.
+**Adopted start-up: direct supply charging** (owner decision 2026-11-03). The bank disconnect closes at power-on and the supply charges the bank in its constant-current mode, which is unverified for the EPP-500-54 ([sequences](precharge.md)). The 6.8 Ω pulse resistor is kept only as the normally-closed service-discharge path. The resistor pre-charge columns below are the fallback if constant-current mode is not confirmed.
 
-| Bank | C F | τ s | To bypass = drive enable s | Pre-charge energy J | Bypass inrush A | Service discharge to 5 V s | Discharge energy J | Bleed-only τ h |
+As a fallback pre-charge, 6.8 Ω holds start-up supply current at 7.7 A against the 9.6 A rating, peak 400 W. The bypass closes when the bus-to-bank difference is small enough that top-off current stays under the supply margin (1.88 V fresh), and the drive is enabled only after closure ([sequence simulation](precharge.md)). Pulse-energy rating, not continuous power, sizes the resistor. In its pre-charge role it limits supply current itself, so start-up would not depend on the supply overload mode.
+
+| Bank | C F | τ s | Fallback: to bypass = drive enable s | Fallback: pre-charge energy J | Fallback: bypass inrush A | Service discharge to 5 V s | Discharge energy J | Bleed-only τ h |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | r2_fresh | 5.00 | 34 | 112 | 6751 | 7.8 | 80 | 7203 | 13.9 |
 | r2_aged | 3.15 | 21 | 57 | 4239 | 7.8 | 51 | 4538 | 8.8 |
 
-Without an active discharge the 10 kΩ bleed alone leaves the bank charged for hours; service discharge is required.
+Without an active discharge the 10 kΩ bleed alone leaves the bank charged for hours; service discharge is required. With start-up no longer constraining it, a smaller resistor would discharge faster at higher bank current (bounded by the bank fuse); that is a separate sizing choice.
 
 ## Cell balancing
 

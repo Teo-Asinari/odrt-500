@@ -20,11 +20,20 @@ functions:
     on_resistance_ohm: 0.005   # assumed MOSFET path; no part selected
   precharge:
     need: The bank is a near short at power-on. The drive must stay disabled until the bank is charged.
+    # Owner decision 2026-11-03: start-up is direct supply charging (sequence A in reports/precharge.md).
+    sequence: supply_cc
     proposal: >-
-      Charge through the supply's own current limit if its overload mode is verified to be constant
-      current; otherwise a switched pre-charge resistor sized for supply current limit at the
-      setpoint and the full bank energy as a pulse. Drive enable is interlocked to the bank voltage.
+      The bank disconnect closes at power-on and the supply charges the bank through its own
+      constant-current limit (about 24 s to drive enable with a fresh bank). No pre-charge resistor
+      or bypass is used at start-up. The drive is enabled when the bank reaches the enable threshold.
+      The 6.8 ohm pulse resistor remains, as the normally-closed service-discharge path only.
+    depends_on: >-
+      The EPP-500-54 must current-limit continuously into a capacitive load (constant current, not
+      hiccup or shut-down). This is unverified. Normal R4 operation already relies on it, because the
+      heavy and hold cases run the supply at its 9.6 A limit.
+    fallback: Resistor pre-charge (sequence B, 120 s fresh) if constant-current mode is not confirmed.
     enable_threshold_v: 45
+    charge_timeout_factor: 1.5   # drive stays disabled and a fault latches if the bank is not at the threshold by this x the expected time
   cell_voltage:
     need: The bank now sees the drive bus maximum. Series cells must stay under rating with imbalance.
     worst_cell_factor: 1.05    # assumed worst cell / mean cell voltage with passive balancing; no balancing design yet
