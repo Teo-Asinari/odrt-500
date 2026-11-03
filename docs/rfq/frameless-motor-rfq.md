@@ -54,6 +54,8 @@ Best regards,
 
 ## Separate short request to CubeMars (current lead motor, RO100 KV55)
 
+**Superseded by [cubemars-ro100-data-request.md](cubemars-ro100-data-request.md).**
+
 **Subject:** RO100 KV55: datasheet values (Kt, resistance, thermal data)
 
 Hello,
