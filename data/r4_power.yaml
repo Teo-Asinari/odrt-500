@@ -1,0 +1,33 @@
+# R4 proposal: move the 20-cell TV bank from upstream of the one-way Regen Clamp onto the drive bus,
+# so regeneration charges the bank instead of the dump. Evidence: docs/engineering/fast-motion-review.md.
+proposal:
+  topology: bidirectional
+  basis: >-
+    In R3 + C1 fast reversal the one-way clamp dumps 317 W of regeneration and the aged bank reaches
+    the 30 V trip. With the bank on the drive bus the fast-motion study dumps 49 W and the aged
+    fast reversal no longer trips. The supply stays one-way; the dump thresholds and trip are unchanged.
+  retained_from_r3: [5:1 belt, conducted motor heat path, 30 V undervoltage trip, controller C1]
+# Hardware functions this topology needs. Checked here from the simulated envelope where data allow.
+functions:
+  reverse_blocking:
+    need: The bus reaches the 54.35-54.5 V dump and up to the 57 V trip, above the 52 V supply setpoint and the EPP-500-54 56 V adjustment maximum. The supply output must not be back-fed.
+    proposal: Ideal-diode (MOSFET OR-ing) controller on the supply output. The model's one-way source assumes it.
+    on_resistance_ohm: 0.005   # assumed MOSFET path; no part selected
+  precharge:
+    need: The bank is a near short at power-on. The drive must stay disabled until the bank is charged.
+    proposal: >-
+      Charge through the supply's own current limit if its overload mode is verified to be constant
+      current; otherwise a switched pre-charge resistor sized for supply current limit at the
+      setpoint and the full bank energy as a pulse. Drive enable is interlocked to the bank voltage.
+    enable_threshold_v: 45
+  cell_voltage:
+    need: The bank now sees the drive bus maximum. Series cells must stay under rating with imbalance.
+    worst_cell_factor: 1.05    # assumed worst cell / mean cell voltage with passive balancing; no balancing design yet
+  ripple_current:
+    need: Bank current now carries drive bus transients. Compared with the cell's 15 K-rise RMS current.
+    note: Cycle-averaged current only. Drive PWM-frequency ripple is assumed to stay in the drive-bus capacitors; bus wiring inductance is not modelled.
+open_items:
+  - Verify the EPP-500-54 overload behaviour (constant current vs hiccup) into a capacitive load; it decides the pre-charge circuit.
+  - Select the ideal-diode controller and pre-charge parts; add them to the electrical definition and cost allowances.
+  - Bank wiring inductance, fusing and a bank-disconnect for service are not designed.
+  - Cell balancing (passive or active) is not designed; the worst-cell factor is an assumption.

@@ -1,8 +1,8 @@
 # R3 with candidate controller C1 (kp 4, 2.5 m/s release limiter, 0.15 m end zone)
 
-Fingerprint: `3019e3eb9ec9c320992cb1820172ecc2e24b27cfe287add3964ba27765cc7d3e`
+Fingerprint: `3ad2e894d40edbf7912213c78bcddcc69a6efb364536d687916bbeca100de931`
 
-**Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller gains are unchanged from the reference.
+**Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller: see below.
 
 | Bank / case | Tracking % | Peak N | Bus min–max V | Winding °C | Bar ° | Trip | Failed comparisons |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -93,7 +93,7 @@ Trip lowered to 30 V ([ODrive Pro](https://docs.odriverobotics.com/v/latest/hard
 - Auxiliary/logic rails, sensors and the supervisor must be specified to ride through 30 V.
 - Low-voltage operation raises bank and wiring currents for the same power; ESR heating is captured, connector/wiring ratings are not.
 
-## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull)
+## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull; controller variants as name:bank:case)
 
 | Perturbation | Tracking % | Winding °C | Minimum bus V | Trip | Failed comparisons |
 |---|---:|---:|---:|---|---|

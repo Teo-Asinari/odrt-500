@@ -1,5 +1,5 @@
 {
-  "fingerprint": "7e251a624386a5c2e58c0ad0b6940574b02686731031ef11558972ac88437af8",
+  "fingerprint": "57920a0d63127c682ffad92c32fa6d4714c385433dfd96fe0d771601310d0e83",
   "study": "r2",
   "title": "R2 candidate simulation",
   "assessment": "REVISE",
@@ -72,6 +72,7 @@
     "supply_stop_c": 70
   },
   "topology": {
+    "kind": "clamp",
     "input_capacitance_f": 0.003,
     "output_added_capacitance_f": 0.0008,
     "diode_resistance_ohm": 0.001,
@@ -171,6 +172,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 2.038541375219303,
+        "unit_0.supply_peak_a": 9.622565140030616,
         "assessment": [
           {
             "failed_checks": [
@@ -232,6 +236,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.21269711044010498,
+        "unit_0.supply_peak_a": 1.4451283650530122,
         "assessment": [
           {
             "failed_checks": [],
@@ -290,6 +297,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.8476031858859574,
+        "unit_0.supply_peak_a": 7.121006784360758,
         "assessment": [
           {
             "failed_checks": [],
@@ -348,6 +358,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.2492883094464107,
+        "unit_0.supply_peak_a": 9.620357083169267,
         "assessment": [
           {
             "failed_checks": [],
@@ -406,6 +419,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.6026583176312196,
+        "unit_0.supply_peak_a": 9.621410959795057,
         "assessment": [
           {
             "failed_checks": [
@@ -466,6 +482,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.49996049317800145,
+        "unit_0.supply_peak_a": 4.781182071252452,
         "assessment": [
           {
             "failed_checks": [],
@@ -524,6 +543,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.725946562430575,
+        "unit_0.supply_peak_a": 9.62153922690587,
         "assessment": [
           {
             "failed_checks": [],
@@ -582,6 +604,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.0875050850801213,
+        "unit_0.supply_peak_a": 9.619695975751172,
         "assessment": [
           {
             "failed_checks": [],
@@ -640,6 +665,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.07941886094423162,
+        "unit_0.supply_peak_a": 0.7971151850772061,
         "assessment": [
           {
             "failed_checks": [],
@@ -698,6 +726,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 8.181270422940562,
+        "unit_0.supply_peak_a": 9.625916043402965,
         "assessment": [
           {
             "failed_checks": [
@@ -761,6 +792,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.640397791230674,
+        "unit_0.supply_peak_a": 9.620512099770798,
         "assessment": [
           {
             "failed_checks": [
@@ -850,6 +884,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.73327471396,
+        "unit_0.supply_peak_a": 9.621536316682974,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.733274716218042,
+        "unit_1.supply_peak_a": 9.621536316661999,
         "assessment": [
           {
             "failed_checks": [],
@@ -939,6 +979,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 6.192860567498217,
+        "unit_0.supply_peak_a": 9.625165588344261,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 1.9970705204768697,
+        "unit_1.supply_peak_a": 9.620855381430536,
         "assessment": [
           {
             "failed_checks": [
@@ -1030,6 +1076,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7296639129060323,
+        "unit_0.supply_peak_a": 4.049313537440906,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 5.350426198837085,
+        "unit_1.supply_peak_a": 9.62455139003638,
         "assessment": [
           {
             "failed_checks": [],
@@ -1119,6 +1171,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7296626786720829,
+        "unit_0.supply_peak_a": 4.049345181218683,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.8144771467239026,
+        "unit_1.supply_peak_a": 5.115474698339925,
         "assessment": [
           {
             "failed_checks": [],
@@ -1208,6 +1266,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 9.408362088056164,
+        "unit_0.supply_peak_a": 4.049313537440906,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 3.2863331689990813,
+        "unit_1.supply_peak_a": 9.620859282680593,
         "assessment": [
           {
             "failed_checks": [],
@@ -1297,6 +1361,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 9.408343926525014,
+        "unit_0.supply_peak_a": 4.049345181218683,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 3.2863421316788144,
+        "unit_1.supply_peak_a": 9.62085930616347,
         "assessment": [
           {
             "failed_checks": [],
@@ -1386,6 +1456,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.8126947245439501,
+        "unit_0.supply_peak_a": 7.675345067043346,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.7978605133366476,
+        "unit_1.supply_peak_a": 4.359977871169993,
         "assessment": [
           {
             "failed_checks": [],
@@ -1475,6 +1551,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7728065725751576,
+        "unit_0.supply_peak_a": 4.049345181218683,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.8004920239289107,
+        "unit_1.supply_peak_a": 4.488760318293006,
         "assessment": [
           {
             "failed_checks": [],
@@ -1564,6 +1646,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.0799925604273553,
+        "unit_0.supply_peak_a": 9.625411250380214,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.840947847724962,
+        "unit_1.supply_peak_a": 6.144163294097909,
         "assessment": [
           {
             "failed_checks": [
@@ -1660,6 +1748,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7934230174761233,
+        "unit_0.supply_peak_a": 4.049345181218683,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.816381435409973,
+        "unit_1.supply_peak_a": 4.334768423398288,
         "assessment": [
           {
             "failed_checks": [],
@@ -1749,6 +1843,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7927128398795389,
+        "unit_0.supply_peak_a": 4.049313537440906,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.7927128398393699,
+        "unit_1.supply_peak_a": 4.049313536944243,
         "assessment": [
           {
             "failed_checks": [],
@@ -1838,6 +1938,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.068603322838707,
+        "unit_0.supply_peak_a": 9.624087207013082,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 1.068603322861728,
+        "unit_1.supply_peak_a": 9.624087207014549,
         "assessment": [
           {
             "failed_checks": [],
@@ -1927,6 +2033,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.0695354090672737,
+        "unit_0.supply_peak_a": 9.624095700430322,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 1.0555085286165222,
+        "unit_1.supply_peak_a": 9.624047502937339,
         "assessment": [
           {
             "failed_checks": [],
@@ -2016,6 +2128,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7574730977831952,
+        "unit_0.supply_peak_a": 4.049313537440906,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.7574730977486295,
+        "unit_1.supply_peak_a": 4.049313536944243,
         "assessment": [
           {
             "failed_checks": [],
@@ -2105,6 +2223,12 @@
             "fallback_reason": "Error in Function::call for 'coupled_solver' [CvodesInterface] at .../casadi/core/function.cpp:1655:\nError in Function::call for 'coupled_solver' [CvodesInterface] at .../casadi/core/function.cpp:514:\n.../casadi/interfaces/sundials/cvodes_interface.cpp:403: CVode returned \"CV_ILL_INPUT\". Consult CVODES documentation."
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.44859748414216943,
+        "unit_0.supply_peak_a": 3.6007916491087006,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.016538561003795,
+        "unit_1.supply_peak_a": 9.622519986830936,
         "assessment": [
           {
             "failed_checks": [],
@@ -2194,6 +2318,12 @@
             "fallback_reason": "Error in Function::call for 'coupled_solver' [CvodesInterface] at .../casadi/core/function.cpp:1655:\nError in Function::call for 'coupled_solver' [CvodesInterface] at .../casadi/core/function.cpp:514:\n.../casadi/interfaces/sundials/cvodes_interface.cpp:403: CVode returned \"CV_ILL_INPUT\". Consult CVODES documentation."
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.4485974885736862,
+        "unit_0.supply_peak_a": 3.6007916491087006,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.4482765704528602,
+        "unit_1.supply_peak_a": 3.6007916491087006,
         "assessment": [
           {
             "failed_checks": [],
@@ -2259,6 +2389,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.9044464339271922,
+        "unit_0.supply_peak_a": 9.624061193027323,
         "assessment": [
           {
             "failed_checks": [
@@ -2320,6 +2453,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.13919337816759794,
+        "unit_0.supply_peak_a": 1.6629163437991423,
         "assessment": [
           {
             "failed_checks": [],
@@ -2378,6 +2514,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.556925684815419,
+        "unit_0.supply_peak_a": 8.266574011873656,
         "assessment": [
           {
             "failed_checks": [],
@@ -2436,6 +2575,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.2045305560709088,
+        "unit_0.supply_peak_a": 9.620687644617023,
         "assessment": [
           {
             "failed_checks": [],
@@ -2494,6 +2636,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.39512311281550855,
+        "unit_0.supply_peak_a": 9.621919507784169,
         "assessment": [
           {
             "failed_checks": [
@@ -2554,6 +2699,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.3254077360057297,
+        "unit_0.supply_peak_a": 5.148428279917304,
         "assessment": [
           {
             "failed_checks": [],
@@ -2612,6 +2760,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 5.565388382459955,
+        "unit_0.supply_peak_a": 9.62315925811458,
         "assessment": [
           {
             "failed_checks": [],
@@ -2670,6 +2821,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.7839496780948215,
+        "unit_0.supply_peak_a": 9.619799765174248,
         "assessment": [
           {
             "failed_checks": [],
@@ -2728,6 +2882,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.05175938458629236,
+        "unit_0.supply_peak_a": 0.9037824812494222,
         "assessment": [
           {
             "failed_checks": [],
@@ -2786,6 +2943,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 3.1192531599555147,
+        "unit_0.supply_peak_a": 9.625229230023859,
         "assessment": [
           {
             "failed_checks": [
@@ -2849,6 +3009,9 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 1.2164386500595836,
+        "unit_0.supply_peak_a": 9.620798065036945,
         "assessment": [
           {
             "failed_checks": [
@@ -2938,6 +3101,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 5.420450235037538,
+        "unit_0.supply_peak_a": 9.623236065018682,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 5.4204502124110014,
+        "unit_1.supply_peak_a": 9.623236064991378,
         "assessment": [
           {
             "failed_checks": [
@@ -3033,6 +3202,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.773184461144624,
+        "unit_0.supply_peak_a": 9.62349173341414,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 2.001162534967401,
+        "unit_1.supply_peak_a": 9.622717935292277,
         "assessment": [
           {
             "failed_checks": [
@@ -3128,6 +3303,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.4804836303090104,
+        "unit_0.supply_peak_a": 5.0623744779810345,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 2.5081727189921357,
+        "unit_1.supply_peak_a": 9.626098719633125,
         "assessment": [
           {
             "failed_checks": [],
@@ -3217,6 +3398,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.4805074427929898,
+        "unit_0.supply_peak_a": 5.062563497114817,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.5353997277741391,
+        "unit_1.supply_peak_a": 6.34919103732985,
         "assessment": [
           {
             "failed_checks": [],
@@ -3306,6 +3493,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.455266622495957,
+        "unit_0.supply_peak_a": 5.0623744779810345,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 2.4466852274896422,
+        "unit_1.supply_peak_a": 9.625437603782638,
         "assessment": [
           {
             "failed_checks": [],
@@ -3395,6 +3588,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.455266653723572,
+        "unit_0.supply_peak_a": 5.062563497114817,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 1.4392223188459965,
+        "unit_1.supply_peak_a": 9.621334868038264,
         "assessment": [
           {
             "failed_checks": [],
@@ -3484,6 +3683,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.5342121086916406,
+        "unit_0.supply_peak_a": 9.619929239759937,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.5244736067620165,
+        "unit_1.supply_peak_a": 5.353745884221137,
         "assessment": [
           {
             "failed_checks": [],
@@ -3573,6 +3778,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.5080955588981895,
+        "unit_0.supply_peak_a": 5.062563497114817,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.5262038685295791,
+        "unit_1.supply_peak_a": 5.523478566019878,
         "assessment": [
           {
             "failed_checks": [],
@@ -3662,6 +3873,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.8134583438154105,
+        "unit_0.supply_peak_a": 9.6261162305075,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.5523726784744643,
+        "unit_1.supply_peak_a": 7.674440804106289,
         "assessment": [
           {
             "failed_checks": [
@@ -3758,6 +3975,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.5216001697120136,
+        "unit_0.supply_peak_a": 5.062563497114817,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.5365909597600208,
+        "unit_1.supply_peak_a": 5.300329782983624,
         "assessment": [
           {
             "failed_checks": [],
@@ -3847,6 +4070,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.5211232272432726,
+        "unit_0.supply_peak_a": 5.0623744779810345,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.5211232272021848,
+        "unit_1.supply_peak_a": 5.062374477955621,
         "assessment": [
           {
             "failed_checks": [],
@@ -3936,6 +4165,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.8186634192816684,
+        "unit_0.supply_peak_a": 9.624628443427223,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.8186634191761815,
+        "unit_1.supply_peak_a": 9.624628443424458,
         "assessment": [
           {
             "failed_checks": [],
@@ -4025,6 +4260,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.8194513608425292,
+        "unit_0.supply_peak_a": 9.624640307160071,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.809798750653542,
+        "unit_1.supply_peak_a": 9.624569716008063,
         "assessment": [
           {
             "failed_checks": [],
@@ -4114,6 +4355,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.4980195643248709,
+        "unit_0.supply_peak_a": 5.0623744779810345,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.4980195643464397,
+        "unit_1.supply_peak_a": 5.062374477955621,
         "assessment": [
           {
             "failed_checks": [],
@@ -4203,6 +4450,12 @@
             "fallback_reason": "Error in Function::call for 'coupled_solver' [CvodesInterface] at .../casadi/core/function.cpp:1655:\nError in Function::call for 'coupled_solver' [CvodesInterface] at .../casadi/core/function.cpp:514:\n.../casadi/interfaces/sundials/cvodes_interface.cpp:403: CVode returned \"CV_ILL_INPUT\". Consult CVODES documentation."
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.29507167536804985,
+        "unit_0.supply_peak_a": 4.66069292425946,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.606067843246749,
+        "unit_1.supply_peak_a": 9.624036793841796,
         "assessment": [
           {
             "failed_checks": [],
@@ -4292,6 +4545,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 0.2950717704332577,
+        "unit_0.supply_peak_a": 4.660694578977238,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 0.29485825484204736,
+        "unit_1.supply_peak_a": 4.660694578949727,
         "assessment": [
           {
             "failed_checks": [],
@@ -4515,6 +4774,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.73327471396,
+        "unit_0.supply_peak_a": 9.621536316682974,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.733274716218042,
+        "unit_1.supply_peak_a": 9.621536316661999,
         "assessment": [
           {
             "failed_checks": [],
@@ -4603,6 +4868,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.733386284872642,
+        "unit_0.supply_peak_a": 9.621536478801149,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.733386285190988,
+        "unit_1.supply_peak_a": 9.621536478798296,
         "assessment": [
           {
             "failed_checks": [],
@@ -4691,6 +4962,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.7334518747771295,
+        "unit_0.supply_peak_a": 9.621536576370225,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.733451879813599,
+        "unit_1.supply_peak_a": 9.621536576322749,
         "assessment": [
           {
             "failed_checks": [],
@@ -4779,6 +5056,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.733704355679811,
+        "unit_0.supply_peak_a": 9.621536435701515,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.733704354168914,
+        "unit_1.supply_peak_a": 9.621536435717813,
         "assessment": [
           {
             "failed_checks": [],
@@ -4867,6 +5150,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 6.432908760332656,
+        "unit_0.supply_peak_a": 9.625110426659457,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 6.43290876030555,
+        "unit_1.supply_peak_a": 9.625110426659456,
         "assessment": [
           {
             "failed_checks": [
@@ -4961,6 +5250,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 5.078428333341571,
+        "unit_0.supply_peak_a": 9.62360833026455,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 5.078426817540167,
+        "unit_1.supply_peak_a": 9.623608330298545,
         "assessment": [
           {
             "failed_checks": [
@@ -5057,6 +5352,12 @@
             "fallback_reason": null
           }
         ],
+        "unit_0.max_capacitor_v": 52.0,
+        "unit_0.capacitor_rms_a": 4.737281966698234,
+        "unit_0.supply_peak_a": 9.62153394331825,
+        "unit_1.max_capacitor_v": 52.0,
+        "unit_1.capacitor_rms_a": 4.737281963088099,
+        "unit_1.supply_peak_a": 9.621533943283008,
         "assessment": [
           {
             "failed_checks": [],

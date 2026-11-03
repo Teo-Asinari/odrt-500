@@ -76,19 +76,31 @@ def load_r2(root=Path('.')):
     return cfg, parts, tv_variants(support), derived, source, support
 
 
-def _job(args):
-    """One simulation in a worker process; returns metrics and saves its trace."""
+def model_factory(cfg):
+    """Clamp topology (R2/R3: bank upstream of the one-way clamp) or bank on the drive bus (R4)."""
+    from odrt.coupled import build_model
     from odrt.upstream_buffer import build_upstream_model
-    kind, key, cfg, parts, scenario, defaults, stroke, case, kwargs, criteria, trace = args
-    factory = build_upstream_model
+    base = build_model if cfg.get('power_topology') == 'bidirectional' else build_upstream_model
     if 'frame_thermal' in cfg:
         from odrt.frame_thermal import frame_factory
-        factory = frame_factory(build_upstream_model)
+        return frame_factory(base)
+    return base
+
+
+def _job(args):
+    """One simulation in a worker process; returns metrics and saves its trace."""
+    kind, key, cfg, parts, scenario, defaults, stroke, case, kwargs, criteria, trace = args
     try:
-        value = simulate(cfg, parts, scenario, defaults, stroke, case, model_factory=factory, **kwargs)
+        value = simulate(cfg, parts, scenario, defaults, stroke, case, model_factory=model_factory(cfg), **kwargs)
     except RuntimeError as error:
         return kind, key, {'solver_failure': str(error), 'numerical_valid': False}
     m, s = value['metrics'], value['signals']
+    t = s['t']
+    for i in range(case['units']):
+        p = f'unit_{i}.'
+        m[p+'max_capacitor_v'] = float(s[p+'capacitor_v'].max())
+        m[p+'capacitor_rms_a'] = float(np.sqrt(np.trapz(s[p+'capacitor_current_a']**2, t)/t[-1]))
+        m[p+'supply_peak_a'] = float((s[p+'supply_bus_w']/np.maximum(s[p+'bus_v'], 1e-9)).max())
     m['assessment'] = assess_case(m, cfg, parts, case, criteria)
     m['numerical_valid'] = bool(m['energy_residual_fraction'] <= criteria['energy_residual_fraction_max']['value']
                                 and all(np.isfinite(v).all() for v in s.values()))
@@ -131,13 +143,67 @@ def r3c_fingerprint(root=Path('.')):
     return h.hexdigest()
 
 
+def load_r4(root=Path('.')):
+    """R3 + C1 with the bank on the drive bus (data/r4_power.yaml)."""
+    cfg, parts, variants, derived, source, support = load_r3c(root)
+    spec = load_yaml(Path(root)/'data/r4_power.yaml')
+    if spec['proposal']['topology'] != 'bidirectional':
+        raise ConfigError('R4 proposal must use the bidirectional topology')
+    cfg['power_topology'] = 'bidirectional'
+    return cfg, parts, variants, dict(derived, r4_power=spec), source, support
+
+
+def r4_fingerprint(root=Path('.')):
+    root = Path(root); h = hashlib.sha256(r3c_fingerprint(root).encode())
+    h.update((root/'data/r4_power.yaml').read_bytes())
+    return h.hexdigest()
+
+
+# Controller variants on selected cases, reported with the uncertainties: (name, control changes, cases).
+CONTROL_EXTRA = {'r4': (('realisable_feedforward', {'inertia_feedforward': 0},
+                         ('single_fast_full', 'single_stroke_full', 'paired_heavy_full', 'paired_asymmetric')),)}
+
+
+def power_checks(spec, cases, parts, cfg, variants):
+    """Bank-on-bus hardware checks at the simulated envelope (R4)."""
+    f = spec['functions']; n = cfg['power']['cell_series']
+    done = [m for b in cases.values() for m in b.values() if 'solver_failure' not in m]
+    worst = lambda suffix: max(m[k] for m in done for k in m if k.endswith(suffix))
+    vmax, rms, supply_a = worst('.max_capacitor_v'), worst('.capacitor_rms_a'), worst('.supply_peak_a')
+    # The cell's RMS rating is continuous; one set is a transient. Report both readings.
+    rms_rows = sorted(((m[k], bank, case, m[k.replace('capacitor_rms_a', 'max_capacitor_c')], m['duration_s'])
+                       for bank, b in cases.items() for case, m in b.items() if 'solver_failure' not in m
+                       for k in m if k.endswith('.capacitor_rms_a')), reverse=True)
+    top = rms_rows[0]; ambient = cfg['thermal']['ambient_c']
+    continuous = {bank: ambient + top[0]**2*variants[bank]['esr_initial_max_ohm']*variants[bank]['thermal_resistance_k_per_w']
+                  for bank in BANKS}
+    cell = variants['r2_fresh']; rated = cell['voltage_rated_v']; factor = f['cell_voltage']['worst_cell_factor']
+    supply = parts[cfg['reference']['supply']]['values']; v0 = cfg['power']['nominal_v']
+    limit_a = supply['power_forced_air_w']/v0
+    precharge = [{'bank': bank, 'bank_capacitance_f': variants[bank]['capacitance_f']/n,
+                  'precharge_s_at_supply_limit': variants[bank]['capacitance_f']/n*v0/limit_a,
+                  'precharge_energy_j': .5*variants[bank]['capacitance_f']/n*v0*v0} for bank in BANKS]
+    return {'max_bank_v': vmax, 'worst_cell_v': vmax/n*factor, 'cell_rated_v': rated,
+            'cell_voltage_pass': vmax/n*factor < rated, 'trip_worst_cell_v': cfg['power']['trip_v']/n*factor,
+            'max_bank_rms_a': rms, 'cell_rms_rating_a': cell['current_rms_15k_rise_a'],
+            'rms_pass': rms < cell['current_rms_15k_rise_a'], 'rms_worst_case': {'bank': top[1], 'case': top[2],
+            'set_duration_s': top[4], 'set_max_cell_c': top[3]},
+            'rms_exceeding_cases': sorted({f'{b}/{c}' for a, b, c, _, _ in rms_rows if a >= cell['current_rms_15k_rise_a']}),
+            'continuous_repetition_cell_c': continuous, 'cell_case_max_c': cell['case_max_c'], 'supply_peak_a': supply_a, 'supply_limit_a': limit_a,
+            'reverse_blocking_loss_w': supply_a**2*f['reverse_blocking']['on_resistance_ohm'],
+            'precharge_resistor_min_ohm': v0/limit_a, 'precharge': precharge,
+            'enable_threshold_v': f['precharge']['enable_threshold_v']}
+
+
 STUDIES = {'r2': dict(load=load_r2, fingerprint=r2_fingerprint, title='R2 candidate simulation', extra=()),
            'r3': dict(load=load_r3, fingerprint=r3_fingerprint, title='R3 candidate simulation: conducted motor heat path and 30 V undervoltage trip',
                       extra=(('high_frame_resistance', {}, {}, 'housing_to_frame_k_w', 'high'),
                              ('low_frame_to_room', {}, {}, 'frame_to_room_w_k', 'low'),
                              ('warm_room_low_frame', {}, {'ambient_offset_c': 15}, 'frame_to_room_w_k', 'low'))),
            'r3c': dict(load=load_r3c, fingerprint=r3c_fingerprint,
-                       title='R3 with candidate controller C1 (kp 4, 2.5 m/s release limiter, 0.15 m end zone)', extra=())}
+                       title='R3 with candidate controller C1 (kp 4, 2.5 m/s release limiter, 0.15 m end zone)', extra=()),
+           'r4': dict(load=load_r4, fingerprint=r4_fingerprint,
+                      title='R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1', extra=())}
 
 
 def run(root=Path('.'), jobs=None, study='r2'):
@@ -177,6 +243,12 @@ def run(root=Path('.'), jobs=None, study='r2'):
         c['frame_thermal'][field] = bounds[1] if end == 'high' else bounds[0]
         tasks.append(('sensitivity', (name,), c, q, inputs.scenarios[slow['scenario']], inputs.defaults, stroke, slow,
                       perturbation, criteria, None))
+    for name, changes, names in CONTROL_EXTRA.get(study, ()):
+        for bank in BANKS:
+            c, q = setup(bank); c['control'].update(changes)
+            for case in (x for x in cfg['cases'] if x['name'] in names):
+                tasks.append(('sensitivity', (f'{name}:{bank}:{case["name"]}',), c, q, inputs.scenarios[case['scenario']],
+                              inputs.defaults, stroke, case, {}, criteria, None))
     # Longest cases first so the pool is not left waiting on one straggler.
     tasks.sort(key=lambda t: ('endurance' not in t[7]['name'], 'window_s' in t[7]))
     workers = jobs or int(os.environ.get('JOBS', 0)) or os.cpu_count()
@@ -203,13 +275,16 @@ def run(root=Path('.'), jobs=None, study='r2'):
     current = max(m[k] for m in completed for k in m if k.endswith('.max_current_a'))
     torque = current*motor['kt_nm_per_a']
     rows, difference, _ = screen(support, load_yaml(root/'data/compact_structure.yaml')['assumptions'], force, torque)
+    if 'r4_power' in derived:
+        derived = dict(derived, r4_checks=power_checks(derived['r4_power'], cases, parts, cfg, variants))
     if spec['fingerprint'](root) != initial:
         raise ConfigError(f'{study} inputs changed during run; refusing publication')
     report = {'fingerprint': initial, 'study': study, 'title': spec['title'], 'assessment': 'REVISE', 'hardware_qualified': False,
               'scope': 'all configured normal/fault cases for fresh and aged TV banks, four 3-resolution studies, '
                        'seven paired-heavy uncertainties, support screen at simulated loads',
               'reference': cfg['reference'], 'power': cfg['power'], 'control_current_limit_a': cfg['control']['current_limit_a'],
-              'mechanics': cfg['mechanics'], 'thermal': cfg['thermal'], 'topology': cfg['upstream_buffer'],
+              'mechanics': cfg['mechanics'], 'thermal': cfg['thermal'],
+              'topology': {'kind': cfg.get('power_topology', 'clamp'), **cfg['upstream_buffer']},
               'cell_values': variants, 'derived': derived, 'banks': cases, 'verification': verification,
               'support_at_simulated_loads': {'rope_force_n': force, 'max_current_a': current, 'motor_torque_nm': torque,
                                              'belt_tension_difference_n': difference, 'rows': rows,
@@ -243,13 +318,15 @@ def failed(m):
 
 def write_report(r, path):
     i = r['derived']['inertia']; s = r['support_at_simulated_loads']; ref = r['reference']
+    bidirectional = r.get('topology', {}).get('kind') == 'bidirectional'
     lines = ['# '+r.get('title', 'R2 candidate simulation'), '', f'Fingerprint: `{r["fingerprint"]}`', '',
              '**Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the '
              '[support revision](support_revision.md) into one simulated machine: '
              f'{ref["ratio"]:g}:1 belt, drum-referred inertia {i["complete_known_reflected_inertia_kg_m2"]:.6f} kg m² '
              f'(R1: 0.024254), routing {r["mechanics"]["routing_length_m"]} m, {r["power"]["cell_series"]} × TV 3 V cells '
-             f'upstream of a Regen Clamp, EPP-500-54 at {r["power"]["nominal_v"]} V, motor current limit '
-             f'{r["control_current_limit_a"]} A. Controller gains are unchanged from the reference.', '',
+             + ('on the drive bus (bidirectional; one-way supply and dump unchanged)' if bidirectional else 'upstream of a Regen Clamp')
+             + f', EPP-500-54 at {r["power"]["nominal_v"]} V, motor current limit {r["control_current_limit_a"]} A. '
+             + ('Controller: see below.' if 'controller' in r['derived'] else 'Controller gains are unchanged from the reference.'), '',
              '| Bank / case | Tracking % | Peak N | Bus min–max V | Winding °C | Bar ° | Trip | Failed comparisons |',
              '|---|---:|---:|---:|---:|---:|---|---|']
     for bank, cases in r['banks'].items():
@@ -277,7 +354,34 @@ def write_report(r, path):
                   f'([ODrive Pro]({pw["odrive_pro_dc_voltage"]["source"]}) DC range {pw["odrive_pro_dc_voltage"]["min_v"]}–'
                   f'{pw["odrive_pro_dc_voltage"]["max_v"]} V). ' + pw['proposal']['basis'], '']
         lines += ['- '+v for v in pw['proposal']['open_items']]
-    lines += ['', '## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull)', '',
+    if 'r4_checks' in r['derived']:
+        k = r['derived']['r4_checks']; spec = r['derived']['r4_power']; f = spec['functions']
+        verdict = lambda ok: 'pass' if ok else 'FAIL'
+        lines += ['', '## Bank on the drive bus: hardware checks at the simulated envelope', '', spec['proposal']['basis'], '',
+                  '| Check | Simulated | Limit / basis | Outcome |', '|---|---:|---|---|',
+                  f'| Worst cell (max bank {k["max_bank_v"]:.2f} V / {r["power"]["cell_series"]} × {f["cell_voltage"]["worst_cell_factor"]}) | '
+                  f'{k["worst_cell_v"]:.3f} V | {k["cell_rated_v"]} V rated | {verdict(k["cell_voltage_pass"])} |',
+                  f'| Worst cell at the {r["power"]["trip_v"]} V trip | {k["trip_worst_cell_v"]:.3f} V | {k["cell_rated_v"]} V rated | '
+                  f'{verdict(k["trip_worst_cell_v"] < k["cell_rated_v"])} |',
+                  f'| Bank RMS current over one set, worst ({k["rms_worst_case"]["bank"]} / {k["rms_worst_case"]["case"]}) | '
+                  f'{k["max_bank_rms_a"]:.1f} A | {k["cell_rms_rating_a"]} A continuous (15 K rise) | '
+                  + ('pass' if k['rms_pass'] else f'exceeds continuous rating in {", ".join(k["rms_exceeding_cases"])}; '
+                     f'cells reach {k["rms_worst_case"]["set_max_cell_c"]:.1f} °C over the {k["rms_worst_case"]["set_duration_s"]:.0f} s set') + ' |',
+                  f'| Cell temperature if that set repeated continuously (fresh / aged ESR, {r["thermal"]["ambient_c"]} °C) | '
+                  f'{k["continuous_repetition_cell_c"]["r2_fresh"]:.0f} / {k["continuous_repetition_cell_c"]["r2_aged"]:.0f} °C | '
+                  f'{k["cell_case_max_c"]} °C case maximum | '
+                  + ('pass' if max(k['continuous_repetition_cell_c'].values()) < k['cell_case_max_c']
+                     else 'FAIL: back-to-back sets of this case need a bank duty limit or cooling') + ' |',
+                  f'| Supply peak current | {k["supply_peak_a"]:.1f} A | {k["supply_limit_a"]:.1f} A limit | one-way source assumed |',
+                  f'| Reverse-blocking loss at peak | {k["reverse_blocking_loss_w"]:.2f} W | assumed {f["reverse_blocking"]["on_resistance_ohm"]} Ω | no part selected |', '',
+                  '| Bank | Capacitance F | Pre-charge at supply limit s | Bank energy at setpoint J |', '|---|---:|---:|---:|']
+        lines += [f'| {x["bank"]} | {x["bank_capacitance_f"]:.2f} | {x["precharge_s_at_supply_limit"]:.1f} | {x["precharge_energy_j"]:.0f} |'
+                  for x in k['precharge']]
+        lines += ['', f'If the supply does not current-limit cleanly into the bank, a pre-charge resistor needs at least '
+                  f'{k["precharge_resistor_min_ohm"]:.1f} Ω and must absorb the bank energy as a pulse. Drive enable is interlocked '
+                  f'above {k["enable_threshold_v"]} V. ' + f['ripple_current']['note'], '']
+        lines += ['- '+v for v in spec['open_items']]
+    lines += ['', '## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull; controller variants as name:bank:case)', '',
               '| Perturbation | Tracking % | Winding °C | Minimum bus V | Trip | Failed comparisons |', '|---|---:|---:|---:|---|---|']
     for name, m in r['verification']['sensitivity'].items():
         if 'solver_failure' in m: lines.append(f'| {name} | — | — | — | SOLVER FAILURE | |'); continue
@@ -294,7 +398,9 @@ def write_report(r, path):
                      f'{x["drum_bearing_static_factor"]:.2f} | {x["motor_shaft_stress_mpa"]:.1f} | {x["drum_shaft_stress_mpa"]:.1f} | '
                      f'{", ".join(x["failed_checks"]) or "none"} |')
     lines += ['', '## Limits', '',
-              '- Clamp is cycle-averaged; switching ripple, delay and peaks are not resolved. Upstream storage cannot absorb regeneration.',
+              ('- The bank joins the drive bus through its ESR only; wiring inductance, fusing and pre-charge transients are not modelled.'
+               if bidirectional else
+               '- Clamp is cycle-averaged; switching ripple, delay and peaks are not resolved. Upstream storage cannot absorb regeneration.'),
               '- Thermal resistances/capacities remain reference proposals; the TV cell heat capacity is assumed.',
               '- Ideal radial supports; deck/bridge/side-wall stiffness, joints, fatigue and belt rating are not checked.',
               '- Uncertainty perturbations co-vary plant and feedforward; independent miscalibration is not covered.',

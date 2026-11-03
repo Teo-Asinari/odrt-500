@@ -8,7 +8,7 @@ VENV ?= .venv
 PY := $(VENV)/bin/python
 SIM_DIR ?= build/sim
 
-.PHONY: venv check test simulate report cad fea visual motor architecture coupled coupled-verify buffer-study electrical preliminary-costs compact-package compact-candidate compact-structure compact-plots support-revision revision-power r2-package r2-candidate r3-candidate control-study r3c-candidate fast-study quick t retest ci clean
+.PHONY: venv check test simulate report cad fea visual motor architecture coupled coupled-verify buffer-study electrical preliminary-costs compact-package compact-candidate compact-structure compact-plots support-revision revision-power r2-package r2-candidate r3-candidate control-study r3c-candidate r4-candidate fast-study quick t retest ci clean
 
 venv:
 	$(BOOTSTRAP_PYTHON) -m venv $(VENV)
@@ -103,13 +103,16 @@ r3c-candidate:
 control-study:
 	$(PY) -m odrt.fresh control-study || $(PY) -m odrt.control_study
 
+r4-candidate:
+	$(PY) -m odrt.fresh r4-candidate || $(PY) -m odrt.r2_candidate r4
+
 fast-study:
 	$(PY) -m odrt.fresh fast-study || $(PY) -m odrt.fast_motion_study
 
 # Local CI: validate inputs, run tests, regenerate reports, and fail if the
 # committed reports are stale. Slow studies are skipped when their recorded
 # input fingerprint is unchanged; `FORCE=1 make ci` regenerates everything.
-ci: check test report cad fea visual motor architecture coupled-verify buffer-study electrical preliminary-costs compact-package compact-structure compact-plots support-revision revision-power r2-package r2-candidate r3-candidate control-study r3c-candidate fast-study
+ci: check test report cad fea visual motor architecture coupled-verify buffer-study electrical preliminary-costs compact-package compact-structure compact-plots support-revision revision-power r2-package r2-candidate r3-candidate control-study r3c-candidate fast-study r4-candidate
 	git diff --exit-code -- reports/ || (echo "reports/ is stale: commit the regenerated reports" && exit 1)
 
 clean:

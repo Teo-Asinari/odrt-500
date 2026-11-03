@@ -2,7 +2,14 @@
 
 ## Active engineering goal — 2026-11-03
 
-**Fast-motion review:** [review](../docs/engineering/fast-motion-review.md), [study](fast_motion_study.md). The controller study's bandwidth diagnosis was wrong.
+**Current decision: REVISE R4 — new lead candidate.** [R4 review](../docs/engineering/r4-review.md), [results](r4_candidate.md).
+R4 = R3 + C1 with the bank moved onto the drive bus. Across all 54 scenarios it improves or holds every case with no new failed comparison: fast reversal 11.4 → 8.0% (aged 62% with trip → 12.1%, no trip),
+full stroke 14 → 11%, higher bus minimums everywhere; refinements pass. Fast reversal/full stroke (voltage-limited at 5:1) and endurance (Km) still fail, pending the owner's motor/bus decision.
+New: the bank exceeds its 11.7 A continuous rating only in fast reversal (aged cells would reach 70 °C if repeated back to back); worst cell at the 57 V trip is 2.99 V of 3.0 V; a fresh-bank dump failure
+no longer trips, so dump detection must be independent. Without the non-realisable planned feedforward, fast reversal is 9.7%. Pre-charge, reverse blocking, balancing and fusing are not designed.
+
+
+**Fast-motion review (earlier today):** [review](../docs/engineering/fast-motion-review.md), [study](fast_motion_study.md). The controller study's bandwidth diagnosis was wrong.
 Fast reversal and full stroke are **voltage-limited** (52% / 32% of the motion on the back-EMF/bus bound, carrying 85% / 78% of the error). The one-way Regen Clamp also dumps 317 W of the
 fast-reversal regeneration, draining the bank. A **bidirectional bank** at 5:1 takes fast reversal 11.4 → 8.0% (aged: 62% with trip → 12%, no trip), with no heavy/slow/endurance regression;
 proposed as the R4 power topology, fault suite not yet rerun. No ratio passes heavy (needs ≥5:1 at 50–60 A) and fast (needs ≤4:1) together with the RO100 at 52 V: **owner decision** on motor/bus class or a reduced fast envelope, alongside the endurance Km decision.

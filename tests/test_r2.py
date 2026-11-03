@@ -80,3 +80,30 @@ def test_optional_controller_keys_default_to_reference_and_unknown_keys_fail(rep
     edit_yaml(repo_copy/'configs/coupled.yaml', lambda d: d['control'].update(not_a_gain=1.0))
     with pytest.raises(ConfigError):
         load_coupled(repo_copy)
+
+
+def test_r4_moves_bank_to_drive_bus_and_keeps_r3c_controller():
+    pytest.importorskip('cadquery'); pytest.importorskip('casadi')
+    from odrt.r2_candidate import load_r3c, load_r4, model_factory
+    r3c, *_ = load_r3c(REPO); cfg, *_ , derived, _, _ = load_r4(REPO)
+    assert cfg['power_topology'] == 'bidirectional' and 'power_topology' not in r3c
+    assert cfg['control'] == r3c['control'] and cfg['power'] == r3c['power']
+    assert derived['r4_power']['proposal']['topology'] == 'bidirectional'
+    # The bank-on-bus model is the base coupled model wrapped by the frame heat path.
+    model_factory(cfg)
+
+
+def test_r4_power_checks_flag_cell_voltage_and_continuous_rms():
+    pytest.importorskip('cadquery'); pytest.importorskip('casadi')
+    from odrt.r2_candidate import load_r4, power_checks
+    cfg, parts, variants, derived, _, _ = load_r4(REPO)
+    n = cfg['power']['cell_series']; rating = variants['r2_fresh']['current_rms_15k_rise_a']
+    base = {'duration_s': 10., 'unit_0.max_capacitor_v': 52., 'unit_0.capacitor_rms_a': 1.,
+            'unit_0.supply_peak_a': 5., 'unit_0.max_capacitor_c': 26.}
+    cases = {'r2_fresh': {'a': dict(base)}, 'r2_aged': {'a': dict(base, **{'unit_0.capacitor_rms_a': 2*rating})}}
+    k = power_checks(derived['r4_power'], cases, parts, cfg, variants)
+    assert k['cell_voltage_pass'] and k['max_bank_v'] == 52.
+    assert not k['rms_pass'] and k['rms_exceeding_cases'] == ['r2_aged/a']
+    assert k['continuous_repetition_cell_c']['r2_aged'] > k['continuous_repetition_cell_c']['r2_fresh']
+    cases['r2_fresh']['a']['unit_0.max_capacitor_v'] = 3.0*n
+    assert not power_checks(derived['r4_power'], cases, parts, cfg, variants)['cell_voltage_pass']

@@ -1,6 +1,6 @@
 # R3 candidate simulation: conducted motor heat path and 30 V undervoltage trip
 
-Fingerprint: `780d975dd9a229163ab7bf358e586adaeacdaeae6004c080cc6c91a059ac44e4`
+Fingerprint: `755d4e7b450df72192a42f9af996da8addf54133ce4c69148843e31ceec695e4`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 5:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells upstream of a Regen Clamp, EPP-500-54 at 52 V, motor current limit 50 A. Controller gains are unchanged from the reference.
 
@@ -89,7 +89,7 @@ Trip lowered to 30 V ([ODrive Pro](https://docs.odriverobotics.com/v/latest/hard
 - Auxiliary/logic rails, sensors and the supervisor must be specified to ride through 30 V.
 - Low-voltage operation raises bank and wiring currents for the same power; ESR heating is captured, connector/wiring ratings are not.
 
-## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull)
+## Uncertainties (paired heavy set, fresh bank; heat-path bounds on the slow heavy pull; controller variants as name:bank:case)
 
 | Perturbation | Tracking % | Winding °C | Minimum bus V | Trip | Failed comparisons |
 |---|---:|---:|---:|---|---|
