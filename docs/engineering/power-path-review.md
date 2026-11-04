@@ -19,7 +19,7 @@ R4 keeps the Regen Clamp from R2/R3 and moves the bank from its input side to it
 
 ## Simulated: dump monitor and pre-charge sequence (2026-11-03)
 
-**Dump monitor** (`src/odrt/dump_monitor.py`, active in R4, parameters in `data/r4_power.yaml`). It compares shunt-measured current with commanded duty × bus V / R, plus a 55.0 V backup threshold. It needs 0.1 s of persistence and latches a `dump_fault` trip. Full R4 suite rerun:
+**Dump monitor** (`src/odrt/dump_monitor.py`, active in R4, parameters in `data/r4_power.yaml`). It compares shunt-measured current with the chopper's gate duty × bus V / R (gate rule, decided below), plus a 55.0 V backup threshold. It needs 0.1 s of persistence and latches a `dump_fault` trip. Full R4 suite rerun:
 
 | Case | Before | With monitor |
 |---|---|---|
@@ -28,6 +28,20 @@ R4 keeps the Regen Clamp from R2/R3 and moves the bank from its input side to it
 | All normal and other fault cases | — | no false trips; changes are solver-level only (tracking 0.30 → 0.31%) |
 
 The condition first appears at the first regeneration after the fault, when expected current rises with the bus while measured stays at zero. A first version also flagged any bus above 54.5 V (full duty). Normal cases pass within 0.1 V of that, which noise would turn into nuisance trips, and the current comparison already detects the fault at the same instant, so the backup was moved to 55.0 V.
+
+## Decided: gate rule for the dump monitor (owner, 2026-11-03)
+
+[monitor_study.md](../../reports/monitor_study.md) (`make monitor-study`, 648 simulations) reruns every R4 case, fresh and aged, under four corners. The corners are ideal; seeded noise only (0.3 A, 0.05 V at 1 kHz, 5 ms filter); a false-trip corner (bus reads +0.5% +0.05 V, chopper starts 0.15 V late, resistor +10%, current −2% −0.2 A); and the opposite, missed-detection corner. All tolerances are assumptions.
+
+| Rule | Noise only | False-trip corner | Missed-detection corner | Fresh dump failure detected |
+|---|---|---|---|---|
+| Estimated duty (from the supervisor's bus reading) | no false trips; timer reaches 0.05 of 0.1 s | **false trips in almost every case, fresh and aged** | no false trips | 0.48–0.54 s |
+| Estimated, +0.5 V margin | none | none (timer 0.013 of 0.1 s) | none | 0.53–0.62 s, bus up to 55.58 V |
+| **Gate duty (adopted)** | none (timer 0.003) | none (timer 0.006) | none | **0.49–0.52 s, bus ≤ 55.22 V** |
+
+The estimated rule fails because the chopper's duty ramp is only 0.15 V wide. A 0.5% voltage-sense error (about 0.27 V) is larger than that, so the supervisor expects current the chopper is not yet drawing. Reading the gate removes both the threshold error and the sense-gain error. The aged dump failure still reaches the 56 V trip first under every rule (79 ms after the condition appears).
+
+Limit of the gate rule: a gate-driver failure removes the gate and the expected current together, so the comparison cannot see it. That failure is left to the 55.0 V backup threshold and the 56 V trip. The supervisor needs a gate-signal input (isolated or level-shifted tap of the Regen Clamp's gate drive); this is not designed. In R4 the rule is `duty_source: gate` in `data/r4_power.yaml`. With ideal measurements the gate and estimated duties are identical, so the R4 suite results do not change.
 
 **Pre-charge sequence** ([precharge.md](../../reports/precharge.md), `make precharge`). Separate electrical model with a quasi-static bus. Two corrections came out of it:
 

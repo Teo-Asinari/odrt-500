@@ -2,6 +2,7 @@
 
 ## Active engineering goal — 2026-11-03
 
+**Dump monitor decided: gate rule** (owner, 2026-11-03; [monitor study](monitor_study.md)). With measurement tolerances, noise and chopper-threshold spread, estimating duty from the supervisor's bus reading false-trips almost every case at the adverse corner (the 0.15 V duty ramp is narrower than a 0.5% sense error). Reading the chopper gate has no false trips in any corner and detects the fresh dump failure in 0.49–0.52 s. A gate-driver failure is left to the 55 V backup and the 56 V trip; the gate-signal input is not designed.
 **Simulated today:** [dump monitor and pre-charge sequence](../docs/engineering/power-path-review.md). The dump monitor (active in R4) catches the fresh-bank dump failure 0.51 s after the fault (bus 55.14 V), with no false trips across the suite; the aged case still trips on 56 V overvoltage first.
 **Start-up decided: direct supply charging** (owner, 2026-11-03): drive enabled at 24 s fresh / 15 s aged; the bank disconnect must close by default (the supervisor only powers up at 6.6 s); a failed-open disconnect times out with the drive disabled. Depends on the unverified EPP-500-54 constant-current mode; the resistor sequence (120 s) is the fallback, and the resistor stays as the service-discharge path.
 Service discharge 83 s to 5 V; the discharge switch must be normally closed because the auxiliary rail collapses within 0.4 s.

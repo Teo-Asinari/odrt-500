@@ -1,6 +1,6 @@
 # R4 pre-charge and service-discharge sequences
 
-Fingerprint: `f8d92e3d2558a1e99ee38d849c672e8e4ee880925a73f775b3696ff55ba3669a` (R4 `e162902172a4`)
+Fingerprint: `b63f5acce6074dc5a82aa62b0adcc6a9176351d1c351782d9328a506adee46fb` (R4 `0d0df70a4358`)
 
 **Adopted start-up: sequence A, direct supply charging** (owner decision 2026-11-03). It depends on the EPP-500-54 current-limiting continuously into the bank, which is unverified; sequence B is the fallback. 
 

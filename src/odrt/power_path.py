@@ -129,9 +129,10 @@ def size(r4, spec, components):
         'peak_current_a': i_dump, 'shunt_ohm': d['dump_shunt_ohm'], 'shunt_signal_mv': 1000*i_dump*d['dump_shunt_ohm'],
         'shunt_peak_w': i_dump**2*d['dump_shunt_ohm'], 'detection_s': mon['detection_s'],
         'fresh_dump_failure_bus_max_v': fresh_dump.get('maximum_bus_v'), 'dump_start_v': p['dump_start_v'],
-        'rule': f'Expected dump current is commanded duty × bus V / {p["dump_resistance_ohm"]} Ω. Flag a dump-path fault when measured current '
+        'duty_source': mon['duty_source'],
+        'rule': f'Expected dump current is the chopper gate duty × bus V / {p["dump_resistance_ohm"]} Ω (the supervisor reads the Regen Clamp gate). Flag a dump-path fault when measured current '
                 f'stays below {mon["measured_fraction"]} × expected for {mon["detection_s"]} s while expected exceeds {mon["min_expected_a"]} A, or when the bus '
-                f'exceeds {mon["backup_bus_v"]} V for {mon["detection_s"]} s; stop the unit and latch, independent of the overvoltage trip.'}
+                f'exceeds {mon["backup_bus_v"]} V for {mon["detection_s"]} s; stop the unit and latch, independent of the overvoltage trip. A gate-driver failure removes the expected current and is covered only by the backup voltage.'}
     out['bank_duty'] = {'derate_start_c': d['bank_derate_start_c'], 'case_max_c': cells['r2_fresh']['case_max_c'],
                         'continuous_fast_reversal_c': r4['derived']['r4_checks']['continuous_repetition_cell_c'],
                         'rule': 'Bank temperature sensing (balancing node) feeds the existing torque derate from '

@@ -34,6 +34,7 @@ make r3c-candidate # R3 full suite with the proposed controller C1
 make r4-candidate # R3 + C1 with the bank on the drive bus (bidirectional), full suite and bank checks
 make power-path # R4 power-path sizing: clamp, fuse, pre-charge/discharge, balancing, dump monitor
 make precharge # R4 start-up pre-charge and service-discharge sequences, with fault variants
+make monitor-study # dump-monitor rules under measurement errors, tolerances and noise
 make fast-study # fast-motion attribution: voltage saturation, storage topology, ratio
 make test     # unit and negative tests, in parallel
 make quick    # tests minus those marked slow (~15 s)
@@ -48,7 +49,7 @@ make ci       # all of the above; fails if committed reports are stale
 
 There is no hosted CI. Run `make ci` before committing. Slow studies are skipped when their recorded input fingerprint is unchanged (`FORCE=1 make ci` reruns everything); a study refuses to publish if its inputs change while it runs. Clear `PYTHONPATH` when calling `.venv/bin/python` directly (the Makefile does).
 
-Latest decision: [power-path review](docs/engineering/power-path-review.md) (R4 power path sized and sequence-simulated; dump monitor active; 56 V trip), [R4 review](docs/engineering/r4-review.md) (REVISE; lead candidate, bank on the drive bus), [fast-motion review](docs/engineering/fast-motion-review.md) (voltage/energy-limited; bidirectional bank proposed), [controller study](docs/engineering/controller-study.md) and [R3 review](docs/engineering/r3-review.md) (REVISE); earlier: [R2 review](docs/engineering/r2-review.md), [R1 review](docs/engineering/compact-candidate-r1-review.md).
+Latest decision: [power-path review](docs/engineering/power-path-review.md) (R4 power path sized and sequence-simulated; dump monitor on the gate rule; 56 V trip), [R4 review](docs/engineering/r4-review.md) (REVISE; lead candidate, bank on the drive bus), [fast-motion review](docs/engineering/fast-motion-review.md) (voltage/energy-limited; bidirectional bank proposed), [controller study](docs/engineering/controller-study.md) and [R3 review](docs/engineering/r3-review.md) (REVISE); earlier: [R2 review](docs/engineering/r2-review.md), [R1 review](docs/engineering/compact-candidate-r1-review.md).
 
 The reusable model interface and contributor checks are documented in [`docs/engineering/model-interface.md`](docs/engineering/model-interface.md). The reference model has no physical I/O. Controlled validation/review requirements are in [`validation-plan.md`](docs/engineering/validation-plan.md).
 

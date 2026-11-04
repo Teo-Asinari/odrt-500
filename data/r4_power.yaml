@@ -39,7 +39,15 @@ functions:
     worst_cell_factor: 1.05    # assumed worst cell / mean cell voltage with passive balancing; no balancing design yet
   dump_monitor:
     need: With the bank on the bus, a failed dump no longer reaches the overvoltage trip (fresh bank peaks at 55.6 V). Detect it directly.
-    proposal: Supervisor compares the shunt-measured dump current with commanded duty x bus V / R; latches a dump_fault trip.
+    proposal: Supervisor compares the shunt-measured dump current with the chopper's gate duty x bus V / R; latches a dump_fault trip.
+    # Owner decision 2026-11-03: gate rule (reports/monitor_study.md). Estimating duty from the supervisor's own bus
+    # reading false-trips in nearly every case at the false-trip tolerance corner, because the chopper's 0.15 V duty
+    # ramp is narrower than a 0.5% voltage-sense error. Reading the gate removes the threshold and sense-gain errors.
+    duty_source: gate
+    duty_source_limit: >-
+      A gate-driver failure that removes the gate also removes the expected current, so the comparison
+      cannot see it. That failure is left to the 55 V backup threshold and the 56 V trip. The gate signal
+      needs a supervisor input (an isolated or level-shifted tap of the Regen Clamp gate drive); not designed.
     detection_s: 0.1        # condition must hold this long
     min_expected_a: 2       # below this, shunt offset and the duty ramp make the comparison unreliable; assumed
     measured_fraction: 0.5  # fault when measured < this x expected

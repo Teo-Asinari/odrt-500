@@ -1,6 +1,6 @@
 # Fast-motion study (R3 + C1)
 
-Fingerprint: `8537637be565ab66212148efd63a481bbe39cf180d361a328c1f80c90d961bf8`
+Fingerprint: `cfde392a05b5498a4a8809a9be837a1c3263e528c3ad0bcb2e4a6a856106a51c`
 
 **Study only. The reference controller and the R3/C1 candidate are unchanged.** The controller study attributed the remaining fast-reversal error to force-loop bandwidth. Trace analysis contradicts that: sensor and torque-loop lags contribute a few newtons, while the commanded current sits on the back-EMF/bus voltage bound for about half of the set. This study attributes the error and tests the voltage, energy and feedforward levers separately.
 

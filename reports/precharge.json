@@ -1,6 +1,6 @@
 {
-  "fingerprint": "f8d92e3d2558a1e99ee38d849c672e8e4ee880925a73f775b3696ff55ba3669a",
-  "r4_fingerprint": "e162902172a4380fac5e259b8899378c0264f9e3dea649209d1954c9654b7290",
+  "fingerprint": "b63f5acce6074dc5a82aa62b0adcc6a9176351d1c351782d9328a506adee46fb",
+  "r4_fingerprint": "0d0df70a4358d0edf99807939d827e305c6aeb5812d0a6a4cef665ed2606bb15",
   "sequence_assumptions": {
     "aux_load_w": 10,
     "aux_min_input_v": 15,

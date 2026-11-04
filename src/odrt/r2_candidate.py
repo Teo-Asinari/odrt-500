@@ -163,7 +163,7 @@ def load_r4(root=Path('.')):
     cfg['power']['trip_v'] = trip
     if not cfg['power']['dump_full_v'] < spec['functions']['dump_monitor']['backup_bus_v'] < trip:
         raise ConfigError('R4 dump-monitor backup voltage must lie between full dump duty and the trip')
-    cfg['dump_monitor'] = {k: spec['functions']['dump_monitor'][k] for k in ('detection_s', 'min_expected_a', 'measured_fraction', 'reset_s', 'backup_bus_v')}
+    cfg['dump_monitor'] = {k: spec['functions']['dump_monitor'][k] for k in ('detection_s', 'min_expected_a', 'measured_fraction', 'reset_s', 'backup_bus_v', 'duty_source')}
     return cfg, parts, variants, dict(derived, r4_power=spec), source, support
 
 

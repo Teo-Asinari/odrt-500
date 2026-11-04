@@ -17,7 +17,7 @@ def envelope(rms=10., peak=30., bank_v=53.5, bus_v=54.4, supply_a=9., trips=Fals
             'cell_values': {'r2_fresh': cell, 'r2_aged': dict(cell, capacitance_f=63., esr_initial_max_ohm=.022)},
             'banks': {'r2_fresh': {'a': m, 'paired_dump_failure': dict(m, maximum_bus_v=55.6)}, 'r2_aged': {'a': dict(m)}},
             'derived': {'r4_power': {'functions': {'precharge': {'enable_threshold_v': 45, 'charge_timeout_factor': 1.5},
-                                                     'dump_monitor': {'detection_s': .1, 'min_expected_a': 2, 'measured_fraction': .5, 'backup_bus_v': 55.}}},
+                                                     'dump_monitor': {'detection_s': .1, 'min_expected_a': 2, 'measured_fraction': .5, 'backup_bus_v': 55., 'duty_source': 'gate'}}},
                         'r4_checks': {'continuous_repetition_cell_c': {'r2_fresh': 40., 'r2_aged': 60.}}}}
 
 

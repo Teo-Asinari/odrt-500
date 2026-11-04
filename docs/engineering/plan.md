@@ -112,4 +112,8 @@ Owner decision 2026-11-03: R4 overvoltage trip 56 V (was 57 V) for 2 V of Regen 
 
 The dump monitor is a model extension active in R4 (`dump_monitor.py`, new `dump_fault` trip reason). It catches the fresh-bank dump failure with no false trips across the full suite. `make precharge` simulates start-up and service-discharge sequences with fault variants. It corrected the enable order and the bypass threshold: start-up takes 120 s with the resistor or 24 s from the supply in constant-current mode, and the discharge switch must be normally closed. Next: confirm the supply's overload mode (it decides A vs B), select parts, and add monitor noise/offset. The goal remains active and incomplete.
 
+## Dump-monitor measurement checkpoint
+
+Owner decisions: direct supply charging at start-up, and the gate rule for the dump monitor. `make monitor-study` reruns the R4 suite under measurement tolerances, chopper-threshold spread and seeded noise. The estimated-duty rule false-trips at the adverse corner, while the gate rule has no false trips in any corner and still detects the fresh dump failure. Next: confirm the supply's overload mode, design the gate-signal input and the supervisor, select parts, and resolve the motor/bus and endurance decisions. The goal remains active and incomplete.
+
 Owner decision 2026-11-03: start-up by direct supply charging (sequence A). `data/r4_power.yaml` records it with its dependency on the supply's constant-current mode and the resistor fallback. The disconnect must close by default; the pulse resistor is now discharge-only. Critical next verification: EPP-500-54 overload behaviour into a capacitive load.

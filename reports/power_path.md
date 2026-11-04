@@ -1,6 +1,6 @@
 # R4 power-path sizing
 
-Fingerprint: `34fffee046bae2c34a5cf6f7f065a8c475dd709157ede8afbc197506096943dd` (R4 `e162902172a4`)
+Fingerprint: `899025b7c4d5f30d9b5e98d9f71c800d770c236ce5dfe1c83e244ffdb6ecaf10` (R4 `0d0df70a4358`)
 
 **Functional sizing only.** Ratings are derived from the [R4 simulated envelope](r4_candidate.md) and cited data already in the repository. No part is selected; every `assumed` value in `data/power_path.yaml` is a verification item.
 
@@ -72,7 +72,7 @@ Capacitance spread 10% below the string mean (the documented initial minimum). T
 
 ## Dump-path monitoring
 
-Peak dump current 54.5 A; a 1 mΩ shunt gives 54 mV and 3.0 W peak. In the fresh-bank dump-failure case the bus reached 55.1 V without a trip. Rule: Expected dump current is commanded duty × bus V / 1 Ω. Flag a dump-path fault when measured current stays below 0.5 × expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 55.0 V for 0.1 s; stop the unit and latch, independent of the overvoltage trip.
+Peak dump current 54.5 A; a 1 mΩ shunt gives 54 mV and 3.0 W peak. In the fresh-bank dump-failure case the bus reached 55.1 V without a trip. Rule: Expected dump current is the chopper gate duty × bus V / 1 Ω (the supervisor reads the Regen Clamp gate). Flag a dump-path fault when measured current stays below 0.5 × expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 55.0 V for 0.1 s; stop the unit and latch, independent of the overvoltage trip. A gate-driver failure removes the expected current and is covered only by the backup voltage.
 
 ## Bank duty limit
 

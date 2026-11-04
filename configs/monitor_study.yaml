@@ -1,0 +1,32 @@
+# Dump-monitor measurement study on R4 (make monitor-study). Study only; it is the evidence for the R4 gate rule.
+purpose: >-
+  The R4 dump monitor was simulated as ideal. A real supervisor estimates the chopper duty from its own
+  bus-voltage reading, while the Regen Clamp switches on its own analog threshold (cited 2.35 V typical,
+  2.50 V maximum above input) across a ramp only 0.15 V wide. This study adds measurement errors, plant
+  tolerances and noise, and checks false trips in every non-dump-failure case and detection in the dump failures.
+# All tolerances below are assumptions; no shunt amplifier, ADC, voltage divider or resistor is selected.
+noise: {current_sigma_a: 0.3, voltage_sigma_v: 0.05, sample_s: 0.001, seed: 7}
+filter_s: 0.005
+corners:
+  ideal: {}
+  noise_only:
+    measurement: {current_gain: 0, current_offset_a: 0, voltage_gain: 0, voltage_offset_v: 0}
+  false_trip_corner:
+    # Supervisor over-expects: bus reads high, chopper actually starts later, resistor high, current reads low.
+    measurement: {current_gain: -0.02, current_offset_a: -0.2, voltage_gain: 0.005, voltage_offset_v: 0.05}
+    plant: {threshold_offset_v: 0.15, resistance_factor: 1.10}
+  missed_detection_corner:
+    # Supervisor under-expects: bus reads low, chopper actually starts earlier, resistor low, offset hides zero current.
+    measurement: {current_gain: 0.02, current_offset_a: 0.5, voltage_gain: -0.005, voltage_offset_v: -0.05}
+    plant: {threshold_offset_v: -0.15, resistance_factor: 0.90}
+# Rule variants. `estimated` takes duty from the supervisor's bus reading; `estimated_margin` expects current
+# only above full duty + margin; `gate` reads the chopper's own gate command (adopted for R4, owner decision 2026-11-03).
+rules:
+  estimated: {duty_source: estimated}
+  estimated_margin_0.5: {duty_source: estimated, estimate_margin_v: 0.5}
+  gate: {duty_source: gate}
+banks: [r2_fresh, r2_aged]
+notes:
+  - The threshold offset uses the cited 2.35 V typical / 2.50 V maximum clamp activation (0.15 V); the minimum is not cited, so the same 0.15 V is assumed below typical. Supply setpoint error, which moves the clamp's input-relative threshold, is not added separately.
+  - Voltage-sense gain ±0.5% is about ±0.27 V at 54 V, larger than the 0.15 V duty ramp; that is the point of the corner.
+  - Noise is a seeded Gaussian sequence at 1 kHz, low-pass filtered with 5 ms before the rule; one realisation per case, not a statistical false-alarm rate.

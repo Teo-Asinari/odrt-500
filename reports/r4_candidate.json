@@ -1,5 +1,5 @@
 {
-  "fingerprint": "e162902172a4380fac5e259b8899378c0264f9e3dea649209d1954c9654b7290",
+  "fingerprint": "0d0df70a4358d0edf99807939d827e305c6aeb5812d0a6a4cef665ed2606bb15",
   "study": "r4",
   "title": "R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1",
   "assessment": "REVISE",
@@ -216,7 +216,9 @@
         },
         "dump_monitor": {
           "need": "With the bank on the bus, a failed dump no longer reaches the overvoltage trip (fresh bank peaks at 55.6 V). Detect it directly.",
-          "proposal": "Supervisor compares the shunt-measured dump current with commanded duty x bus V / R; latches a dump_fault trip.",
+          "proposal": "Supervisor compares the shunt-measured dump current with the chopper's gate duty x bus V / R; latches a dump_fault trip.",
+          "duty_source": "gate",
+          "duty_source_limit": "A gate-driver failure that removes the gate also removes the expected current, so the comparison cannot see it. That failure is left to the 55 V backup threshold and the 56 V trip. The gate signal needs a supervisor input (an isolated or level-shifted tap of the Regen Clamp gate drive); not designed.",
           "detection_s": 0.1,
           "min_expected_a": 2,
           "measured_fraction": 0.5,

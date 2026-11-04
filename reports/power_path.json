@@ -1,6 +1,6 @@
 {
-  "fingerprint": "34fffee046bae2c34a5cf6f7f065a8c475dd709157ede8afbc197506096943dd",
-  "r4_fingerprint": "e162902172a4380fac5e259b8899378c0264f9e3dea649209d1954c9654b7290",
+  "fingerprint": "899025b7c4d5f30d9b5e98d9f71c800d770c236ce5dfe1c83e244ffdb6ecaf10",
+  "r4_fingerprint": "0d0df70a4358d0edf99807939d827e305c6aeb5812d0a6a4cef665ed2606bb15",
   "assumptions": {
     "device_voltage_class_v": 80,
     "clamp_margin_v": 2,
@@ -168,7 +168,8 @@
     "detection_s": 0.1,
     "fresh_dump_failure_bus_max_v": 55.13622397058624,
     "dump_start_v": 54.35,
-    "rule": "Expected dump current is commanded duty \u00d7 bus V / 1 \u03a9. Flag a dump-path fault when measured current stays below 0.5 \u00d7 expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 55.0 V for 0.1 s; stop the unit and latch, independent of the overvoltage trip."
+    "duty_source": "gate",
+    "rule": "Expected dump current is the chopper gate duty \u00d7 bus V / 1 \u03a9 (the supervisor reads the Regen Clamp gate). Flag a dump-path fault when measured current stays below 0.5 \u00d7 expected for 0.1 s while expected exceeds 2 A, or when the bus exceeds 55.0 V for 0.1 s; stop the unit and latch, independent of the overvoltage trip. A gate-driver failure removes the expected current and is covered only by the backup voltage."
   },
   "bank_duty": {
     "derate_start_c": 55,

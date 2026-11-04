@@ -130,3 +130,25 @@ def test_r4_dump_monitor_catches_fresh_dump_failure_without_false_trips():
     assert fault['unit_0.trip_time_s'] - cases['paired_dump_failure']['fault_time_s'] < 1.
     normal = run('single_fast_full', 6)
     assert not normal['unit_0.trip_latched'] and normal['numerical_valid']
+
+
+@pytest.mark.slow
+def test_gate_rule_survives_tolerance_corners_where_estimated_rule_false_trips():
+    pytest.importorskip('cadquery'); pytest.importorskip('casadi')
+    from odrt.config import load_yaml
+    from odrt.monitor_study import _job, corner_config
+    from odrt.project import load_inputs
+    from odrt.r2_candidate import load_r4
+    inputs = load_inputs(REPO); cfg, parts, variants, *_ = load_r4(REPO)
+    assert cfg['dump_monitor']['duty_source'] == 'gate'
+    spec = load_yaml(REPO/'configs/monitor_study.yaml'); parts['r2_cell'] = {'values': variants['r2_fresh']}
+    cases = {c['name']: c for c in cfg['cases']}
+    def run(corner, rule, name):
+        c = corner_config(cfg, spec, spec['corners'][corner]); c['dump_monitor']['duty_source'] = rule
+        case = cases[name]
+        return _job((name, c, parts, inputs.scenarios[case['scenario']], inputs.defaults,
+                     inputs.envelope.max_usable_stroke_m, case))[1]['units']
+    assert run('false_trip_corner', 'estimated', 'single_fast_full')[0]['trip_reason'] == 'dump_fault'
+    assert run('false_trip_corner', 'gate', 'single_fast_full')[0]['trip_reason'] is None
+    fault = run('missed_detection_corner', 'gate', 'paired_dump_failure')
+    assert fault[0]['trip_reason'] == 'dump_fault' and fault[1]['trip_reason'] is None
