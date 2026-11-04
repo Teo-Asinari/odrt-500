@@ -1,0 +1,55 @@
+# Alternative motor candidates for the motor study (make motor-study). Facts only, with the
+# conversion into the coupled model's virtual DC port stated explicitly. Kept separate from
+# data/engineering_components.yaml so adding a candidate does not invalidate every study fingerprint.
+tbm2g_11526d:
+  role: motor
+  source: https://shop.oxni.ch/files/v240708160007/Kollmorgen/TBM/MN%20TBM2G%20RevB%20En.pdf
+  source_section: Kollmorgen TBM2G Instructions (June 2023), 9.8.3 TBM2G-11526 Frameless Motor Specifications, winding D
+  accessed: '2026-11-04'
+  datasheet:
+    rated_bus_v: 48
+    cont_torque_dt130_nm: 6.03
+    cont_current_dt130_arms: 41.6
+    cont_torque_dt60_nm: 4.71
+    peak_torque_nm: 14.5
+    peak_current_arms: 125
+    kt_hot_nm_per_arms: 0.145
+    kt_cold_nm_per_arms: 0.163
+    ke_hot_vrms_per_krpm_ll: 8.79
+    ke_cold_vrms_per_krpm_ll: 9.8
+    km_nm_per_sqrt_w: 0.802
+    resistance_ll_ohm: 0.028
+    inductance_q_ll_mh: 0.13
+    inertia_kg_cm2: 3.55
+    mass_kg: 1.43
+    pole_pairs: 10
+    max_mechanical_rpm: 8000
+    thermal_resistance_winding_ambient_k_w: 1.21
+    rated_48v_155c: {torque_nm: 4.41, speed_rpm: 3100, power_kw: 1.43}
+    outer_diameter_mm: 115.04
+    overall_axial_mm: 44.39
+    stack_mm: 26.3
+    rating_conditions: >-
+      Continuous and thermal values with a 2.40 in x 0.25 in aluminium housing on a 12 x 12 x 0.5 in aluminium
+      plate at 25 °C ambient; Km and resistance measured at 25 °C without leads; Kt/Ke ±10%.
+  # Coupled-model virtual DC port (tau = Kt*I, E = Kt*omega, power consistent).
+  # Kt_dc = cold line-line peak back-EMF per rad/s = 9.8*sqrt(2)/(1000*2*pi/60) = 0.1323 V s/rad.
+  # Cold Ke is the conservative choice for back-EMF; torque per amp is then cold too (about 11% optimistic when hot).
+  # Equivalences at this Kt_dc: I_dc = 1.225 * I_rms, phase amplitude = 1.155 * I_dc.
+  values:
+    kt_nm_per_a: 0.1323
+    km_nm_per_sqrt_w: 0.802
+    torque_peak_nm: 14.5
+    inertia_kg_m2: 0.000355
+    pole_pairs: 10
+    diameter_mm: 115.04
+    length_mm: 44.39
+    mass_kg: 1.43
+  availability: Distributor listing (oxni.ch) about 9 weeks; manufacturer stock not verified
+  price_chf_excl_vat: 1093.52
+  price_source: https://shop.oxni.ch/en/store/motoren/ddr/tbm/TBM2G-11526D-ANAA-00
+  notes: >-
+    Frameless (stator + rotor, no housing or bearings). The listed D part (ANAA) has no Hall sensors; a Hall
+    variant must be confirmed. A housing (about 6.4 mm wall in the rating set-up) raises the OD to about 128 mm,
+    which is not checked against the R2 CAD. The conversion of drive current limits to the model's DC-equivalent
+    amps assumes the drive limit is a phase amplitude.

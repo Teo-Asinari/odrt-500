@@ -1,0 +1,28 @@
+# Motor study on R4 (make motor-study). Study only; the R4 candidate keeps the RO100.
+purpose: >-
+  With the RO100 at a 52 V bus no belt ratio passes heavy (needs at least 5:1 at 50 A) and fast motion
+  (needs about 4:1) together, and endurance is Km-limited. This study puts a candidate motor with a higher
+  Km and a lower back-EMF per unit torque, the Kollmorgen TBM2G-11526D (data/motor_candidates.yaml),
+  into the full R4 plant and sweeps the ratio, the drive current limit and the motor heat path.
+banks: [r2_fresh, r2_aged]
+cases: [single_fast_full, single_stroke_full, single_heavy_full, paired_heavy_full, single_slow_full, single_endurance_full]
+# Sections: motor (a key of data/motor_candidates.yaml), reference, control, thermal_scale (multiplies the
+# motor heat-path keys of cfg['thermal']). Model current limits are DC-equivalent amps (see the data file).
+variants:
+  r4_ro100: {}
+  # 80 A phase amplitude (ODrive Pro with active cooling) = 69.3 A DC-equivalent at Kt_dc 0.1323.
+  tbm_5: {motor: tbm2g_11526d, control: {current_limit_a: 69.3}}
+  # 100 A phase amplitude is the ODrive Pro 3 s peak; sustained use in a heavy set exceeds that rating.
+  tbm_5_100a: {motor: tbm2g_11526d, control: {current_limit_a: 86.6}}
+  tbm_5.5: {motor: tbm2g_11526d, reference: {ratio: 5.5}, control: {current_limit_a: 69.3}}
+  tbm_6: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}}
+  # Winding-to-housing 0.7 K/W instead of the RO100's 0.28: what is left of Kollmorgen's 1.21 K/W
+  # winding-to-ambient after about 0.5 K/W for its 12 x 12 x 0.5 in test plate to air.
+  tbm_5.5_weak_path: {motor: tbm2g_11526d, reference: {ratio: 5.5}, control: {current_limit_a: 69.3}, thermal_scale: {winding_to_housing_k_w: 2.5}}
+  tbm_6_weak_path: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}, thermal_scale: {winding_to_housing_k_w: 2.5}}
+notes:
+  - The plant is the R4 candidate (bank on the drive bus, R3 heat path, controller C1, 56 V trip, gate-rule dump monitor). Only the listed keys change.
+  - Ratio variants keep the R2 CAD drum inertia and do not rerun belt, bearing or support screens; reflected motor inertia scales with the ratio squared. 5.5:1 and 6:1 would need new pulleys (for example 22/121 and 20/120 teeth).
+  - The TBM2G keeps the RO100's heat-path values (winding-to-housing 0.28 K/W, winding 48.3 J/K, housing 193.2 J/K) unless a variant scales them. A frameless stator bonded into an aluminium carrier is assumed to be at least as good as the RO100 estimate; this is not measured. The heavier TBM2G (1.43 kg) would add heat capacity that is not credited.
+  - Kt does not fall with winding temperature in the model; the hot TBM2G Kt is about 11% below the cold value used.
+  - The 1.4 kg and 128 mm housed OD of the TBM2G are not checked against the R2 CAD or the ADR-003 envelope.

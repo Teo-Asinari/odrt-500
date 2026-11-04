@@ -173,8 +173,27 @@ def r4_fingerprint(root=Path('.')):
     return h.hexdigest()
 
 
+R4M_VARIANT = 'tbm_6'
+
+
+def load_r4m(root=Path('.')):
+    """R4 with the motor-study variant R4M_VARIANT (TBM2G-11526D at 6:1); study, not the R4 candidate."""
+    from odrt.motor_study import apply_variant, load_candidates
+    cfg, parts, variants, derived, source, support = load_r4(root)
+    changes = load_yaml(Path(root)/'configs/motor_study.yaml')['variants'][R4M_VARIANT]
+    cfg, parts = apply_variant(cfg, parts, load_candidates(root), changes)
+    return cfg, parts, variants, dict(derived, motor_variant={'name': R4M_VARIANT, 'changes': changes}), source, support
+
+
+def r4m_fingerprint(root=Path('.')):
+    from odrt.motor_study import study_fingerprint
+    return hashlib.sha256((study_fingerprint(root)+R4M_VARIANT).encode()).hexdigest()
+
+
 # Controller variants on selected cases, reported with the uncertainties: (name, control changes, cases).
-CONTROL_EXTRA = {'r4': (('realisable_feedforward', {'inertia_feedforward': 0},
+CONTROL_EXTRA = {'r4m': (('realisable_feedforward', {'inertia_feedforward': 0},
+                          ('single_fast_full', 'single_stroke_full', 'paired_heavy_full', 'paired_asymmetric')),),
+                 'r4': (('realisable_feedforward', {'inertia_feedforward': 0},
                          ('single_fast_full', 'single_stroke_full', 'paired_heavy_full', 'paired_asymmetric')),)}
 
 
@@ -217,7 +236,9 @@ STUDIES = {'r2': dict(load=load_r2, fingerprint=r2_fingerprint, title='R2 candid
            'r3c': dict(load=load_r3c, fingerprint=r3c_fingerprint,
                        title='R3 with candidate controller C1 (kp 4, 2.5 m/s release limiter, 0.15 m end zone)', extra=()),
            'r4': dict(load=load_r4, fingerprint=r4_fingerprint,
-                      title='R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1', extra=())}
+                      title='R4 candidate simulation: bank on the drive bus (bidirectional), R3 + C1', extra=()),
+           'r4m': dict(load=load_r4m, fingerprint=r4m_fingerprint,
+                       title='R4 with the Kollmorgen TBM2G-11526D at 6:1 (motor study variant tbm_6; study, not adopted)', extra=())}
 
 
 def run(root=Path('.'), jobs=None, study='r2'):
