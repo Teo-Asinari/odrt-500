@@ -36,6 +36,8 @@ make power-path # R4 power-path sizing: clamp, fuse, pre-charge/discharge, balan
 make precharge # R4 start-up pre-charge and service-discharge sequences, with fault variants
 make monitor-study # dump-monitor rules under measurement errors, tolerances and noise
 make fast-study # fast-motion attribution: voltage saturation, storage topology, ratio
+make motor-study # candidate motors on R4: ratio, current limit, heat path and Km sweep
+make r4m-candidate # full R4 suite with the TBM2G-11526D at 6:1 (study, not adopted)
 make test     # unit and negative tests, in parallel
 make quick    # tests minus those marked slow (~15 s)
 make t T=tests/test_r2.py K=expr # one file / matching tests
@@ -49,7 +51,7 @@ make ci       # all of the above; fails if committed reports are stale
 
 There is no hosted CI. Run `make ci` before committing. Slow studies are skipped when their recorded input fingerprint is unchanged (`FORCE=1 make ci` reruns everything); a study refuses to publish if its inputs change while it runs. Clear `PYTHONPATH` when calling `.venv/bin/python` directly (the Makefile does).
 
-Latest decision: [power-path review](docs/engineering/power-path-review.md) (R4 power path sized and sequence-simulated; dump monitor on the gate rule; 56 V trip), [R4 review](docs/engineering/r4-review.md) (REVISE; lead candidate, bank on the drive bus), [fast-motion review](docs/engineering/fast-motion-review.md) (voltage/energy-limited; bidirectional bank proposed), [controller study](docs/engineering/controller-study.md) and [R3 review](docs/engineering/r3-review.md) (REVISE); earlier: [R2 review](docs/engineering/r2-review.md), [R1 review](docs/engineering/compact-candidate-r1-review.md).
+Latest decision: [motor study review](docs/engineering/motor-study-review.md) (motor specification proposed; TBM2G at 6:1 fails 5/54 vs 8; R4 keeps the RO100 pending the owner), [bench-prototype path](docs/engineering/bench-prototype-path.md) (draft); [power-path review](docs/engineering/power-path-review.md) (R4 power path sized and sequence-simulated; dump monitor on the gate rule; 56 V trip), [R4 review](docs/engineering/r4-review.md) (REVISE; lead candidate, bank on the drive bus), [fast-motion review](docs/engineering/fast-motion-review.md) (voltage/energy-limited; bidirectional bank proposed), [controller study](docs/engineering/controller-study.md) and [R3 review](docs/engineering/r3-review.md) (REVISE); earlier: [R2 review](docs/engineering/r2-review.md), [R1 review](docs/engineering/compact-candidate-r1-review.md).
 
 The reusable model interface and contributor checks are documented in [`docs/engineering/model-interface.md`](docs/engineering/model-interface.md). The reference model has no physical I/O. Controlled validation/review requirements are in [`validation-plan.md`](docs/engineering/validation-plan.md).
 

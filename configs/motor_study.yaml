@@ -20,9 +20,27 @@ variants:
   # winding-to-ambient after about 0.5 K/W for its 12 x 12 x 0.5 in test plate to air.
   tbm_5.5_weak_path: {motor: tbm2g_11526d, reference: {ratio: 5.5}, control: {current_limit_a: 69.3}, thermal_scale: {winding_to_housing_k_w: 2.5}}
   tbm_6_weak_path: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}, thermal_scale: {winding_to_housing_k_w: 2.5}}
+  # Hypothetical RO100 rewound to Kv 80: RO100 Km and poles, TBM2G-like speed. 66.7 A gives the same 9.17 N·m
+  # motor torque limit as the TBM2G variants, so only Km, Kv and pole count differ.
+  ro100kv80_5.5: {motor: ro100_kv80_hypothetical, reference: {ratio: 5.5}, control: {current_limit_a: 66.7}}
+  ro100kv80_6: {motor: ro100_kv80_hypothetical, reference: {ratio: 6.0}, control: {current_limit_a: 66.7}}
+  ro100kv80_6_weak_path: {motor: ro100_kv80_hypothetical, reference: {ratio: 6.0}, control: {current_limit_a: 66.7}, thermal_scale: {winding_to_housing_k_w: 2.5}}
+  # T-Motor drone outrunners at the 69.3 A drive limit; ratios chosen for no-load drum speed near the TBM2G at 6:1.
+  u13kv65_5.5: {motor: tmotor_u13ii_kv65, reference: {ratio: 5.5}, control: {current_limit_a: 69.3}}
+  u13kv65_6: {motor: tmotor_u13ii_kv65, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}}
+  u13kv65_5.5_weak_path: {motor: tmotor_u13ii_kv65, reference: {ratio: 5.5}, control: {current_limit_a: 69.3}, thermal_scale: {winding_to_housing_k_w: 2.5}}
+  u15kv80_6.5: {motor: tmotor_u15ii_kv80, reference: {ratio: 6.5}, control: {current_limit_a: 69.3}}
+  # Km sweep on the TBM2G at 6:1 (resistance scaled; Kt, speed, inertia and poles unchanged): the minimum Km to ask suppliers for.
+  tbm_6_km0.60: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}, sensitivity: {km_scale: 0.748}}
+  tbm_6_km0.65: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}, sensitivity: {km_scale: 0.810}}
+  tbm_6_km0.70: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}, sensitivity: {km_scale: 0.873}}
+  tbm_6_km0.75: {motor: tbm2g_11526d, reference: {ratio: 6.0}, control: {current_limit_a: 69.3}, sensitivity: {km_scale: 0.935}}
 notes:
   - The plant is the R4 candidate (bank on the drive bus, R3 heat path, controller C1, 56 V trip, gate-rule dump monitor). Only the listed keys change.
   - Ratio variants keep the R2 CAD drum inertia and do not rerun belt, bearing or support screens; reflected motor inertia scales with the ratio squared. 5.5:1 and 6:1 would need new pulleys (for example 22/121 and 20/120 teeth).
   - The TBM2G keeps the RO100's heat-path values (winding-to-housing 0.28 K/W, winding 48.3 J/K, housing 193.2 J/K) unless a variant scales them. A frameless stator bonded into an aluminium carrier is assumed to be at least as good as the RO100 estimate; this is not measured. The heavier TBM2G (1.43 kg) would add heat capacity that is not credited.
   - Kt does not fall with winding temperature in the model; the hot TBM2G Kt is about 11% below the cold value used.
   - The 1.4 kg and 128 mm housed OD of the TBM2G are not checked against the R2 CAD or the ADR-003 envelope.
+  - ro100_kv80_hypothetical is not a listed part. It is a first-order rewind of the RO100 Lite (same Km, peak torque, poles), used to set a custom-winding specification.
+
+  - The T-Motor values are first-order conversions of drone datasheets (Kv, internal resistance, propeller test torque) with estimated inertia, and they keep the RO100 heat path although they are open-frame motors rated with propeller airflow. The U15 II does not fit the 139 mm section.

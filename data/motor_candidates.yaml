@@ -53,3 +53,85 @@ tbm2g_11526d:
     variant must be confirmed. A housing (about 6.4 mm wall in the rating set-up) raises the OD to about 128 mm,
     which is not checked against the R2 CAD. The conversion of drive current limits to the model's DC-equivalent
     amps assumes the drive limit is a phase amplitude.
+ro100_kv80_hypothetical:
+  role: motor
+  source: https://www.cubemars.com/product/ro100-kv55-standard-with-hall-frameless-torque-motor.html
+  source_section: Hypothetical rewind of the RO100 Lite (data/engineering_components.yaml ro100_lite); NOT a listed part
+  accessed: '2026-11-04'
+  datasheet:
+    basis: >-
+      Same magnetics, stack and copper volume as the RO100 Lite, rewound for Kv 80 instead of 55. A rewind keeps Km
+      and peak torque to first order and scales Kt and back-EMF by 55/80. Inertia, mass and pole pairs unchanged.
+  # Kt scaled from the ro100_lite model value (0.2, the vendor Kt used for R4) by 55/80.
+  values:
+    kt_nm_per_a: 0.1375
+    km_nm_per_sqrt_w: 0.53
+    torque_peak_nm: 12
+    inertia_kg_m2: 0.000529
+    pole_pairs: 21
+    diameter_mm: 108.3
+    length_mm: 28
+    mass_kg: 0.525
+  availability: Hypothetical; a custom-winding request to CubeMars would be needed
+  notes: >-
+    Used to test whether a RO100-class Km is enough once Kv allows a 6:1 ratio. Uses the RO100's (unmeasured)
+    current conventions and heat path.
+# T-Motor drone outrunners. Datasheets give Kv and internal resistance only; conversions below are first order.
+# Kt_dc = 60/(2*pi*Kv) (Kv as no-load rpm per volt, i.e. line-line peak back-EMF); internal resistance taken as
+# line-line (not stated), so Km = Kt_dc/sqrt(R_ll). Peak torque is the highest torque in the vendor's propeller
+# test table (minutes at full throttle with prop airflow), not a rating. Inertia is an estimate: 45% of mass in
+# the rotor at 0.92 of the outer radius. Open-frame motors rated with propeller cooling; the enclosed heat path is unknown.
+tmotor_u13ii_kv65:
+  role: motor
+  source: https://store.tmotor.com/product/u13-v2-kv65-motor-u-power.html
+  accessed: '2026-11-04'
+  datasheet:
+    kv_rpm_per_v: 65
+    internal_resistance_ohm: 0.073
+    configuration: 36N42P
+    dimensions: Φ100 x 60 mm
+    weight_incl_cable_kg: 0.975
+    rated_voltage_lipo: 22-25S
+    peak_current_180s_a: 68
+    max_continuous_power_w: 1854
+    shaft_mm: 15
+    test_table_max_torque_nm: 11.4
+    price_usd: 379.90
+  values:
+    kt_nm_per_a: 0.1469
+    km_nm_per_sqrt_w: 0.544
+    torque_peak_nm: 11.4
+    inertia_kg_m2: 0.00093
+    pole_pairs: 21
+    diameter_mm: 100
+    length_mm: 60
+    mass_kg: 0.975
+  availability: Official store listing; stock not verified
+  notes: Outrunner with an exposed rotor; a guard and the heat path into the frame are undesigned. Line-line resistance convention assumed.
+tmotor_u15ii_kv80:
+  role: motor
+  source: https://store.tmotor.com/goods-731-U15_KV80.html
+  accessed: '2026-11-04'
+  datasheet:
+    kv_rpm_per_v: 80
+    internal_resistance_ohm: 0.017
+    configuration: 36N42P
+    dimensions: Φ147.5 x 55 mm
+    weight_incl_cable_kg: 1.74
+    rated_voltage_lipo: 12-24S
+    max_continuous_current_180s_a: 143
+    max_continuous_power_w: 1932
+    shaft_mm: 20
+    test_table_max_torque_nm: 18
+    price_usd: 689.90
+  values:
+    kt_nm_per_a: 0.1194
+    km_nm_per_sqrt_w: 0.916
+    torque_peak_nm: 18
+    inertia_kg_m2: 0.0036
+    pole_pairs: 21
+    diameter_mm: 147.5
+    length_mm: 55
+    mass_kg: 1.74
+  availability: Official store listing; RobotShop lists it as special order at 867.22 USD
+  notes: 147.5 mm OD exceeds the 139 mm section of the ADR-003 envelope, so it is simulated for comparison only. Line-line resistance convention assumed.

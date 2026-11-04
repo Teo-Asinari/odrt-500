@@ -1,6 +1,13 @@
 # Status
 
-## Active engineering goal — 2026-11-03
+## Active engineering goal — 2026-11-04
+
+**Motor study: the motor specification, not a part** ([review](../docs/engineering/motor-study-review.md), [study](motor_study.md)). The Kollmorgen TBM2G-11526D (Km 0.80, 10 pole pairs) at 6:1 removes the ratio box and the endurance failure: the full R4 suite fails 5 of 54 cases instead of 8 ([r4m](r4m_candidate.md)), endurance winding 74 °C instead of 129 °C, support screen 16/16. A rewound RO100 (Km 0.53), the T-Motor U13 II (0.54) and U15 II (0.92, too big, high inertia) do not pass: Km about 0.8, 12 or fewer pole pairs and low rotor inertia are all needed. Bank margin is now the limit (aged fast reversal 0.9 V above the 30 V trip; ripple 16.7 A vs 11.7 A rating). Km sweep: 0.7 is the thermal minimum, but with the current bank aged fast reversal trips below 0.8. At about CHF 1,094 per motor the TBM2G alone exceeds the $500 retail hypothesis; draft custom-part requests to CubeMars, SEA MOTION and Exmek are not sent. R4 keeps the RO100 pending the owner's decision.
+[Path to a bench prototype](../docs/engineering/bench-prototype-path.md) drafted: three gated stages (motor and drive; power path; drum and rope after Gate D review), about CHF 1,094 + $830–$2,390 parts per unit, no human on the cable. Next: CAD fit check with the TBM2G and 6:1 pulleys.
+
+## Previous checkpoint — 2026-11-03
+
+
 
 **Dump monitor decided: gate rule** (owner, 2026-11-03; [monitor study](monitor_study.md)). With measurement tolerances, noise and chopper-threshold spread, estimating duty from the supervisor's bus reading false-trips almost every case at the adverse corner (the 0.15 V duty ramp is narrower than a 0.5% sense error). Reading the chopper gate has no false trips in any corner and detects the fresh dump failure in 0.49–0.52 s. A gate-driver failure is left to the 55 V backup and the 56 V trip; the gate-signal input is not designed.
 **Simulated today:** [dump monitor and pre-charge sequence](../docs/engineering/power-path-review.md). The dump monitor (active in R4) catches the fresh-bank dump failure 0.51 s after the fault (bus 55.14 V), with no false trips across the suite; the aged case still trips on 56 V overvoltage first.

@@ -122,7 +122,7 @@ motor-study:
 	$(PY) -m odrt.fresh motor-study || $(PY) -m odrt.motor_study
 
 r4m-candidate: motor-study
-	$(PY) -m odrt.fresh r4m-candidate || $(PY) -m odrt.r2_candidate r4m
+	$(PY) -m odrt.fresh r4m-candidate || $(PY) -m odrt.r4m_candidate
 
 # Local CI: validate inputs, run tests, regenerate reports, and fail if the
 # committed reports are stale. Slow studies are skipped when their recorded

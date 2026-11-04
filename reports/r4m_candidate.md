@@ -1,6 +1,6 @@
 # R4 with the Kollmorgen TBM2G-11526D at 6:1 (motor study variant tbm_6; study, not adopted)
 
-Fingerprint: `cbbf9b3741785a096d8cd660c37ed1c189f440d3841ec2fc257ce1630ad07e12`
+Fingerprint: `77166a52e849ea3634d41db6eaa64f6232903bd214a44856e81c1df745f2f11b`
 
 **Assessment: REVISE.** R2 joins the [R2 CAD](r2_package.md), the [power revision](revision_power.md) and the [support revision](support_revision.md) into one simulated machine: 6:1 belt, drum-referred inertia 0.016331 kg m² (R1: 0.024254), routing 0.062 m, 20 × TV 3 V cells on the drive bus (bidirectional; one-way supply and dump unchanged), EPP-500-54 at 52 V, motor current limit 69.3 A. Controller: see below.
 

@@ -31,7 +31,7 @@ STUDIES = {
     'r3-candidate': ('reports/r3_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r3_fingerprint', None),
     'r4-candidate': ('reports/r4_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r4_fingerprint', None),
     'monitor-study': ('reports/monitor_study.json', 'fingerprint', 'odrt.monitor_study', 'study_fingerprint', None),
-    'r4m-candidate': ('reports/r4m_candidate.json', 'fingerprint', 'odrt.r2_candidate', 'r4m_fingerprint', None),
+    'r4m-candidate': ('reports/r4m_candidate.json', 'fingerprint', 'odrt.r4m_candidate', 'r4m_fingerprint', None),
     'motor-study': ('reports/motor_study.json', 'fingerprint', 'odrt.motor_study', 'study_fingerprint', None),
     'fast-study': ('reports/fast_motion_study.json', 'fingerprint', 'odrt.fast_motion_study', 'study_fingerprint', None),
 }

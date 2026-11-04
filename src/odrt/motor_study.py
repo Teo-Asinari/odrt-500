@@ -20,7 +20,8 @@ from odrt.engineering import load_engineering
 from odrt.project import load_inputs
 from odrt.r2_candidate import load_r4, model_factory, r4_fingerprint
 
-SECTIONS = {'motor', 'reference', 'control', 'thermal_scale'}
+SECTIONS = {'motor', 'reference', 'control', 'thermal_scale', 'sensitivity'}
+SENSITIVITIES = ('km_scale',)
 MOTOR_FIELDS = ('kt_nm_per_a', 'km_nm_per_sqrt_w', 'torque_peak_nm', 'inertia_kg_m2', 'pole_pairs')
 THERMAL_SCALABLE = ('winding_to_housing_k_w', 'winding_capacity_j_k', 'housing_capacity_j_k')
 
@@ -66,10 +67,19 @@ def apply_variant(cfg, parts, candidates, changes):
     return cfg, parts
 
 
+def variant_sensitivity(changes):
+    """Plant sensitivity scales passed to simulate (for example a Km sweep); unknown keys fail."""
+    s = dict(changes.get('sensitivity', {}))
+    bad = set(s)-set(SENSITIVITIES)
+    if bad: raise ConfigError(f'motor variant: unknown sensitivity keys {sorted(bad)}')
+    for k, v in s.items(): number(v, f'sensitivity.{k}', minimum=0, exclusive_minimum=True)
+    return s
+
+
 def _job(args):
-    key, cfg, parts, scenario, defaults, stroke, case, criteria = args
+    key, cfg, parts, scenario, defaults, stroke, case, criteria, sensitivity = args
     try:
-        value = simulate(cfg, parts, scenario, defaults, stroke, case, model_factory=model_factory(cfg))
+        value = simulate(cfg, parts, scenario, defaults, stroke, case, model_factory=model_factory(cfg), **sensitivity)
     except RuntimeError as error:
         return key, {'solver_failure': str(error), 'numerical_valid': False}
     m, s = value['metrics'], value['signals']
@@ -106,12 +116,13 @@ def run(root=Path('.'), jobs=None):
     if unknown: raise ConfigError(f'motor study: unknown cases {sorted(unknown)}')
     tasks, summaries = [], {}
     for name, changes in spec['variants'].items():
-        c, q = apply_variant(cfg, parts, candidates, changes); summaries[name] = motor_summary(q, c)
+        c, q = apply_variant(cfg, parts, candidates, changes); sensitivity = variant_sensitivity(changes)
+        summaries[name] = dict(motor_summary(q, c), km_nm_per_sqrt_w=q[c['reference']['motor']]['values']['km_nm_per_sqrt_w']*sensitivity.get('km_scale', 1))
         for bank in spec['banks']:
             qb = copy.deepcopy(q); qb['r2_cell'] = {'values': banks[bank]}
             for case in spec['cases']:
                 k = cases[case]
-                tasks.append(((name, bank, case), c, qb, inputs.scenarios[k['scenario']], inputs.defaults, stroke, k, criteria))
+                tasks.append(((name, bank, case), c, qb, inputs.scenarios[k['scenario']], inputs.defaults, stroke, k, criteria, sensitivity))
     tasks.sort(key=lambda t: 'endurance' not in t[0][2])
     workers = jobs or int(os.environ.get('JOBS', 0)) or os.cpu_count()
     print(f'motor study: {len(tasks)} simulations on {workers} workers', flush=True)
@@ -147,10 +158,10 @@ def write_report(r, spec, path):
     L = ['# Motor study (R4)', '', f'Fingerprint: `{r["fingerprint"]}`', '',
          '**Study only. The R4 candidate keeps the RO100.** ' + spec['purpose'], '',
          '## Variants at a glance', '',
-         '| Variant | Motor | Ratio | Current limit A | Motor / drum torque limit N·m | Model no-load drum rpm at 52 V | Reflected motor inertia kg·m² | Winding–housing K/W |',
-         '|---|---|---:|---:|---:|---:|---:|---:|']
+         '| Variant | Motor | Km | Ratio | Current limit A | Motor / drum torque limit N·m | Model no-load drum rpm at 52 V | Reflected motor inertia kg·m² | Winding–housing K/W |',
+         '|---|---|---:|---:|---:|---:|---:|---:|---:|']
     for name, s in r['summary'].items():
-        L.append(f'| {name} | {s["motor"]} | {s["ratio"]:g} | {s["current_limit_a"]:g} | {s["motor_torque_limit_nm"]:.1f} / '
+        L.append(f'| {name} | {s["motor"]} | {s["km_nm_per_sqrt_w"]:.2f} | {s["ratio"]:g} | {s["current_limit_a"]:g} | {s["motor_torque_limit_nm"]:.1f} / '
                  f'{s["drum_torque_limit_nm"]:.0f} | {s["model_no_load_drum_rpm"]:.0f} | {s["reflected_motor_inertia_kg_m2"]:.4f} | '
                  f'{s["winding_to_housing_k_w"]:.2f} |')
     for bank in banks:
